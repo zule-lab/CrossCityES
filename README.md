@@ -11,11 +11,8 @@ This Read-Me file is to keep document our progress and keep track of what we hav
 
 ## Rachel's To-Do List
 - [ ] Make GitHub account 
-- [ ] Download Git + GitAhead 
-- [ ] Clone this repository 
-- [ ] Contribute to the ReadMe
+- [ ] Download & set-up Git + GitAhead 
+- [ ] Clone this repository to your device (or the lab device)
+- [ ] Contribute to the ReadMe & commit
 - [ ] Make a branch
-- [ ] Merge branch 
-- [ ] Read the readling list 
-- [ ] Do tutorials 
-- [ ] Find public tree inventories for all cities
+- [ ] Merge branch
