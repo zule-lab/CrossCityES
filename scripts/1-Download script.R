@@ -17,9 +17,11 @@ cal_tree_raw<-read.csv(cal_dest)
 View(cal_tree_raw)
 
 ## Halifax tree data download
-hal_URL <- "https://catalogue-hrm.opendata.arcgis.com/datasets/33a4e9b6c7e9439abcd2b20ac50c5a4d_0/explore?location=44.648814%2C-63.600208%2C13.44"
+hal_URL <- "https://opendata.arcgis.com/api/v3/datasets/33a4e9b6c7e9439abcd2b20ac50c5a4d_0/downloads/data?format=csv&spatialRefId=4326"
 hal_dest <- "input/hal_tree_raw.csv"
 download.file(hal_URL, hal_dest, mode = "wb")
+hal_tree_raw <- read.csv(hal_dest)
+View(hal_tree_raw)
 
 
 ## Montreal tree data download
@@ -32,8 +34,11 @@ mon_tree_raw<-read.csv(mon_dest)
 View(mon_tree_raw)
 
 ## Ottawa tree data download
-
-
+ott_URL <- "https://opendata.arcgis.com/api/v3/datasets/13092822f69143b695bdb916357d421b_0/downloads/data?format=csv&spatialRefId=4326"
+ott_dest <- "input/ott_tree_raw.csv"
+download.file(ott_URL, ott_dest, mode = "wb")
+ott_tree_raw <- read.csv(ott_dest)
+View(ott_tree_raw)
 
 ## Toronto tree data download (shapefile)
 # City of Toronto open data public tree inventory link
