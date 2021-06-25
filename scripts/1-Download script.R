@@ -1,14 +1,18 @@
-library(downloader)
-install.packages("sf", configure.args = "--with-proj-lib=/usr/local/lib/")
-library(sf)
-library(mapview)
+# Script to download public tree inventories
 
-getwd()
+#### Packages ####
+# if installing sf for the first time on mac, use line 5
+# install.packages("sf", configure.args = "--with-proj-lib=/usr/local/lib/")
+easypackages::packages("sf", "mapview", "downloader", "tidyverse")
+
+#### Data Downloads ####
 
 ## Calgary tree data download
+# City of Calgary open data public tree inventory link
 cal_URL<- "https://data.calgary.ca/api/views/tfs4-3wwa/rows.csv?accessType=DOWNLOAD"
-cal_dest<- "/Users/nicoleyu/Desktop/GRI ZULE/R Cross City ES/Raw data/cal_tree_raw.csv"
-download.file(cal_URL,cal_dest, mode="wb")
+# save to input folder
+cal_dest<- "input/cal_tree_raw.csv"
+download.file(cal_URL, cal_dest, mode="wb")
 cal_tree_raw<-read.csv(cal_dest)
 View(cal_tree_raw)
 
@@ -18,14 +22,15 @@ View(cal_tree_raw)
 
 
 ## Montreal tree data download
+# City of Montreal open data public tree inventory link
 mon_URL<- "https://data.montreal.ca/dataset/b89fd27d-4b49-461b-8e54-fa2b34a628c4/resource/64e28fe6-ef37-437a-972d-d1d3f1f7d891/download/arbres-publics.csv"
-mon_dest<- "/Users/nicoleyu/Desktop/GRI ZULE/R Cross City ES/Raw data/mon_tree_raw.csv"
+mon_dest<- "input/mon_tree_raw.csv"
 download.file(mon_URL,mon_dest, mode="wb")
+# note: Montreal tree dataset is 89MB - close to Git's limit
 mon_tree_raw<-read.csv(mon_dest)
 View(mon_tree_raw)
 
 ## Ottawa tree data download
-
 
 
 
