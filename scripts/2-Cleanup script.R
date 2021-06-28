@@ -65,7 +65,7 @@ win_tree <- win_tree[,c("city","id","genus","botname","lat","long","hood","dbh",
 
 # Check and make output
 View(win_tree)
-write.csv(win_tree, "/Users/nicoleyu/Desktop/GRI ZULE/cross-city-es/output/win_tree.csv", row.names=FALSE)
+write.csv(win_tree, "output/win_tree.csv", row.names=FALSE)
 
 
 ### Unused code
