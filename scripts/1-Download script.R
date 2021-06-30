@@ -17,6 +17,7 @@ cal_tree_raw<-read.csv(cal_dest)
 View(cal_tree_raw)
 
 ## Halifax tree data download
+# City of Halifax open data public tree inventory link
 hal_URL <- "https://opendata.arcgis.com/api/v3/datasets/33a4e9b6c7e9439abcd2b20ac50c5a4d_0/downloads/data?format=csv&spatialRefId=4326"
 hal_dest <- "input/hal_tree_raw.csv"
 download.file(hal_URL, hal_dest, mode = "wb")
@@ -34,6 +35,7 @@ mon_tree_raw<-read.csv(mon_dest)
 View(mon_tree_raw)
 
 ## Ottawa tree data download
+# City of Ottawa open data public tree inventory link
 ott_URL <- "https://opendata.arcgis.com/api/v3/datasets/13092822f69143b695bdb916357d421b_0/downloads/data?format=csv&spatialRefId=4326"
 ott_dest <- "input/ott_tree_raw.csv"
 download.file(ott_URL, ott_dest, mode = "wb")
@@ -60,7 +62,7 @@ View(van_tree_raw)
 ## Winnipeg tree data download
 # City of Winnipeg open data public tree inventory link
 win_URL <- "https://data.winnipeg.ca/api/views/hfwk-jp4h/rows.csv?accessType=DOWNLOAD"
-win_dest <- "/Users/nicoleyu/Desktop/GRI ZULE/R Cross City ES/Raw data/win_tree_raw.csv"
+win_dest <- "input/win_tree_raw.csv"
 download.file(win_URL,win_dest, mode="wb")
 win_tree_raw <-read.csv(win_dest)
 View(win_tree_raw)
