@@ -10,8 +10,8 @@ easypackages::packages("sf", "mapview", "downloader", "tidyverse")
 ## Calgary tree data download
 # City of Calgary open data public tree inventory link
 cal_URL<- "https://data.calgary.ca/api/views/tfs4-3wwa/rows.csv?accessType=DOWNLOAD"
-# save to input folder
-cal_dest<- "input/cal_tree_raw.csv"
+# saving to large folder
+cal_dest<- "large/cal_tree_raw.csv"
 download.file(cal_URL, cal_dest, mode="wb")
 cal_tree_raw<-read.csv(cal_dest)
 View(cal_tree_raw)
@@ -28,7 +28,8 @@ View(hal_tree_raw)
 ## Montreal tree data download
 # City of Montreal open data public tree inventory link
 mon_URL<- "https://data.montreal.ca/dataset/b89fd27d-4b49-461b-8e54-fa2b34a628c4/resource/64e28fe6-ef37-437a-972d-d1d3f1f7d891/download/arbres-publics.csv"
-mon_dest<- "input/mon_tree_raw.csv"
+# saving to large folder
+mon_dest<- "large/mon_tree_raw.csv"
 download.file(mon_URL,mon_dest, mode="wb")
 # note: Montreal tree dataset is 89MB - close to Git's limit
 mon_tree_raw<-read.csv(mon_dest)
@@ -62,7 +63,8 @@ View(van_tree_raw)
 ## Winnipeg tree data download
 # City of Winnipeg open data public tree inventory link
 win_URL <- "https://data.winnipeg.ca/api/views/hfwk-jp4h/rows.csv?accessType=DOWNLOAD"
-win_dest <- "input/win_tree_raw.csv"
+# saving to large folder
+win_dest <- "large/win_tree_raw.csv"
 download.file(win_URL,win_dest, mode="wb")
 win_tree_raw <-read.csv(win_dest)
 View(win_tree_raw)

@@ -130,7 +130,7 @@ tor_tree <- tor_tree[,c("city","id","genus","species","cultivar","lat","long","d
 # Check and make output
 tor_tree[tor_tree == ""] <- NA
 View(tor_tree)
-write.csv(tor_tree, "output/tor_tree.csv", row.names=FALSE)
+write.csv(tor_tree, "large/tor_tree.csv", row.names=FALSE)
 
 ## Vancouver tree data cleanup
 # Check for dupes
