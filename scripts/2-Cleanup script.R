@@ -130,6 +130,7 @@ tor_tree <- tor_tree[,c("city","id","genus","species","cultivar","lat","long","d
 # Check and make output
 tor_tree[tor_tree == ""] <- NA
 View(tor_tree)
+# saving to large folder
 write.csv(tor_tree, "large/tor_tree.csv", row.names=FALSE)
 
 ## Vancouver tree data cleanup
@@ -144,12 +145,16 @@ van_tree$city <- c("Vancouver")
 ## Turning geom column into lat and long
 van_tree$coord <- substr(van_tree$coord,35,nchar(van_tree$coord)-2)
 van_tree <- separate(data = van_tree, col = coord, into = c("long", "lat"), sep = "\\, ")
+van_tree$genus <- str_to_title(van_tree$genus) 
+van_tree$species <- tolower(van_tree$species) 
+van_tree$cultivar <- str_to_title(van_tree$cultivar) 
+van_tree$hood <- str_to_title(van_tree$hood) 
 # Reorder columns
 data.frame(colnames(van_tree))
 van_tree <- van_tree[,c("city","id","genus","species","cultivar","lat","long","hood","dbh")]
 # Check and make output
 van_tree[van_tree == ""] <- NA
-View(van_tree_raw)
+View(van_tree)
 write.csv(van_tree, "output/van_tree.csv", row.names=FALSE)
 
 ## Winnipeg tree data cleanup
@@ -168,6 +173,7 @@ win_tree$var[win_tree$var == "var"] <- NA
 win_treecul <- win_tree %>% filter(species != "x") %>% unite(cultivar, c("var", "cultivar"), na.rm = TRUE, sep = " ")
 win_treesp <- win_tree %>% filter(species == "x") %>% unite(species, c("species", "var"), na.rm = TRUE, sep = " ")
 win_tree <- rbind(win_treecul, win_treesp)
+win_tree$hood <- str_to_title(win_tree$hood) 
 ## Turning geom column into lat and long
 win_tree$coord <- substr(win_tree$coord,2,nchar(win_tree$coord)-1)
 win_tree <- separate(data = win_tree, col = coord, into = c("lat", "long"), sep = "\\, ")
