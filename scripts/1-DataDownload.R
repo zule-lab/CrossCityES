@@ -1,9 +1,16 @@
 # Script to download public tree inventories
+# Authors: Nicole Yu & Isabella Richmond
 
 #### Packages ####
-# if installing sf for the first time on mac, use line 5
+# if installing sf for the first time on mac, use line 6
 # install.packages("sf", configure.args = "--with-proj-lib=/usr/local/lib/")
-easypackages::packages("sf", "mapview", "downloader", "tidyverse")
+easypackages::packages("sf", "downloader", "tidyverse")
+
+#### Setting download time ####
+
+# Need a longer timeout for roads and bounds 
+getOption('timeout')
+options(timeout=600)
 
 #### Data Downloads ####
 
@@ -17,7 +24,7 @@ cal_park_raw <- read.csv(cal_park_dest)
 View(cal_park_raw)
 
 ## Halifax park data download
-hal_park_url <- ""
+hal_park_url <- "https://opendata.arcgis.com/api/v3/datasets/3df29a3d088a42d890f11d027ea1c0be_0/downloads/data?format=shp&spatialRefId=4326"
 hal_park_dest <- "large/hal_park_raw.zip"
 download.file(hal_park_url,hal_park_dest, mode="wb")
 unzip(hal_park_dest, exdir="large/hal_park_raw")
@@ -28,8 +35,8 @@ View(hal_park_raw)
 ott_park_url <- "https://opendata.arcgis.com/api/v3/datasets/cfb079e407494c33b038e86c7e05288e_24/downloads/data?format=shp&spatialRefId=4326"
 ott_park_dest <- "large/ott_park_raw.zip"
 download.file(ott_park_url,ott_park_dest, mode="wb")
-unzip(van_park_dest, exdir="large/ott_park_raw")
-ott_park_raw <- read_sf("large/ott_park_raw/parks-polygon-representation.shp")
+unzip(ott_park_dest, exdir="large/ott_park_raw")
+ott_park_raw <- read_sf("large/ott_park_raw/Parks_and_Greenspace.shp")
 View(ott_park_raw)
 
 ## Toronto park data download
@@ -48,6 +55,8 @@ unzip(van_park_dest, exdir="large/van_park_raw")
 van_park_raw <- read_sf("large/van_park_raw/parks-polygon-representation.shp")
 View(van_park_raw)
 
+# clean environment to make space for tree inventories 
+rm(list=ls())
 
 ### Tree data downloads
 ## Calgary tree data download
@@ -93,6 +102,7 @@ tor_tree_dest<- "large/tor_tree_raw.zip"
 download.file(tor_tree_url,tor_tree_dest, mode="wb")
 unzip(tor_tree_dest, exdir="large/tor_tree_raw")
 tor_tree_raw <- read_sf("large/tor_tree_raw/TMMS_Open_Data_WGS84.shp")
+View(tor_tree_raw)
 
 ## Vancouver tree data download
 # City of Vancouver open data public tree inventory link
@@ -111,14 +121,17 @@ download.file(win_tree_url,win_tree_dest, mode="wb")
 win_tree_raw <-read.csv(win_tree_dest)
 View(win_tree_raw)
 
+# clean environment
+rm(list=ls())
+
 ## Canada municipality boundary downloads
 # Canada bounds shapefile
-bound_url <- "https://www12.statcan.gc.ca/census-recensement/2011/geo/RNF-FRR/files-fichiers/lrnf000r20a_e.zip"
+bound_url <- "https://www12.statcan.gc.ca/census-recensement/2011/geo/bound-limit/files-fichiers/2016/lcma000b16a_e.zip"
 # saving to large folder
 bound_dest <- "large/can_bound.zip"
 download.file(bound_url,bound_dest, mode="wb")
 unzip(bound_dest, exdir="large/can_bound")
-can_bound <- read_sf("large/can_bound/lrnf000r20a_e.shp")
+can_bound <- read_sf("large/can_bound/lcma000b16a_e.shp")
 
 ## Canada road network downloads
 # Canada road shapefile
@@ -129,8 +142,3 @@ download.file(road_url,road_dest, mode="wb")
 unzip(road_dest, exdir="large/can_road")
 can_road <- read_sf("large/can_road/lcsd000a20a_e.shp")
 View(can_road)
-
-#### Setting download time ####
-# For roads and bounds
-getOption('timeout')
-options(timeout=600)
