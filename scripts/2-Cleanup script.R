@@ -4,38 +4,50 @@
 easypackages::packages("tidyr", "tidyverse", "Rmisc","stringr","spatialEco","sp","sf","rgdal")
 
 
+
+#### Canada roads data cleanup ####
+View(can_road)
+unique(duplicated(can_road$CSDUID))
+can_road <- can_road[,c("CSDUID","geometry")]
+can_road <- st_transform(can_road,crs = "epsg:6624")
+
 #### City parks data cleanup ####
 ## Calgary park data cleanup
 data.frame(colnames(cal_park_raw))
 cal_park <- cal_park_raw[,c("SITE_NAME","the_geom")]
 names(cal_park)[c(1)] <- "park"
 cal_park$park[cal_park$park == ""] <- "is park" 
+########### Can't remove the empty geom files
 st_as_sf(cal_park, na.fail=FALSE)
+View(cal_park_raw)
 
 ## Halifax park data cleanup
 # remove after added download link in download script -- hal_park_raw <- read_sf("/Users/nicoleyu/Desktop/GRI_ZULE/Downloads/HRM_Parks/HRM_Parks.shp")
 data.frame(colnames(hal_park_raw))
 hal_park <- hal_park_raw[,c("PARK_NAME","geometry")]
 names(hal_park)[c(1)] <- "park"
+hal_park <- st_transform(hal_park,crs = "epsg:6624")
 View(hal_park)
 
 ## Ottawa park data cleanup
-# remove after added download link in download script -- ott_park_raw <- read_sf("/Users/nicoleyu/Desktop/GRI_ZULE/Downloads/Parks_and_Greenspace/Parks_and_Greenspace.shp")
 data.frame(colnames(ott_park_raw))
 ott_park <- ott_park_raw[,c("PARK_ID","geometry")]
 names(ott_park)[c(1)] <- "park"
+ott_park <- st_transform(ott_park,crs = "epsg:6624")
 View(ott_park)
 
 ## Toronto park data cleanup
 data.frame(colnames(tor_park_raw))
 tor_park <- tor_park_raw[,c("OBJECT_ID","geometry")]
 names(tor_park)[c(1)] <- "park"
+tor_park <- st_transform(tor_park,crs = "epsg:6624")
 View(tor_park)
 
 ## Vancouver park data cleanup
 data.frame(colnames(van_park_raw))
 van_park <- van_park_raw[,c(3,5)]
 names(van_park)[c(1)] <- "park"
+van_park <- st_transform(van_park,crs = "epsg:6624")
 View(van_park)
 
 
@@ -135,17 +147,28 @@ View(ott_tree_raw)
 unique(duplicated(ott_tree_raw$OBJECTID))
 # Extract columns needed and rename
 data.frame(colnames(ott_tree_raw))
-ott_tree <- ott_tree_raw[,c(1,2,3,12,13)]
-names(ott_tree)[c(1,2,3,5)] <- c("long","lat","id","dbh")
+ott_tree <- ott_tree_raw[,c(1,2,3,6,12,13)]
+names(ott_tree)[c(1,2,3,4,6)] <- c("long","lat","id","street","dbh")
 # Adding and fixing columns
 ott_tree$city <- c("Ottawa")
+# Adding geometry column and converting to sf with epsg:6624 projection
+ott_tree <- st_as_sf(x = ott_tree, coords = c("long", "lat"), crs = "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0", na.fail = FALSE, remove = FALSE)
+ott_tree <- st_transform(ott_tree,crs = "epsg:6624")
+# Adding park column
+############# error in evaluating the argument 'x' in selecting a method for function 'addAttrToGeom': empty geometries are not supported by sp classes: conversion failed
+ott_tree <- point.in.poly(ott_tree, ott_park)
+ott_tree$park <- ifelse(is.na(ott_tree$park),"no","yes")
+# Adding hood column
+#Adding street column
+ott_tree$street <- st_nearest_feature(ott_tree, can_road)
 # Reorder columns
 data.frame(colnames(ott_tree))
-ott_tree <- ott_tree[,c("city","id","lat","long","dbh","SPECIES")]
+ott_tree <- ott_tree[,c("city","id","SPECIES","lat","long","geometry","street","dbh")]
 # Check and make output
-ott_tree[ott_tree == ""] <- NA
+######## This code not working? ott_tree[ott_tree == ""] <- NA
 View(ott_tree)
-write.csv(ott_tree, "output/ott_tree.csv", row.names=FALSE)
+st_write(ott_tree, "large/ott_tree.shp")
+
 
 ## Toronto tree data cleanup
 # Check for dupes
@@ -153,8 +176,8 @@ unique(duplicated(tor_tree_raw$STRUCTID))
 # Extract columns needed and rename
 View(tor_tree_raw)
 data.frame(colnames(tor_tree_raw))
-tor_tree <- data.frame(tor_tree_raw[,c(2,3,4,8,11,12)])
-names(tor_tree)[c(1,2,3,4,6)] <- c("x","y","id","dbh","geometry")
+tor_tree <- data.frame(tor_tree_raw[,c(2,3,4,7,8,11,12)])
+names(tor_tree)[c(1,2,3,4,5)] <- c("x","y","id","street","dbh")
 # Adding and fixing columns
 tor_tree$city <- c("Toronto")
 tor_tree <- tor_tree %>% separate(BOTANICAL_, c("genus","species","var","cultivar", "cultivar2"))
@@ -164,25 +187,25 @@ tor_tree$var[tor_tree$var == "var"] <- NA
 tor_treecul <- tor_tree %>% filter(species != "x") %>% unite(cultivar, c("var", "cultivar", "cultivar2"), na.rm = TRUE, sep = " ")
 tor_treesp <- tor_tree %>% filter(species == "x") %>% unite(species, c("species", "var"), na.rm = TRUE, sep = " ") %>% unite(cultivar, c("cultivar", "cultivar2"), na.rm = TRUE, sep = " ")
 tor_tree <- rbind(tor_treecul, tor_treesp)
+tor_tree$street <- str_to_title(tor_tree$street)
 # Adding lat and long columns from geometry column
 tor_tree$coord <- substr(tor_tree$geometry,3,nchar(tor_tree$geometry)-1)
 tor_tree <- separate(data = tor_tree, col = coord, into = c("long", "lat"), sep = "\\, ", remove = TRUE)
-# Setting as sf
+# Setting as sf with epsg:6624 projection
 tor_tree <- st_as_sf(x = tor_tree, coords = c("long", "lat"), crs = "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0", na.fail = FALSE, remove = FALSE)
+tor_tree <- st_transform(tor_tree,crs = "epsg:6624")
 #Add park column
 tor_treesf <- point.in.poly(tor_tree, tor_park)
-######################### Error in st_geos_binop("intersects", x, y, sparse = sparse, prepared = prepared,  : st_crs(x) == st_crs(y) is not TRUE
-st_crs(tor_tree)
-
-
+View(tor_treesf)
+############ Error in st_geos_binop("intersects", x, y, sparse = sparse, prepared = prepared,  : st_crs(x) == st_crs(y) is not TRUE
 # Reorder columns
 data.frame(colnames(tor_tree))
-tor_tree <- tor_tree[,c("city","id","genus","species","cultivar","lat","long","dbh","x","y")]
+tor_tree <- tor_tree[,c("city","id","genus","species","cultivar","lat","long","geometry","street","dbh","x","y")]
 # Check and make output
 tor_tree[tor_tree == ""] <- NA
 View(tor_tree)
 # saving to large folder
-write.csv(tor_tree, "large/tor_tree.csv", row.names=FALSE)
+st_write(tor_tree, "large/tor_tree.shp")
 
 ## Vancouver tree data cleanup
 # Check for dupes

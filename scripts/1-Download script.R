@@ -25,7 +25,7 @@ hal_park_raw <- read_sf("large/hal_park_raw/HRM_Parks.shp")
 View(hal_park_raw)
 
 ## Ottawa park data download
-ott_park_url <- ""
+ott_park_url <- "https://opendata.arcgis.com/api/v3/datasets/cfb079e407494c33b038e86c7e05288e_24/downloads/data?format=shp&spatialRefId=4326"
 ott_park_dest <- "large/ott_park_raw.zip"
 download.file(ott_park_url,ott_park_dest, mode="wb")
 unzip(van_park_dest, exdir="large/ott_park_raw")
@@ -128,9 +128,9 @@ road_dest <- "large/can_road.zip"
 download.file(road_url,road_dest, mode="wb")
 unzip(road_dest, exdir="large/can_road")
 can_road <- read_sf("large/can_road/lcsd000a20a_e.shp")
-
+View(can_road)
 
 #### Setting download time ####
 # For roads and bounds
 getOption('timeout')
-options(timeout=300)
+options(timeout=600)
