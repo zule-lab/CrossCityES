@@ -1,53 +1,83 @@
 #### Ottawa public tree inventory cleanup ####
 # Author: Nicole Yu
 
+# This script is for cleaning the Ottawa public tree inventory
+# Ottawa dataset has street name 
+# Still require neighbourhood and park/street columns
 
-# Ottawa hood data cleanup
-data.frame(colnames(ott_hood_raw))
-ott_hood <- ott_hood_raw[,c("Name","geometry")]
-names(ott_hood)[c(1)] <- "hood"
-ott_hood <- st_transform(ott_hood,crs = "epsg:6624")
+#### Packages #### 
+# load packages 
+easypackages::packages("sf", "tidyverse")
+
+#### Data ####
+# load data downloaded in 1-DataDownload.R
+# tree inventory
+ott_tree_raw <- read_csv("input/ott_tree_raw.csv")
+# parks
+ott_park_raw <- read_sf("large/ott_park_raw/Parks_and_Greenspace.shp")
+# neighbourhoods 
+ott_hood_raw <- read_sf("large/ott_hood_raw/Ottawa_Neighbourhood_Study_(ONS)_-_Neighbourhood_Boundaries_Gen_2.shp")
+
+#### Data Cleaning ####
+## Neighbourhoods
+# select neighbourhood name and geometry from hood dataset
+ott_hood <- ott_hood_raw %>% 
+  select(c("Name", "geometry")) %>% 
+  rename("hood" = "Name")
+# transform to EPSG: 6624 to be consistent with other layers
+ott_hood <- st_transform(ott_hood, crs = 6624)
 View(ott_hood)
+# save cleaned neighbourhoods layer 
+saveRDS(ott_hood, "large/OttawaNeighbourhoodsCleaned.rds")
 
+## Parks
+# select relevant columns and rename 
+ott_park <- ott_park_raw %>%
+  select(c("NAME", "geometry")) %>%
+  rename("park" = "NAME")
+# transform to ESPG: 6624
+ott_park <- st_transform(ott_park, crs = 6624)
+# save 
+saveRDS(ott_park, "large/OttawaParksCleaned.rds")
 
-## Ottawa tree data cleanup
-# Species are common name, require further sorting
+## Trees
+# NOTE: only common name for species, requires further sorting
 # Check for dupes
-View(ott_tree_raw)
 unique(duplicated(ott_tree_raw$OBJECTID))
-# Extract columns needed and rename
-data.frame(colnames(ott_tree_raw))
-ott_tree <- ott_tree_raw[,c(1,2,3,6,12,13)]
-names(ott_tree)[c(1,2,3,4,6)] <- c("long","lat","id","street","dbh")
-# Adding and fixing columns
-ott_tree$city <- c("Ottawa")
-# Adding geometry column and converting to sf with epsg:6624 projection
-ott_tree <- st_as_sf(x = ott_tree, coords = c("long", "lat"), crs = "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0", na.fail = FALSE, remove = FALSE)
-ott_tree <- st_transform(ott_tree,crs = "epsg:6624")
-# Extracting rows with geometry available
-ott_treesf <- ott_tree %>% drop_na(lat)
-# Adding hood column
-ott_treesf <- point.in.poly(ott_treesf, ott_hood)
-# Adding park column
-ott_treesf <- point.in.poly(ott_treesf, ott_park)
-ott_treesf$park <- ifelse(is.na(ott_treesf$park),"no","yes")
-ott_treesf <- st_as_sf(ott_treesf)
-ott_treesf <- ott_treesf[,-c(8)]
-names(ott_treesf)[8] <- "hood"
-# Adding back rows without geometry available
-ott_treena <- ott_tree %>% filter(is.na(ott_tree$lat)) %>% mutate(ott_treena, hood = c(NA), park = c(NA))
-ott_tree <- rbind(ott_treesf, ott_treena)
-data.frame(colnames(ott_tree))
-#Adding street column
-ott_tree$street <- st_nearest_feature(ott_tree, can_road)
-# Reorder columns
-data.frame(colnames(ott_tree))
-ott_tree <- ott_tree[,c("city","id","SPECIES","lat","long","geometry","hood","street","park","dbh")]
-# Check and make output
-######## This code not working? ott_tree[ott_tree == ""] <- NA
-View(ott_tree)
-st_write(ott_tree, "large/ott_tree.shp")
+# add city column
+ott_tree_raw$city <- c("Ottawa")
+# select the required columns and rename 
+ott_tree <- ott_tree_raw %>%
+  select(c("X","Y","OBJECTID","ADDSTR","SPECIES","DBH", "city")) %>%
+  rename("long" = "X") %>%
+  rename("lat" = "Y") %>%
+  rename("id" = "OBJECTID") %>%
+  rename("street" = "ADDSTR") %>%
+  rename("species" = "SPECIES") %>%
+  rename("dbh" = "DBH")
+# drop any rows that have NA lat/long
+ott_tree <- drop_na(ott_tree, c(lat,long))
+# adding geometry column and specify projection outlined in City of Ottawa metadata 
+ott_tree <- st_as_sf(x = ott_tree, coords = c("long", "lat"), crs = 4326, na.fail = FALSE, remove = FALSE)
+# transform to match parks layer
+ott_tree <- st_transform(ott_tree, crs = 6624)
 
+#### Spatial Joins ####
+## Neighbourhoods
+# want to add a column that specifies what neighbourhood each tree belongs to
+# join trees and neighbourhoods using st_intersects
+ott_tree <- st_join(ott_tree, ott_hood, join = st_intersects)
+## Parks 
+# want to identify which trees are park trees and which are street 
+ott_tree <- st_join(ott_tree, ott_park, join = st_intersects)
+# replace NAs with "no" to indicate street trees 
+ott_tree <- replace_na(ott_tree, list(park = "no"))
+# if value is not "no", change value to "yes" so park column is binary yes/no
+ott_tree$park[ott_tree$park != "no"] <- "yes"
 
-can_road(C)
-
+#### Save ####
+# reorder columns
+ott_tree <- ott_tree[,c("city","id","species","lat","long","geometry","hood","street","park","dbh")]
+# save cleaned Ottawa tree dataset as rds and shapefile
+saveRDS(ott_tree, "large/OttawaTreesCleaned.rds")
+st_write(ott_tree, "large/OttawaTreesCleaned.shp")
