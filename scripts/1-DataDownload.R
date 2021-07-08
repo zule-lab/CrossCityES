@@ -13,7 +13,7 @@ easypackages::packages("sf", "mapview", "downloader", "tidyverse")
 cal_park_url <- "https://data.calgary.ca/api/views/kami-qbfh/rows.csv?accessType=DOWNLOAD"
 cal_park_dest <- "input/cal_park_raw.csv"
 download.file(cal_park_url,cal_park_dest, mode="wb")
-cal_park_raw<-read.csv(cal_park_dest)
+cal_park_raw <- read.csv(cal_park_dest)
 View(cal_park_raw)
 
 ## Halifax park data download
