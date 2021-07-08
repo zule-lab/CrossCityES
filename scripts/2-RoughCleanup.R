@@ -3,24 +3,7 @@
 #### Packages ####
 easypackages::packages("tidyr", "tidyverse", "Rmisc","stringr","spatialEco","sp","sf","rgdal")
 
-
-
-#### Canada roads data cleanup ####
-View(can_road)
-unique(duplicated(can_road$CSDUID))
-can_road <- can_road[,c("CSDUID","geometry")]
-can_road <- st_transform(can_road,crs = "epsg:6624")
-
 #### City parks data cleanup ####
-## Calgary park data cleanup
-data.frame(colnames(cal_park_raw))
-cal_park <- cal_park_raw[,c("SITE_NAME","the_geom")]
-names(cal_park)[c(1)] <- "park"
-cal_park$park[cal_park$park == ""] <- "is park" 
-########### Can't remove the empty geom files
-st_as_sf(cal_park, na.fail=FALSE)
-View(cal_park_raw)
-
 ## Halifax park data cleanup
 # remove after added download link in download script -- hal_park_raw <- read_sf("/Users/nicoleyu/Desktop/GRI_ZULE/Downloads/HRM_Parks/HRM_Parks.shp")
 data.frame(colnames(hal_park_raw))
@@ -52,32 +35,6 @@ View(van_park)
 
 
 #### City tree data cleanup ####
-## Calgary tree data cleanup
-# Check for dupes
-unique(duplicated(cal_tree_raw$WAM_ID))
-# Extract columns needed and rename
-data.frame(colnames(cal_tree_raw))
-cal_tree <- cal_tree_raw[,c(5,6,7,9,16,17,20)]
-names(cal_tree)[c(1,2,3,4,5,7)] <- c("genus","species","cultivar", "dbh","id","coord")
-# Adding and fixing columns
-cal_tree$city <- c("Calgary")
-cal_tree$species[cal_tree$species %in% c("",NA)]<-"sp."
-cal_tree$cultivar <- substr(cal_tree$cultivar,2,nchar(cal_tree$cultivar)-1)
-cal_tree_hoodcode <-read.csv("input/cal_tree_hoodcode.csv", row.names = NULL)
-cal_tree$hood <- cal_tree_hoodcode$hood[match(as.character(cal_tree$COMM_CODE), as.character(cal_tree_hoodcode$code))]
-## Unifying geom column and splitting into additional lat and long columns
-cal_tree$coord <- substr(cal_tree$coord,2,nchar(cal_tree$coord)-1)
-cal_tree <- separate(data = cal_tree, col = coord, into = c("lat", "long"), sep = "\\, ")
-# Add park column
-# Assigning street
-
-# Reorder columns
-data.frame(colnames(cal_tree))
-cal_tree <- cal_tree[c("city", "id", "genus","species","cultivar","lat","long","hood","dbh","COMM_CODE")]
-# Check and make output
-cal_tree[cal_tree == ""] <- NA 
-View(cal_tree)
-write.csv(cal_tree, "output/cal_tree.csv", row.names=FALSE)
 
 ## Halifax tree data cleanup
 # Check for dupes
