@@ -13,6 +13,8 @@ getOption('timeout')
 options(timeout=600)
 
 #### Data Downloads ####
+# NOTE: all files larger than 50MB are downloaded to large/ folder 
+# instead of input/ so they are not tracked on Git
 
 ### Park data downloads
 ## Excluding Montreal and Winnipeg
@@ -124,7 +126,17 @@ View(win_tree_raw)
 # clean environment
 rm(list=ls())
 
-## Canada municipality boundary downloads
+### Municipal neighbourhood downloads 
+## Ottawa hood data download
+ott_hood_url <- "https://opendata.arcgis.com/api/v3/datasets/32fe76b71c5e424fab19fec1f180ec18_0/downloads/data?format=shp&spatialRefId=4326"
+ott_hood_dest <- "large/ott_hood_raw.zip"
+download.file(ott_hood_url,ott_hood_dest, mode="wb")
+unzip(ott_hood_dest, exdir="large/ott_hood_raw")
+ott_hood_raw <- read_sf("large/ott_hood_raw/Ottawa_Neighbourhood_Study_(ONS)_-_Neighbourhood_Boundaries_Gen_2.shp")
+View(ott_hood_raw)
+
+### Canada municipality boundary downloads
+## Municipal boundary layer download
 # Canada bounds shapefile
 bound_url <- "https://www12.statcan.gc.ca/census-recensement/2011/geo/bound-limit/files-fichiers/2016/lcma000b16a_e.zip"
 # saving to large folder

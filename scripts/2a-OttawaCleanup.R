@@ -1,12 +1,7 @@
-#### Ottawa tree data cleanup ####
+#### Ottawa public tree inventory cleanup ####
+# Author: Nicole Yu
 
-## Ottawa hood data download
-ott_hood_url <- "https://opendata.arcgis.com/api/v3/datasets/32fe76b71c5e424fab19fec1f180ec18_0/downloads/data?format=shp&spatialRefId=4326"
-ott_hood_dest <- "large/ott_hood_raw.zip"
-download.file(ott_hood_url,ott_hood_dest, mode="wb")
-unzip(ott_hood_dest, exdir="large/ott_hood_raw")
-ott_hood_raw <- read_sf("large/ott_hood_raw/Ottawa_Neighbourhood_Study_(ONS)_-_Neighbourhood_Boundaries_Gen_2.shp")
-View(ott_hood_raw)
+
 # Ottawa hood data cleanup
 data.frame(colnames(ott_hood_raw))
 ott_hood <- ott_hood_raw[,c("Name","geometry")]
@@ -14,27 +9,6 @@ names(ott_hood)[c(1)] <- "hood"
 ott_hood <- st_transform(ott_hood,crs = "epsg:6624")
 View(ott_hood)
 
-## Ottawa park data download
-ott_park_url <- "https://opendata.arcgis.com/api/v3/datasets/cfb079e407494c33b038e86c7e05288e_24/downloads/data?format=shp&spatialRefId=4326"
-ott_park_dest <- "large/ott_park_raw.zip"
-download.file(ott_park_url,ott_park_dest, mode="wb")
-unzip(van_park_dest, exdir="large/ott_park_raw")
-ott_park_raw <- read_sf("large/ott_park_raw/parks-polygon-representation.shp")
-View(ott_park_raw)
-# Ottawa park data cleanup
-data.frame(colnames(ott_park_raw))
-ott_park <- ott_park_raw[,c("park_name","geometry")]
-names(ott_park)[c(1)] <- "park"
-ott_park <- st_transform(ott_park,crs = "epsg:6624")
-View(ott_park)
-
-## Ottawa tree data download
-# City of Ottawa open data public tree inventory link
-ott_tree_url <- "https://opendata.arcgis.com/api/v3/datasets/13092822f69143b695bdb916357d421b_0/downloads/data?format=csv&spatialRefId=4326"
-ott_tree_dest <- "input/ott_tree_raw.csv"
-download.file(ott_tree_url, ott_tree_dest, mode = "wb")
-ott_tree_raw <- read.csv(ott_tree_dest)
-View(ott_tree_raw)
 
 ## Ottawa tree data cleanup
 # Species are common name, require further sorting
