@@ -1,26 +1,67 @@
 # Script to cleanup raw data
 
 #### Packages ####
-easypackages::packages("tidyr", "tidyverse", "Rmisc","stringr")
+easypackages::packages("tidyr", "tidyverse", "Rmisc","stringr","spatialEco","sp","sf","rgdal")
+
+
+#### City parks data cleanup ####
+## Calgary park data cleanup
+data.frame(colnames(cal_park_raw))
+cal_park <- cal_park_raw[,c("SITE_NAME","the_geom")]
+names(cal_park)[c(1)] <- "park"
+cal_park$park[cal_park$park == ""] <- "is park" 
+st_as_sf(cal_park, na.fail=FALSE)
+
+## Halifax park data cleanup
+# remove after added download link in download script -- hal_park_raw <- read_sf("/Users/nicoleyu/Desktop/GRI_ZULE/Downloads/HRM_Parks/HRM_Parks.shp")
+data.frame(colnames(hal_park_raw))
+hal_park <- hal_park_raw[,c("PARK_NAME","geometry")]
+names(hal_park)[c(1)] <- "park"
+View(hal_park)
+
+## Ottawa park data cleanup
+# remove after added download link in download script -- ott_park_raw <- read_sf("/Users/nicoleyu/Desktop/GRI_ZULE/Downloads/Parks_and_Greenspace/Parks_and_Greenspace.shp")
+data.frame(colnames(ott_park_raw))
+ott_park <- ott_park_raw[,c("PARK_ID","geometry")]
+names(ott_park)[c(1)] <- "park"
+View(ott_park)
+
+## Toronto park data cleanup
+data.frame(colnames(tor_park_raw))
+tor_park <- tor_park_raw[,c("OBJECT_ID","geometry")]
+names(tor_park)[c(1)] <- "park"
+View(tor_park)
+
+## Vancouver park data cleanup
+data.frame(colnames(van_park_raw))
+van_park <- van_park_raw[,c(3,5)]
+names(van_park)[c(1)] <- "park"
+View(van_park)
+
 
 #### City tree data cleanup ####
-
 ## Calgary tree data cleanup
 # Check for dupes
 unique(duplicated(cal_tree_raw$WAM_ID))
 # Extract columns needed and rename
 data.frame(colnames(cal_tree_raw))
 cal_tree <- cal_tree_raw[,c(5,6,7,9,16,17,20)]
-names(cal_tree)[c(1,2,3,4,5,6,7)] <- c("genus","species","cultivar", "dbh","id","hood","coord")
+names(cal_tree)[c(1,2,3,4,5,7)] <- c("genus","species","cultivar", "dbh","id","coord")
 # Adding and fixing columns
 cal_tree$city <- c("Calgary")
 cal_tree$species[cal_tree$species %in% c("",NA)]<-"sp."
-# Turning geom column into lat and long
+cal_tree$cultivar <- substr(cal_tree$cultivar,2,nchar(cal_tree$cultivar)-1)
+cal_tree_hoodcode <-read.csv("input/cal_tree_hoodcode.csv", row.names = NULL)
+cal_tree$hood <- cal_tree_hoodcode$hood[match(as.character(cal_tree$COMM_CODE), as.character(cal_tree_hoodcode$code))]
+## Unifying geom column and splitting into additional lat and long columns
 cal_tree$coord <- substr(cal_tree$coord,2,nchar(cal_tree$coord)-1)
 cal_tree <- separate(data = cal_tree, col = coord, into = c("lat", "long"), sep = "\\, ")
+# Add park column
+# Assigning street
+
 # Reorder columns
 data.frame(colnames(cal_tree))
-cal_tree <- cal_tree[c("city", "id", "genus","species","cultivar","lat","long","hood","dbh")]
+cal_tree <- cal_tree[c("city", "id", "genus","species","cultivar","lat","long","hood","dbh","COMM_CODE")]
 # Check and make output
 cal_tree[cal_tree == ""] <- NA 
 View(cal_tree)
@@ -77,6 +118,7 @@ mon_treesp <- mon_tree %>% filter(species == "x") %>% unite(species, c("species"
 mon_tree <- rbind(mon_treecul, mon_treesp)
 mon_tree_hoodcode <-read.csv("input/mon_tree_hoodcode.csv", row.names = NULL)
 mon_tree$hood <- mon_tree_hoodcode$hood[match(as.character(mon_tree$ARROND), as.character(mon_tree_hoodcode$code))]
+# Converting dbh from mm to cm
 mon_tree$dbh <- mon_tree$dbh/10
 # Reorder columns
 data.frame(colnames(mon_tree))
@@ -109,9 +151,10 @@ write.csv(ott_tree, "output/ott_tree.csv", row.names=FALSE)
 # Check for dupes
 unique(duplicated(tor_tree_raw$STRUCTID))
 # Extract columns needed and rename
+View(tor_tree_raw)
 data.frame(colnames(tor_tree_raw))
 tor_tree <- data.frame(tor_tree_raw[,c(2,3,4,8,11,12)])
-names(tor_tree)[c(1,2,3,4,6)] <- c("x","y","id","dbh","coord")
+names(tor_tree)[c(1,2,3,4,6)] <- c("x","y","id","dbh","geometry")
 # Adding and fixing columns
 tor_tree$city <- c("Toronto")
 tor_tree <- tor_tree %>% separate(BOTANICAL_, c("genus","species","var","cultivar", "cultivar2"))
@@ -121,9 +164,17 @@ tor_tree$var[tor_tree$var == "var"] <- NA
 tor_treecul <- tor_tree %>% filter(species != "x") %>% unite(cultivar, c("var", "cultivar", "cultivar2"), na.rm = TRUE, sep = " ")
 tor_treesp <- tor_tree %>% filter(species == "x") %>% unite(species, c("species", "var"), na.rm = TRUE, sep = " ") %>% unite(cultivar, c("cultivar", "cultivar2"), na.rm = TRUE, sep = " ")
 tor_tree <- rbind(tor_treecul, tor_treesp)
-## Turning geom column into lat and long
-tor_tree$coord <- substr(tor_tree$coord,3,nchar(tor_tree$coord)-1)
-tor_tree <- separate(data = tor_tree, col = coord, into = c("long", "lat"), sep = "\\, ")
+# Adding lat and long columns from geometry column
+tor_tree$coord <- substr(tor_tree$geometry,3,nchar(tor_tree$geometry)-1)
+tor_tree <- separate(data = tor_tree, col = coord, into = c("long", "lat"), sep = "\\, ", remove = TRUE)
+# Setting as sf
+tor_tree <- st_as_sf(x = tor_tree, coords = c("long", "lat"), crs = "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0", na.fail = FALSE, remove = FALSE)
+#Add park column
+tor_treesf <- point.in.poly(tor_tree, tor_park)
+######################### Error in st_geos_binop("intersects", x, y, sparse = sparse, prepared = prepared,  : st_crs(x) == st_crs(y) is not TRUE
+st_crs(tor_tree)
+
+
 # Reorder columns
 data.frame(colnames(tor_tree))
 tor_tree <- tor_tree[,c("city","id","genus","species","cultivar","lat","long","dbh","x","y")]
@@ -136,57 +187,77 @@ write.csv(tor_tree, "large/tor_tree.csv", row.names=FALSE)
 ## Vancouver tree data cleanup
 # Check for dupes
 unique(duplicated(van_tree_raw$TREE_ID))
+View(van_tree_raw)
 # Extract columns needed and rename
 data.frame(colnames(van_tree_raw))
-van_tree <- van_tree_raw[,c(1,4,5,6,13,16,19)]
-names(van_tree)[c(1,2,3,4,5,6,7)] <- c("id","genus","species","cultivar","hood","dbh","coord")
+van_tree <- van_tree_raw[,c(1,4,5,6,12,13,16,19)]
+names(van_tree)[c(1,2,3,4,5,6,7)] <- c("id","genus","species","cultivar","street","hood","dbh")
 # Adding and fixing columns
 van_tree$city <- c("Vancouver")
-## Turning geom column into lat and long
-van_tree$coord <- substr(van_tree$coord,35,nchar(van_tree$coord)-2)
-van_tree <- separate(data = van_tree, col = coord, into = c("long", "lat"), sep = "\\, ")
 van_tree$genus <- str_to_title(van_tree$genus) 
 van_tree$species <- tolower(van_tree$species) 
+van_tree$species[van_tree$species == "species"] <- "sp."
 van_tree$cultivar <- str_to_title(van_tree$cultivar) 
+van_tree$street <- str_to_title(van_tree$street) 
 van_tree$hood <- str_to_title(van_tree$hood) 
+# Converting dbh from inches to cm
+van_tree$dbh <- van_tree$dbh*2.54
+## Unifying geom column and splitting into additional lat and long columns
+van_tree$Geom <- substr(van_tree$Geom,35,nchar(van_tree$Geom)-2)
+van_tree <- separate(data = van_tree, col = Geom, into = c("long", "lat"), sep = "\\, ")
+# Setting as sf
+van_tree <- st_as_sf(x = van_tree, coords = c("long", "lat"), crs = "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0", na.fail = FALSE, remove = FALSE)
+#Add park column
+van_treesf <- van_tree %>% drop_na(lat)
+van_treena <- van_tree %>% is.na(van_tree$lat)
+van_treesf <- point.in.poly(van_treesf, van_park)
+van_treesf$park <- ifelse(is.na(van_treesf$park),"no","yes")
+van_treesf <- st_as_sf(van_treesf)
+van_treena <- van_tree %>% filter(is.na(van_tree$lat)) %>% mutate(van_treena, park = c(NA))
+van_tree <- rbind(van_treesf, van_treena)
 # Reorder columns
 data.frame(colnames(van_tree))
-van_tree <- van_tree[,c("city","id","genus","species","cultivar","lat","long","hood","dbh")]
+van_tree <- van_tree[,c("city","id","genus","species","cultivar","lat","long","geometry","hood","street","park","dbh")]
 # Check and make output
-van_tree[van_tree == ""] <- NA
 View(van_tree)
-write.csv(van_tree, "output/van_tree.csv", row.names=FALSE)
+st_write(van_tree, "large/van_tree.shp")
 
 ## Winnipeg tree data cleanup
 # Check for dupes
-unique(duplicated(win_tree_raw$Tree.ID))
+unique(duplicated(win_tree_raw$tree_id))
 # Extract columns needed and rename
 data.frame(colnames(win_tree_raw))
 View(win_tree_raw)
-win_tree <- win_tree_raw[,c(1,2,5,6,12,13,15)]
-names(win_tree)[c(1,3,4,5,6,7)] <- c("id","hood","dbh","x","y","coord")
+win_tree <- win_tree_raw[,c(1,2,3,5,6,7,9,10,13)]
+names(win_tree)[c(2,4,5,6,7,8,9)] <- c("id","dbh","x","y","hood","park","street")
 # Adding and fixing columns
 win_tree$city <- c("Winnipeg")
-win_tree <- win_tree %>% separate(Botanical.Name, c("genus","species","var","cultivar"))
-win_tree$species[win_tree$species %in% c("", NA)]<-"sp."
+win_tree <- win_tree %>% separate(botanical, c("genus","species","var","cultivar"))
+win_tree$species[win_tree$species %in% c("", NA,"spp")]<-"sp."
 win_tree$var[win_tree$var == "var"] <- NA
-win_treecul <- win_tree %>% filter(species != "x") %>% unite(cultivar, c("var", "cultivar"), na.rm = TRUE, sep = " ")
 win_treesp <- win_tree %>% filter(species == "x") %>% unite(species, c("species", "var"), na.rm = TRUE, sep = " ")
+win_treecul <- win_tree %>% filter(species != "x") %>% unite(cultivar, c("var", "cultivar"), na.rm = TRUE, sep = " ")
 win_tree <- rbind(win_treecul, win_treesp)
-win_tree$hood <- str_to_title(win_tree$hood) 
-## Turning geom column into lat and long
-win_tree$coord <- substr(win_tree$coord,2,nchar(win_tree$coord)-1)
-win_tree <- separate(data = win_tree, col = coord, into = c("lat", "long"), sep = "\\, ")
+win_tree$hood <- str_to_title(win_tree$hood)
+win_tree$park <- ifelse(win_tree$park == "Not In Park","no","yes")
+## Unifying geom column and splitting into additional lat and long columns
+win_tree$the_geom <- substr(win_tree$the_geom,8,nchar(win_tree$the_geom)-1)
+win_tree <- separate(data = win_tree, col = the_geom, into = c("lat", "long"), sep = "\\ ")
+win_tree <- st_as_sf(x = win_tree, coords = c("long", "lat"), crs = "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0", na.fail = FALSE, remove = FALSE)
 # Reorder columns
 data.frame(colnames(win_tree))
-win_tree <- win_tree[,c("city","id","genus","species","cultivar","lat","long","hood","dbh","x","y")]
+win_tree <- win_tree[,c("city","id","genus","species","cultivar","lat","long","geometry","hood","street","park","dbh","x","y")]
 # Check and make output
-win_tree[win_tree == ""] <- NA
 View(win_tree)
-write.csv(win_tree, "output/win_tree.csv", row.names=FALSE)
+st_write(win_tree, "large/win_tree.shp")
+
 
 #### Unused code ####
 win_tree <- win_tree %>%
   dplyr::mutate(lat = sf::st_coordinates(.)[,1],
                 lon = sf::st_coordinates(.)[,2])
 gsub
+
+# the code took too long, was not run successfully and had to hit esc.
+van_park_sf <- van_park  %>% st_intersection(van_tree) 
+View(van_park_sf)

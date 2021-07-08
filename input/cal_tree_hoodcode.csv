@@ -1,253 +1,298 @@
-code,,
-01B,,
-02C,,
-02F,,
-09D,,
-09H,,
-09Q,,
-12A,,
-12B,,
-ABB,Abbeydale,
-ABP,,Albert Park/Radisson
-ACA,Acadia,
-ALB,,Altadore
-ALT,,Applewood Park
-APP,,Arbour Lake
-ARB,,Aspen Woods
-ASP,,Auburn Bay
-AUB,,Banff Trail
-AYB,,Bankview
-BDO,,Bayview
-BED,,Beddington Heights
-BEL,,Bel-Aire
-BLN,,Beltline
-BNF,,Bonavista Downs
-BNK,,Bowness
-BOW,,Braeside
-BRA,,Brentwood
-BRD,,Bridgeland/Riverside
-BRE,,Bridlewood
-BRI,,Britannia
-BRT,,Cambrian Heights
-BUR,,Canyon Meadows
-BYV,,Capitol Hill
-CAM,,Castleridge
-CAN,,Cedarbrae
-CAP,,Chaparral
-CAR,,Charleswood
-CAS,,Chinatown
-CED,,Chinook Park
-CGR,,Christie Park
-CHA,,Citadel
-CHK,,Cityscape
-CHN,,Cliff Bungalow
-CHR,,Coach Hill
-CHV,,Collingwood
-CHW,,Copperfield
-CIA,,Coral Springs
-CIT,,Cougar Ridge
-CLI,,Country Hills
-CNS,,Country Hills Village
-COA,,Coventry Hills
-COL,,Cranst_on
-COP,,Crescent He_ights
-COR,,Crestmont
-COU,,__Currie Ba_rracks_
-COV,,Dalhousie
-CPF,,Deer Ridge
-CRA,,Deer Run
-CRE,,Diamond Cove
-CRM,,Discovery Ridge
-CSC,,Douglasdale/Glen
-CUR,,Dover
-DAL,,Downtown Commercial Core
-DBC,,Downtown East Village
-DDG,,Downtown West End
-DIA,,Eagle Ridge
-DIS,,Eau Claire
-DNC,,Edgemont
-DNE,,Elbow Park
-DNW,,Elboya
-DOV,,Erin Woods
-DRG,,Erlton
-DRN,,Evanston
-EAG,,Evergreen
-EAU,,Fairview
-EDG,,Falconridge
-EFI,,Forest Heights
-EFV,,Forest Lawn
-EPK,,Garrison Green
-ERI,,Garrison Woods
-ERL,,Glamorgan
-ESH,,Glenbrook
-EVE,,Glendale
-EVN,,Greenview
-EYA,,Greenwood/Greenbriar
-FAI,,Hamptons
-FAL,,Harvest Hills
-FHI,,Hawkwood
-FHT,,Haysboro
-FLI,,Hidden Valley
-FLN,,Highland Park
-FRA,,Highwood
-FVI,,Hillhurst
-GAG,,Hounsfield Heights/Briar Hill
-GAW,,Huntington Hills
-GBK,,Inglewood
-GBP,,Kelvin Grove
-GDL,,Killarney/Glengarry
-GLA,,Kincora
-GPI,,Kingsland
-GPK,,Lake Bonavista
-GRE,,Lakeview
-GRI,,Legacy
-GRV,,Lincoln Park
-GTI,,Lower Mount Royal
-HAM,,MacEwan Glen
-HAR,,Mahogany
-HAW,,Manchester
-HAY,,Maple Ridge
-HID,,Marlborough
-HIF,,Marlborough Park
-HIL,,Martindale
-HIW,,Mayfair
-HOR,,Mayland Heights
-HOU,,McKenzie Lake
-HPK,,McKenzie Towne
-HUN,,Meadowlark Park
-ING,,Midnapore
-KCA,,Millrise
-KEL,,Mission
-KIL,,Monterey Park
-KIN,,Montgomery
-LEG,,Mount Pleasant
-LIV,,New Brighton
-LKB,,Nolan Hill_
-LKV,,North Glenmore Park
-LMR,,North Haven
-LPK,,North Haven Upper
-MAC,,Oakridge
-MAF,,Ogden
-MAH,,Palliser
-MAL,,Panorama Hills
-MAN,,Parkdale
-MCI,,Parkhill
-MCK,,Parkland
-MCT,,Patterson
-MEA,,Penbrooke Meadows
-MER,,Pineridge
-MID,,Point Mckay_
-MIS,,Pump Hill
-MLI,,Queens Park Village
-MLR,,Queensland
-MNI,,Ramsay
-MON,,Ranchlands
-MOP,,Red Carpet
-MOR,,Redstone
-MPK,,Renfrew
-MPL,,Richmond
-MRL,,Rideau Park
-MRT,,Riverbend_
-NAW,,Rocky Ridge_
-NEB,,Rosedale
-NGM,,Rosemont
-NHU,,Rosscarrock
-NHV,,Roxboro
-NOL,,Royal Oak
-NPK,,Rundle
-OAK,,Rutland Park_
-OGD,,Saddle Ridge
-OSH,,Sage Hill
-PAL,,Sandstone Valley
-PAN,,Scarboro
-PAT,,Scarboro/Sunalta West
-PEG,,Scenic Acres
-PEN,,Shaganappi
-PIN,,Shawnee Slopes
-PKD,,Shawnessy
-PKH,,Shepard Industrial
-PKL,,Sherwood
-POI,,Signal Hill
-PUM,,Silver Springs
-QLD,,Silverado
-QPK,,Skyview Ranch
-RAM,,Somerset
-RAN,,South Calgary
-RCK,,Southview
-RDL,,Southwood
-RED,,Springbank Hill
-REN,,Spruce Cliff__
-RIC,,St. Andrews Heights
-RID,,Strathcona Park
-RIV,,Sunalta_
-RMT,,Sundance
-ROC,,Sunnyside_
-ROX,,Taradale
-ROY,,Temple
-RSN,,Thorncliffe
-RUN,,Tuscany
-RUT,,Tuxedo Park
-RYV,,University District
-S23,,University Heights
-SAD,,Upper Mount Royal
-SAN,,Valley Ridge
-SAW,,Varsity
-SCA,,Vista Heights
-SCE,,Walden
-SDC,,West Hillhurst
-SET,,West Springs
-SFH,,Westgate
-SGH,,Whitehorn
-SGL,,Wildwood
-SHG,,Willow Park
-SHI,,Windsor Park
-SHN,,Winston Heights/Mountview
-SHS,,Woodbine
-SHW,,Woodlands
-SIG,,
-SIL,,
-SKE,,
-SKR,,
-SKW,,
-SNA,,
-SOC,,
-SOM,,
-SOV,,
-SOW,,
-SPH,,
-SPR,,
-SRI,,
-SSD,,
-SSW,,
-ST1,,
-ST2,,
-STA,,
-STD,,
-STR,,
-SUN,,
-SVO,,
-TAR,,
-TEM,,
-THO,,
-TUS,,
-TUX,,
-UMR,,
-UND,,
-UNI,,
-UOC,,
-VAF,,
-VAL,,
-VAR,,
-VIS,,
-WAL,,
-WBN,,
-WES,,
-WGT,,
-WHI,,
-WHL,,
-WIL,,
-WIN,,
-WLD,,
-WND,,
-WOO,,
-WSP,,
+code,hood
+01B,01B Residual Sub Area
+02C,02C Residual Sub Area
+02F,02F Residual Sub Area
+09D,09D Residual Sub Area
+09H,09H Residual Sub Area
+09Q,09Q Residual Sub Area
+12A,12A Residual Sub Area
+12B,12B Residual Sub Area
+ABB,Abbeydale
+ABP,Aurora Business Park
+ABT,Ambleton
+ACA,Acadia
+ALB,Albert Park/Radisson Heights
+ALP,Alpine Park
+ALT,Altadore
+APP,Applewood Park
+ARB,Arbour Lake
+ASP,Aspen Woods
+AUB,Auburn Bay
+AYB,Alyth/Bonnybrook
+BDO,Bonavista Downs
+BED,Beddington Heights
+BEL,Bel-Aire
+BLM,Belmont
+BLN,Beltline
+BNF,Banff Trail
+BNK,Bankview
+BRA,Braeside
+BRE,Brentwood
+BRI,Bridlewood
+BRT,Britannia
+BUR,Burns Industrial
+BVD,Belvedere
+BYV,Bayview
+CAM,Cambrian Heights
+CAN,Canyon Meadows
+CAP,Capitol Hill
+CAR,Carrington
+CAS,Castleridge
+CED,Cedarbrae
+CGR,Cougar Ridge
+CHA,Chaparral
+CHK,Chinook Park
+CHN,Chinatown
+CHR,Christie Park
+CHV,Country Hills Village
+CHW,Charleswood
+CIA,Calgary International Airport
+CIT,Citadel
+CLI,Cliff Bungalow
+CNS,Cornerstone
+COA,Coach Hill
+COL,Collingwood
+COMM_CODE,Name
+COP,Canada Olympic Park
+COR,Coral Springs
+COU,Country Hills
+COV,Coventry Hills
+CPF,Copperfield
+CRE,Crescent Heights
+CRM,Crestmont
+CSC,Cityscape
+CUR,Currie Barracks
+DAL,Dalhousie
+DBC,Deerfoot Business Centre
+DIA,Diamond Cove
+DIS,Discovery Ridge
+DNC,Downtown Commercial Core
+DNE,Downtown East Village
+DNW,Downtown West End
+DOV,Dover
+DRG,Deer Ridge
+DRN,Deer Run
+EAG,Eagle Ridge
+EAU,Eau Claire
+EDG,Edgemont
+EFI,Eastfield
+EFV,East Fairview Industrial
+EPK,Elbow Park
+ERI,Erin Woods
+ERL,Erlton
+ESH,East Shepard Industrial
+EVE,Evergreen
+EVN,Evanston
+EYA,Elboya
+FAI,Fairview
+FAL,Falconridge
+FHI,Foothills
+FHT,Forest Heights
+FLI,Forest Lawn Industrial
+FLN,Forest Lawn
+FRA,Franklin
+FVI,Fairview Industrial
+GAG,Garrison Green
+GAW,Garrison Woods
+GBK,Glenbrook
+GBP,Glendeer Business Park
+GDL,Glendale
+GLA,Glamorgan
+GPI,Great Plains
+GPK,Glenmore Park
+GRE,Greenwood/Greenbriar
+GRI,Greenview Industrial Park
+GRV,Greenview
+GTI,Golden Triangle
+HAR,Harvest Hills
+HAW,Hawkwood
+HAY,Haysboro
+HID,Hidden Valley
+HIF,Highfield
+HIL,Hillhurst
+HIW,Highwood
+HKS,Hotchkiss
+HOR,Horizon
+HOU,Hounsfield Heights/Briar Hill
+HPK,Highland Park
+HSD,Homestead
+HSN,Haskayne
+HUN,Huntington Hills
+KCA,Kincora
+KEL,Kelvin Grove
+KIL,Killarney/Glengarry
+KIN,Kingsland
+KSH,Keystone Hills
+LEB,Lewisburg
+LEG,Legacy
+LIV,Livingston
+LKB,Lake Bonavista
+LKV,Lakeview
+LMR,Lower Mount Royal
+LPK,Lincoln Park
+MAC,Macewan Glen
+MAF,Mayfair
+MAH,Mahogany
+MAL,Mayland Heights
+MAN,Manchester
+MCI,Mccall
+MCK,Mckenzie Lake
+MCT,Mckenzie Towne
+MDH,Medicine Hill
+MEA,Meadowlark Park
+MER,Meridian
+MID,Midnapore
+MIS,Mission
+MLI,Mayland
+MLR,Millrise
+MNI,Manchester Industrial
+MOP,Mount Pleasant
+MOR,Monterey Park
+MPK,Marlborough Park
+MPL,Maple Ridge
+MRL,Marlborough
+MRT,Martindale
+NAW,North Airways
+NEB,New Brighton
+NGM,North Glenmore Park
+NHU,North Haven Upper
+NHV,North Haven
+NOL,Nolan Hill
+NPK,Nose Hill Park
+OAK,Oakridge
+OGD,Ogden
+OSH,Ogden Shops
+PAL,Palliser
+PAN,Panorama Hills
+PAT,Patterson
+PEG,Pegasus
+PEN,Penbrooke Meadows
+PIN,Pineridge
+PKD,Parkdale
+PKH,Parkhill
+PKL,Parkland
+POI,Point Mckay
+PUM,Pump Hill
+QLD,Queensland
+QPK,Queens Park Village
+RAM,Ramsay
+RAN,Ranchlands
+RCK,Rosscarrock
+RDL,Rosedale
+RED,Red Carpet
+REN,Renfrew
+RIC,Richmond
+RID,Rideau Park
+RMT,Rosemont
+ROC,Rocky Ridge
+ROX,Roxboro
+ROY,Royal Oak
+RSN,Redstone
+RUN,Rundle
+RUT,Rutland Park
+RVW,Rangeview
+RYV,Royal Vista
+S23,Section 23
+SAD,Saddle Ridge
+SAN,Sandstone Valley
+SAW,South Airways
+SCA,Scarboro
+SCE,Scenic Acres
+SDC,Sundance
+SET,Seton
+SFH,South Foothills
+SGH,Sage Hill
+SGL,Stonegate Landing
+SHG,Shaganappi
+SHI,Shepard Industrial
+SHN,Shawnessy
+SHS,Shawnee Slopes
+SHW,Sherwood
+SIG,Signal Hill
+SIL,Silver Springs
+SKE,Skyline East
+SKR,Skyview Ranch
+SKW,Skyline West
+SNA,Sunalta
+SOC,South Calgary
+SOM,Somerset
+SOV,Southview
+SOW,Southwood
+SPH,Springbank Hill
+SPR,Spruce Cliff
+SRI,Saddle Ridge Industrial
+SSD,Sunnyside
+SSW,Scarboro/ Sunalta West
+ST1,Stoney 1
+ST2,Stoney 2
+ST3,Stoney 3
+ST4,Stoney 4
+STA,St. Andrews Heights
+STD,Starfield
+STR,Strathcona Park
+SUN,Sunridge
+SVO,Silverado
+SVR,Symons Valley Ranch
+TAR,Taradale
+TEM,Temple
+THO,Thorncliffe
+THS,Twinhills
+TUS,Tuscany
+TUX,Tuxedo Park
+UMR,Upper Mount Royal
+UND,University District
+UNI,University Heights
+UOC,University Of Calgary
+VAF,Valleyfield
+VAL,Valley Ridge
+VAR,Varsity
+VIS,Vista Heights
+WAL,Walden
+WBN,Woodbine
+WES,Westwinds
+WGT,Westgate
+WHI,Whitehorn
+WHL,West Hillhurst
+WIL,Willow Park
+WIN,Winston Heights/Mountview
+WLD,Wildwood
+WND,Windsor Park
+WOO,Woodlands
+WSP,West Springs
+YKV,Yorkville
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
