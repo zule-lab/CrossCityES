@@ -42,13 +42,13 @@ saveRDS(ott_park, "large/OttawaParksCleaned.rds")
 
 ## Trees
 # NOTE: only common name for species, requires further sorting
-# Check for dupes
+# check for dupes
 unique(duplicated(ott_tree_raw$OBJECTID))
 # add city column
 ott_tree_raw$city <- c("Ottawa")
 # select the required columns and rename 
 ott_tree <- ott_tree_raw %>%
-  select(c("X","Y","OBJECTID","ADDSTR","SPECIES","DBH", "city")) %>%
+  select(c("X","Y","OBJECTID","ADDSTR","SPECIES","DBH")) %>%
   rename("long" = "X") %>%
   rename("lat" = "Y") %>%
   rename("id" = "OBJECTID") %>%
@@ -77,7 +77,7 @@ ott_tree$park[ott_tree$park != "no"] <- "yes"
 
 #### Save ####
 # reorder columns
-ott_tree <- ott_tree[,c("city","id","species","lat","long","geometry","hood","street","park","dbh")]
+ott_tree <- ott_tree[,c("city","id","species","geometry","hood","street","park","dbh")]
 # save cleaned Ottawa tree dataset as rds and shapefile
 saveRDS(ott_tree, "large/OttawaTreesCleaned.rds")
 st_write(ott_tree, "large/OttawaTreesCleaned.shp")

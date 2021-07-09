@@ -33,8 +33,6 @@ hal_hood$hood <- str_to_title(hal_hood$hood)
 hal_hood <- st_transform(hal_hood, crs = 6624)
 # remove Halifax row
 hal_hood<-hal_hood[!(hal_hood$hood=="HALIFAX"),]
-
-View(hal_hood)
 # save cleaned neighbourhoods layer 
 saveRDS(hal_hood, "large/HalifaxNeighbourhoodsCleaned.rds")
 
@@ -51,14 +49,14 @@ saveRDS(hal_park, "large/HalifaxParksCleaned.rds")
 ## Trees
 # check for dupes
 unique(duplicated(hal_tree_raw$TREEID))
-# extract only trees in service, columns needed, and rename
+# add city column
+hal_tree_raw$city <- c("Halifax")
+# selct only trees in service, columns needed, and rename
 hal_tree <- hal_tree_raw %>% 
   filter(ASSETSTAT == "INS") %>%
-  select(c("X", "Y", "TREEID", "SP_SCIEN", "DBH")) %>%
+  select(c("X", "Y", "TREEID", "SP_SCIEN", "DBH","city")) %>%
   rename("id" = "TREEID") %>%
   rename("dbh" = "DBH")
-# add city column
-hal_tree$city <- c("Halifax")
 # recode species from code to scientific name
 # "BUROAK", "BLAOAK", "BOAK", "FMAPLE" undefined in metadata, "BUROAK" <- "Bur Oak", "BLAOAK" <- "Black Oak"
 hal_tree$botname <- hal_tree_spcode$botname[match(as.character(hal_tree$SP_SCIEN), as.character(hal_tree_spcode$code))]
@@ -92,11 +90,11 @@ saveRDS(hal_road, "large/HalifaxRoadsCleaned.rds")
 #### Spatial Joins ####
 # none of the codes in this section working for now
 ## Neighbourhood
+# returning HALIfAX for all rows??
 hal_tree <- st_join(hal_tree, hal_hood, join = st_intersects)
-# replace NAs with "no" to indicate street trees 
-hal_tree <- replace_na(hal_tree, list(park = "no"))
 ## Parks 
 # want to identify which trees are park trees and which are street 
+# returning PUBLIC GARDENS for all rows??
 hal_tree <- st_join(hal_tree, hal_park, join = st_intersects)
 # replace NAs with "no" to indicate street trees 
 hal_tree <- replace_na(hal_tree, list(park = "no"))

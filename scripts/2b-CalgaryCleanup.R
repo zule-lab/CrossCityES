@@ -2,7 +2,7 @@
 # Author: Nicole Yu
 
 # This script is for cleaning the Calgary public tree inventory
-# Still require street, neighbourhood, park and street columns
+# Still require street, neighbourhood, street, and park/street tree columns
 
 #### Packages #### 
 # load packages 
@@ -28,6 +28,7 @@ cal_hood <- cal_hood_raw %>%
   select(c("NAME", "COMM_CODE")) %>% 
   rename("hood" = "NAME") %>% 
   rename("code" = "COMM_CODE")
+# change case of hood names
 cal_hood$hood <- str_to_title(cal_hood$hood) 
 
 ## Parks
@@ -45,7 +46,7 @@ saveRDS(cal_park, "large/CalgaryParksCleaned.rds")
 ## Trees
 # check for dupes
 unique(duplicated(cal_tree_raw$WAM_ID))
-# extract columns needed and rename
+# select the required columns and rename 
 cal_tree <- cal_tree_raw %>%
   select(c("GENUS", "SPECIES", "CULTIVAR", "DBH_CM", "WAM_ID", "COMM_CODE", "latitude", "longitude")) %>%
   rename("genus" = "GENUS") %>% 
@@ -59,6 +60,9 @@ cal_tree$city <- c("Calgary")
 cal_tree$species[cal_tree$species %in% c("",NA)]<-"sp."
 # remove quotations from cultivar names 
 cal_tree$cultivar <- substr(cal_tree$cultivar,2,nchar(cal_tree$cultivar)-1)
+# replace neighbourhood code in tree dataset with actual neighbourhood names 
+cal_tree$hood <- cal_hood$hood[match(as.character(cal_tree$COMM_CODE), as.character(cal_hood$code))]
+cal_tree$COMM_CODE <- NULL
 # drop geometry NAs
 cal_tree <- drop_na(cal_tree, c(latitude,longitude))
 # convert to sf object 
@@ -74,11 +78,6 @@ cal_road <- can_road[can_bound,]
 cal_road <- st_transform(cal_road, crs = 6624)
 cal_road <- select(cal_road, c("CSDNAME", "geometry"))
 saveRDS(cal_road, "large/CalgaryRoadsCleaned.rds")
-
-## Neighbourhood recoding
-# replace neighbourhood code in tree dataset with actual neighbourhood names 
-cal_tree$hood <- cal_hood$hood[match(as.character(cal_tree$COMM_CODE), as.character(cal_hood$code))]
-cal_tree$COMM_CODE <- NULL
 
 #### Spatial Joins ####
 ## Parks 
