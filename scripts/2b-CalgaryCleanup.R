@@ -2,7 +2,7 @@
 # Author: Nicole Yu
 
 # This script is for cleaning the Calgary public tree inventory
-# Still require street, neighbourhood, and park/street columns
+# Still require street, neighbourhood, park and street columns
 
 #### Packages #### 
 # load packages 
@@ -13,10 +13,9 @@ easypackages::packages("sf", "tidyverse")
 # tree inventory
 cal_tree_raw <- read_csv("large/cal_tree_raw.csv")
 # parks
-cal_park_raw <- read_sf("input/cal_park_raw.csv")
+cal_park_raw <- read_csv("input/cal_park_raw.csv")
 # neighbourhoods 
-# NOTE: need to add this to DataDownload and initial cleaning codebut don't know where it is from
-cal_hood_code <- read_csv("input/cal_tree_hoodcode.csv")
+cal_hood_raw <- read_csv("input/cal_hood_raw.csv")
 # city boundary 
 can_bound <- read_sf("large/can_bound/lcma000b16a_e.shp")
 # roads
@@ -24,9 +23,12 @@ can_road <- read_sf("large/can_road/lcsd000a20a_e.shp")
 
 #### Data Cleaning ####
 ## Neighbourhoods
-# replace neighbourhood code in tree dataset with actual neighbourhood names 
-cal_tree_raw$hood <- cal_hood_code$hood[match(as.character(cal_tree_raw$COMM_CODE), as.character(cal_hood_code$code))]
-# NOTE: missing a couple codes, need to look into this 
+# select neighbourhood codes and names columns and rename
+cal_hood <- cal_hood_raw %>% 
+  select(c("NAME", "COMM_CODE")) %>% 
+  rename("hood" = "NAME") %>% 
+  rename("code" = "COMM_CODE")
+cal_hood$hood <- str_to_title(cal_hood$hood) 
 
 ## Parks
 # select relevant columns and rename 
@@ -45,7 +47,7 @@ saveRDS(cal_park, "large/CalgaryParksCleaned.rds")
 unique(duplicated(cal_tree_raw$WAM_ID))
 # extract columns needed and rename
 cal_tree <- cal_tree_raw %>%
-  select(c("GENUS", "SPECIES", "CULTIVAR", "DBH_CM", "WAM_ID", "latitude", "longitude", "hood")) %>%
+  select(c("GENUS", "SPECIES", "CULTIVAR", "DBH_CM", "WAM_ID", "COMM_CODE", "latitude", "longitude")) %>%
   rename("genus" = "GENUS") %>% 
   rename("species" = "SPECIES") %>%
   rename("cultivar" = "CULTIVAR") %>%
@@ -57,7 +59,7 @@ cal_tree$city <- c("Calgary")
 cal_tree$species[cal_tree$species %in% c("",NA)]<-"sp."
 # remove quotations from cultivar names 
 cal_tree$cultivar <- substr(cal_tree$cultivar,2,nchar(cal_tree$cultivar)-1)
-# drop NAs
+# drop geometry NAs
 cal_tree <- drop_na(cal_tree, c(latitude,longitude))
 # convert to sf object 
 cal_tree <- st_as_sf(cal_tree, coords = c("longitude", "latitude"), crs = 4326)
@@ -66,12 +68,17 @@ cal_tree <- st_transform(cal_tree, crs = 6624)
 
 ## City Boundary & Roads 
 # select Calgary boundary
-can_bound <- subset(can_bound, CMANAME == "Calgary")
+cal_bound <- subset(can_bound, bound == "Calgary")
 # select roads within the Calgary boundary
 cal_road <- can_road[can_bound,]
 cal_road <- st_transform(cal_road, crs = 6624)
 cal_road <- select(cal_road, c("CSDNAME", "geometry"))
 saveRDS(cal_road, "large/CalgaryRoadsCleaned.rds")
+
+## Neighbourhood recoding
+# replace neighbourhood code in tree dataset with actual neighbourhood names 
+cal_tree$hood <- cal_hood$hood[match(as.character(cal_tree$COMM_CODE), as.character(cal_hood$code))]
+cal_tree$COMM_CODE <- NULL
 
 #### Spatial Joins ####
 ## Parks 
