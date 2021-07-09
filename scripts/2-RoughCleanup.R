@@ -3,9 +3,13 @@
 #### Packages ####
 easypackages::packages("tidyr", "tidyverse", "Rmisc","stringr","spatialEco","sp","sf","rgdal")
 
+### Canada municipality boundaries cleanup
+can_bound <- can_bound_raw %>%
+  select(c("CMANAME", "geometry")) %>%
+  rename("bound" = "CMANAME")
+
 #### City parks data cleanup ####
 ## Halifax park data cleanup
-# remove after added download link in download script -- hal_park_raw <- read_sf("/Users/nicoleyu/Desktop/GRI_ZULE/Downloads/HRM_Parks/HRM_Parks.shp")
 data.frame(colnames(hal_park_raw))
 hal_park <- hal_park_raw[,c("PARK_NAME","geometry")]
 names(hal_park)[c(1)] <- "park"
@@ -35,7 +39,6 @@ View(van_park)
 
 
 #### City tree data cleanup ####
-
 ## Halifax tree data cleanup
 # Check for dupes
 hal_tree_raw <- hal_opendata
