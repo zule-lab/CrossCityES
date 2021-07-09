@@ -17,24 +17,37 @@ options(timeout=600)
 # instead of input/ so they are not tracked on Git
 
 ### Neighborhood data downloads ###
-## Excluding 
-## Calgary community data download
+## Excluding Montreal, Vancouver and Winnipeg
+## Calgary neighbourhood data download
 cal_hood_url <- "https://data.calgary.ca/api/views/surr-xmvs/rows.csv?accessType=DOWNLOAD"
 cal_hood_dest <- "input/cal_hood_raw.csv"
 download.file(cal_hood_url,cal_hood_dest, mode="wb")
 cal_hood_raw <- read.csv(cal_hood_dest)
 View(cal_hood_raw)
 
-## Halifax community data download
+## Halifax neighbourhood data download
+hal_hood_url <- "https://opendata.arcgis.com/api/v3/datasets/b4088a068b794436bdb4e5c31df76fe2_0/downloads/data?format=shp&spatialRefId=4326"
+hal_hood_dest <- "large/hal_hood_raw.zip"
+download.file(hal_hood_url,hal_hood_dest, mode="wb")
+unzip(hal_hood_dest, exdir="large/hal_hood_raw")
+hal_hood_raw <- read_sf("large/hal_hood_raw/Community_Boundaries.shp")
+View(hal_hood_raw)
 
-
-## Montreal community data download
-
-## Ottawa community data download
+## Ottawa neighbourhood data download
+ott_hood_url <- "https://opendata.arcgis.com/api/v3/datasets/32fe76b71c5e424fab19fec1f180ec18_0/downloads/data?format=shp&spatialRefId=4326"
+ott_hood_dest <- "large/ott_hood_raw.zip"
+download.file(ott_hood_url,ott_hood_dest, mode="wb")
+unzip(ott_hood_dest, exdir="large/ott_hood_raw")
+ott_hood_raw <- read_sf("large/ott_hood_raw/Ottawa_Neighbourhood_Study_(ONS)_-_Neighbourhood_Boundaries_Gen_2.shp")
+View(ott_hood_raw)
 
 ## Toronto community data download
-
-## Vancouver community data download
+tor_hood_url <- "https://ckan0.cf.opendata.inter.prod-toronto.ca/download_resource/a083c865-6d60-4d1d-b6c6-b0c8a85f9c15?format=shp&projection=4326"
+tor_hood_dest <- "large/tor_hood_raw.zip"
+download.file(tor_hood_url,tor_hood_dest, mode="wb")
+unzip(tor_hood_dest, exdir="large/tor_hood_raw")
+tor_hood_raw <- read_sf("large/tor_hood_raw/Neighbourhoods.shp")
+View(tor_hood_raw)
 
 ### Park data downloads
 ## Excluding Montreal and Winnipeg
@@ -155,7 +168,7 @@ unzip(ott_hood_dest, exdir="large/ott_hood_raw")
 ott_hood_raw <- read_sf("large/ott_hood_raw/Ottawa_Neighbourhood_Study_(ONS)_-_Neighbourhood_Boundaries_Gen_2.shp")
 View(ott_hood_raw)
 
-### Canada municipality boundary downloads
+### Canada downloads
 ## Municipal boundary layer download
 # Canada bounds shapefile
 bound_url <- "https://www12.statcan.gc.ca/census-recensement/2011/geo/bound-limit/files-fichiers/2016/lcma000b16a_e.zip"
@@ -174,3 +187,13 @@ download.file(road_url,road_dest, mode="wb")
 unzip(road_dest, exdir="large/can_road")
 can_road <- read_sf("large/can_road/lcsd000a20a_e.shp")
 View(can_road)
+
+### Other supplementary files
+# Halifax tree species codes
+# extracted from tree data metadata accessible from http://hrm.maps.arcgis.com/sharing/rest/content/items/87d562e852a44e64ae268609e2cdc0d2/data
+hal_tree_spcode <-read.csv("input/hal_tree_spcode.csv")
+# Halifax tree dbh codes
+# 9 categories, matched with dataset viewed in ARCGIS Viewer from https://www.arcgis.com/home/webmap/viewer.html?panel=gallery&layers=33a4e9b6c7e9439abcd2b20ac50c5a4d
+hal_tree_dbhcode <-read.csv("input/hal_tree_dbhcode.csv", row.names = NULL)
+# Montreal neighbourhood code
+mon_tree_hoodcode <-read.csv("input/mon_tree_hoodcode.csv", row.names = NULL)
