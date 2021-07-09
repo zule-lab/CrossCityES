@@ -16,6 +16,26 @@ options(timeout=600)
 # NOTE: all files larger than 50MB are downloaded to large/ folder 
 # instead of input/ so they are not tracked on Git
 
+### Neighborhood data downloads ###
+## Excluding 
+## Calgary community data download
+cal_hood_url <- "https://data.calgary.ca/api/views/surr-xmvs/rows.csv?accessType=DOWNLOAD"
+cal_hood_dest <- "input/cal_hood_raw.csv"
+download.file(cal_hood_url,cal_hood_dest, mode="wb")
+cal_hood_raw <- read.csv(cal_hood_dest)
+View(cal_hood_raw)
+
+## Halifax community data download
+
+
+## Montreal community data download
+
+## Ottawa community data download
+
+## Toronto community data download
+
+## Vancouver community data download
+
 ### Park data downloads
 ## Excluding Montreal and Winnipeg
 ## Calgary park data download
@@ -140,10 +160,10 @@ View(ott_hood_raw)
 # Canada bounds shapefile
 bound_url <- "https://www12.statcan.gc.ca/census-recensement/2011/geo/bound-limit/files-fichiers/2016/lcma000b16a_e.zip"
 # saving to large folder
-bound_dest <- "large/can_bound.zip"
+bound_dest <- "large/can_bound_raw.zip"
 download.file(bound_url,bound_dest, mode="wb")
-unzip(bound_dest, exdir="large/can_bound")
-can_bound <- read_sf("large/can_bound/lcma000b16a_e.shp")
+unzip(bound_dest, exdir="large/can_bound_raw")
+can_bound_raw <- read_sf("large/can_bound/lcma000b16a_e.shp")
 
 ## Canada road network downloads
 # Canada road shapefile
