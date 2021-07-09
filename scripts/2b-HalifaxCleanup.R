@@ -51,7 +51,7 @@ saveRDS(hal_park, "large/HalifaxParksCleaned.rds")
 unique(duplicated(hal_tree_raw$TREEID))
 # add city column
 hal_tree_raw$city <- c("Halifax")
-# selct only trees in service, columns needed, and rename
+# select only trees in service, columns needed, and rename
 hal_tree <- hal_tree_raw %>% 
   filter(ASSETSTAT == "INS") %>%
   select(c("X", "Y", "TREEID", "SP_SCIEN", "DBH","city")) %>%

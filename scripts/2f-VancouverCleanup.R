@@ -60,7 +60,7 @@ van_tree$species <- tolower(van_tree$species)
 van_tree$cultivar <- str_to_title(van_tree$cultivar) 
 van_tree$street <- str_to_title(van_tree$street) 
 van_tree$hood <- str_to_title(van_tree$hood) 
-# change "specie in species" column to "sp."
+# change "species in species" column to "sp."
 van_tree$species[van_tree$species == "species"] <- "sp."
 # converting dbh from inches to cm
 van_tree$dbh <- van_tree$dbh*2.54
