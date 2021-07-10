@@ -176,7 +176,7 @@ bound_url <- "https://www12.statcan.gc.ca/census-recensement/2011/geo/bound-limi
 bound_dest <- "large/can_bound_raw.zip"
 download.file(bound_url,bound_dest, mode="wb")
 unzip(bound_dest, exdir="large/can_bound_raw")
-can_bound_raw <- read_sf("large/can_bound/lcma000b16a_e.shp")
+can_bound_raw <- read_sf("large/can_bound_raw/lcma000b16a_e.shp")
 
 ## Canada road network downloads
 # Canada road shapefile
