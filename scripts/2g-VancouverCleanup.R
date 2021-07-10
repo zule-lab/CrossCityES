@@ -12,9 +12,12 @@ easypackages::packages("sf", "tidyverse")
 #### Data ####
 # load data downloaded in 1-DataDownload.R
 # tree inventory
-van_tree_raw <-read.csv(van_tree_dest, sep=";")
+van_tree_raw <-read.csv("input/van_tree_raw.csv", sep=";")
 # parks
 van_park_raw <- read_sf("large/van_park_raw/parks-polygon-representation.shp")
+# neighbourhoods 
+# NOTE: where is this layer? Not in the data download or any folders
+van_hood_raw <- read_sf()
 
 #### Data Cleaning ####
 ## Neighbourhoods
@@ -64,7 +67,7 @@ van_tree$hood <- str_to_title(van_tree$hood)
 van_tree$species[van_tree$species == "species"] <- "sp."
 # converting dbh from inches to cm
 van_tree$dbh <- van_tree$dbh*2.54
-# converting to sf
+# data is formatted as GeoJSON
 van_tree$Geom <- substr(van_tree$Geom,35,nchar(van_tree$Geom)-2)
 van_tree <- separate(data = van_tree, col = Geom, into = c("long", "lat"), sep = "\\, ")
 van_tree <- st_as_sf(x = van_tree, coords = c("long", "lat"), crs = 4326, na.fail = FALSE, remove = FALSE)
