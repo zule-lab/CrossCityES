@@ -13,14 +13,18 @@ easypackages::packages("sf", "tidyverse")
 # tree inventory
 hal_tree_raw <- read_csv("input/hal_tree_raw.csv")
 # parks
-hal_park_raw <- read_sf("large/hal_park_raw/Parks_and_Greenspace.shp")
+hal_park_raw <- read_sf("large/hal_park_raw/HRM_Parks.shp")
 # neighbourhoods 
 hal_hood_raw <- read_sf("large/hal_hood_raw/Community_Boundaries.shp")
 # tree species code
 hal_tree_spcode <-read.csv("input/hal_tree_spcode.csv", row.names = NULL)
 # tree dbh code
 hal_tree_dbhcode <-read.csv("input/hal_tree_dbhcode.csv", row.names = NULL)
-
+# municipal boundaries 
+can_bound <- readRDS("large/MunicipalBoundariesCleaned.rds")
+# roads
+can_road <- readRDS("large/RoadsCleaned.rds")
+  
 #### Data Cleaning ####
 ## Neighbourhoods
 # select neighbourhood name and geometry from hood dataset
@@ -81,14 +85,12 @@ hal_tree <- st_transform(hal_tree, crs = 6624)
 # select Halifax boundary
 # may have edited codes wrong, will see with the road dataset later?
 hal_bound <- subset(can_bound, bound == "Halifax")
-# select roads within the Calgary boundary
-hal_road <- can_road[hal_bound,]
+# select roads within the Halifax boundary
+hal_road <- subset(can_road, bound == "Halifax")
 hal_road <- st_transform(hal_road, crs = 6624)
-hal_road <- select(hal_road, c("CSDNAME", "geometry"))
 saveRDS(hal_road, "large/HalifaxRoadsCleaned.rds")
 
 #### Spatial Joins ####
-# none of the codes in this section working for now
 ## Neighbourhood
 # returning HALIfAX for all rows??
 hal_tree <- st_join(hal_tree, hal_hood, join = st_intersects)
