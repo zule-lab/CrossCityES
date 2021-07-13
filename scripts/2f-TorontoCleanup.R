@@ -64,11 +64,11 @@ tor_tree <- st_transform(tor_tree, crs = 6624)
 ## Neighbourhoods
 # want to add a column that specifies what neighbourhood each tree belongs to
 # join trees and neighbourhoods using st_intersects
-tor_treeood <- st_join(tor_tree, tor_hood, join = st_intersects)
+tor_tree <- st_join(tor_tree, tor_hood, join = st_intersects)
 ## Parks 
 # want to identify which trees are park trees and which are street 
 # code adds 11 columns to the dataset?? why?
-tor_treepar <- st_join(tor_tree, tor_park, join = st_intersects)
+tor_tree <- st_join(tor_tree, tor_park, join = st_intersects)
 # replace NAs with "no" to indicate street trees 
 tor_tree <- replace_na(tor_tree, list(park = "no"))
 # if value is not "no", change value to "yes" so park column is binary yes/no
