@@ -185,8 +185,8 @@ road_url <- "https://www12.statcan.gc.ca/census-recensement/2011/geo/RNF-FRR/fil
 road_dest <- "large/can_road.zip"
 download.file(road_url,road_dest, mode="wb")
 unzip(road_dest, exdir="large/can_road")
-can_road <- read_sf("large/can_road/lrnf000r20a_e.shp")
-View(can_road)
+can_road_raw <- read_sf("large/can_road_raw/lrnf000r20a_e.shp")
+View(can_road_raw)
 
 ### Other supplementary files
 # Halifax tree species codes
