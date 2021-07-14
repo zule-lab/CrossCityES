@@ -6,7 +6,7 @@ easypackages::packages("tidyverse","sf")
 
 #### Data ####
 can_bound_raw <- read_sf("large/can_bound_raw/lcma000b16a_e.shp")
-can_road <- read_sf("large/can_road/lrnf000r20a_e.shp")
+can_road_raw <- read_sf("large/can_road/lrnf000r20a_e.shp")
 
 #### Cleanup ####
 ## Municipal Boundaries
@@ -32,7 +32,8 @@ saveRDS(can_bound, "large/MunicipalBoundariesCleaned.rds")
 
 ### Roads ###
 # select relevant columns 
-can_road <- can_road %>% select(can_road, c(NAME, TYPE, DIR, NGD_UID, geometry)) %>%
+can_road <- can_road_raw[,c("NAME", "TYPE", "DIR", "NGD_UID", "geometry")]
+can_road <- can_road %>%
   rename(street = NAME) %>%
   rename(streettype = TYPE) %>%
   rename(streetdir = DIR) %>%
