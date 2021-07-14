@@ -107,6 +107,9 @@ hal_tree$street <- st_nearest_feature(hal_tree, hal_road)
 # st_nearest_feature returns the index value not the street name
 # need to replace index values with associated street
 
+#### Remove park trees ####
+hal_tree <- hal_tree %>% filter(park == "no")
+
 #### Save ####
 # reorder columns
 hal_tree <- hal_tree[,c("city","id","genus","species","cultivar","geometry","hood","street","park","dbh")]# Check and make output

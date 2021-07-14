@@ -46,6 +46,9 @@ win_tree <- st_as_sf(win_tree, coords = c("lat", "long"), crs = 4326)
 # transform
 win_tree <- st_transform(win_tree, crs = 6624)
 
+#### Remove park trees ####
+win_tree <- win_tree %>% filter(park == "no")
+
 #### Save ####
 # reorder columns
 win_tree <- win_tree[,c("city","id","genus","species","cultivar","geometry","hood","street","park","dbh")]

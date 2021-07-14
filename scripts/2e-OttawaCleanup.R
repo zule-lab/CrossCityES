@@ -75,6 +75,9 @@ ott_tree <- replace_na(ott_tree, list(park = "no"))
 # if value is not "no", change value to "yes" so park column is binary yes/no
 ott_tree$park[ott_tree$park != "no"] <- "yes"
 
+#### Remove park trees ####
+ott_tree <- ott_tree %>% filter(park == "no")
+
 #### Save ####
 # reorder columns
 ott_tree <- ott_tree[,c("city","id","species","geometry","hood","street","park","dbh")]

@@ -85,6 +85,9 @@ van_tree <- replace_na(van_tree, list(park = "no"))
 # if value is not "no", change value to "yes" so park column is binary yes/no
 van_tree$park[van_tree$park != "no"] <- "yes"
 
+#### Remove park trees ####
+van_tree <- van_tree %>% filter(park == "no")
+
 #### Save ####
 # reorder columns
 van_tree <- van_tree[,c("city","id","genus", "species", "cultivar", "geometry","hood","street","park","dbh")]# Check and make output

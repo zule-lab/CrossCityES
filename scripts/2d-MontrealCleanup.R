@@ -64,6 +64,9 @@ mon_tree$street <- st_nearest_feature(mon_tree, mon_road)
 # st_nearest_feature returns the index value not the street name
 # need to replace index values with associated street
 
+#### Remove park trees ####
+mon_tree <- mon_tree %>% filter(park == "no")
+
 #### Save ####
 # reorder columns
 mon_tree <- mon_tree[,c("city","id","genus","species","cultivar","geometry","hood","street","park","dbh")]

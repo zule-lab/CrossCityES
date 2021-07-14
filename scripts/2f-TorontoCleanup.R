@@ -74,6 +74,9 @@ tor_tree <- replace_na(tor_tree, list(park = "no"))
 # if value is not "no", change value to "yes" so park column is binary yes/no
 tor_tree$park[tor_tree$park != "no"] <- "yes"
 
+#### Remove park trees ####
+tor_tree <- tor_tree %>% filter(park == "no")
+
 #### Save ####
 # reorder columns
 tor_tree <- tor_tree[,c("city","id","genus","species","cultivar","geometry","hood","street","park","dbh")]
