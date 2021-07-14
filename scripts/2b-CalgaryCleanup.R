@@ -16,10 +16,10 @@ cal_tree_raw <- read_csv("large/cal_tree_raw.csv")
 cal_park_raw <- read_csv("input/cal_park_raw.csv")
 # neighbourhoods 
 cal_hood_raw <- read_csv("input/cal_hood_raw.csv")
-# city boundary 
-can_bound <- read_sf("large/can_bound/lcma000b16a_e.shp")
+# municipal boundaries 
+can_bound <- readRDS("large/MunicipalBoundariesCleaned.rds")
 # roads
-can_road <- read_sf("large/can_road/lcsd000a20a_e.shp")
+can_road <- readRDS("large/RoadsCleaned.rds")
 
 #### Data Cleaning ####
 ## Neighbourhoods
@@ -74,9 +74,12 @@ cal_tree <- st_transform(cal_tree, crs = 6624)
 # select Calgary boundary
 cal_bound <- subset(can_bound, bound == "Calgary")
 # select roads within the Calgary boundary
-cal_road <- can_road[can_bound,]
+cal_road <- can_road[cal_bound,]
 cal_road <- st_transform(cal_road, crs = 6624)
-cal_road <- select(cal_road, c("CSDNAME", "geometry"))
+cal_road <- select(cal_road, c("streetid", "geometry"))
+#add row index numbers as a column for recoding later
+cal_road <- cal_road %>% mutate(index= 1:n())
+#save
 saveRDS(cal_road, "large/CalgaryRoadsCleaned.rds")
 
 #### Spatial Joins ####
@@ -88,9 +91,13 @@ cal_tree <- replace_na(cal_tree, list(park = "no"))
 # if value is not "no", change value to "yes" so park column is binary yes/no
 cal_tree$park[cal_tree$park != "no"] <- "yes"
 ## Streets
-cal_tree$street <- st_nearest_feature(cal_tree, cal_road)
 # st_nearest_feature returns the index value not the street name
-# need to replace index values with associated street
+cal_tree$street <- st_nearest_feature(cal_tree, cal_road)
+# replace index values with associated street
+cal_tree$street <- cal_road$streetid[match(as.character(cal_tree$street), as.character(cal_road$index))]
+
+#### Remove park trees ####
+cal_tree <- cal_tree %>% filter(park == "no")
 
 #### Save ####
 # reorder columns
