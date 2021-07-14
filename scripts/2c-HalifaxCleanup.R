@@ -83,11 +83,14 @@ hal_tree <- st_transform(hal_tree, crs = 6624)
 
 ## City Boundary & Roads 
 # select Halifax boundary
-# may have edited codes wrong, will see with the road dataset later?
 hal_bound <- subset(can_bound, bound == "Halifax")
 # select roads within the Halifax boundary
-hal_road <- subset(can_road, bound == "Halifax")
+hal_road <- can_road[hal_bound,]
 hal_road <- st_transform(hal_road, crs = 6624)
+hal_road <- select(hal_road, c("streetid", "geometry"))
+#add row index numbers as a column for recoding later
+hal_road <- hal_road %>% mutate(index= 1:n())
+#save
 saveRDS(hal_road, "large/HalifaxRoadsCleaned.rds")
 
 #### Spatial Joins ####
@@ -95,17 +98,17 @@ saveRDS(hal_road, "large/HalifaxRoadsCleaned.rds")
 # returning HALIfAX for all rows??
 hal_tree <- st_join(hal_tree, hal_hood, join = st_intersects)
 ## Parks 
-# want to identify which trees are park trees and which are street 
-# returning PUBLIC GARDENS for all rows??
+# want to identify which trees are park trees and which are street
 hal_tree <- st_join(hal_tree, hal_park, join = st_intersects)
 # replace NAs with "no" to indicate street trees 
 hal_tree <- replace_na(hal_tree, list(park = "no"))
 # if value is not "no", change value to "yes" so park column is binary yes/no
 hal_tree$park[hal_tree$park != "no"] <- "yes"
 ## Streets
-hal_tree$street <- st_nearest_feature(hal_tree, hal_road)
 # st_nearest_feature returns the index value not the street name
-# need to replace index values with associated street
+hal_tree$street <- st_nearest_feature(hal_tree, hal_road)
+# replace index values with associated street
+hal_tree$street <- hal_road$streetid[match(as.character(hal_tree$street), as.character(hal_road$index))]
 
 #### Remove park trees ####
 hal_tree <- hal_tree %>% filter(park == "no")

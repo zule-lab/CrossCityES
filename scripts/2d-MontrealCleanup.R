@@ -13,6 +13,10 @@ easypackages::packages("sf", "tidyverse")
 # load data downloaded in 1-DataDownload.R
 # tree inventory
 mon_tree_raw <- read_csv("input/mon_tree_raw.csv")
+# municipal boundaries 
+can_bound <- readRDS("large/MunicipalBoundariesCleaned.rds")
+# roads
+can_road <- readRDS("large/RoadsCleaned.rds")
 
 #### Data Cleaning ####
 ## Trees
@@ -49,20 +53,23 @@ mon_tree <- st_as_sf(x = mon_tree, coords = c("Longitude", "Latitude"), crs = 43
 mon_tree <- st_transform(mon_tree, crs = 6624)
 
 ## City Boundary & Roads 
-# select Halifax boundary
-# may have edited codes wrong, will see with the road dataset later?
-mon_bound <- subset(can_bound, bound == "Montreal")
-# select roads within the Calgary boundary
+# select Montreal boundary
+mon_bound <- subset(can_bound, bound == "monifax")
+# select roads within the monifax boundary
 mon_road <- can_road[mon_bound,]
 mon_road <- st_transform(mon_road, crs = 6624)
-mon_road <- select(mon_road, c("CSDNAME", "geometry"))
+mon_road <- select(mon_road, c("streetid", "geometry"))
+#add row index numbers as a column for recoding later
+mon_road <- mon_road %>% mutate(index= 1:n())
+#save
 saveRDS(mon_road, "large/MontrealRoadsCleaned.rds")
 
 #### Spatial Joins ####
 ## Streets
-mon_tree$street <- st_nearest_feature(mon_tree, mon_road)
 # st_nearest_feature returns the index value not the street name
-# need to replace index values with associated street
+mon_tree$street <- st_nearest_feature(mon_tree, mon_road)
+# replace index values with associated street
+mon_tree$street <- mon_road$streetid[match(as.character(mon_tree$street), as.character(mon_road$index))]
 
 #### Remove park trees ####
 mon_tree <- mon_tree %>% filter(park == "no")
@@ -73,5 +80,3 @@ mon_tree <- mon_tree[,c("city","id","genus","species","cultivar","geometry","hoo
 # save cleaned Ottawa tree dataset as rds and shapefile
 saveRDS(mon_tree, "large/MontrealTreesCleaned.rds")
 st_write(mon_tree, "large/MontrealTreesCleaned.shp")
-
-View(mon_tree)
