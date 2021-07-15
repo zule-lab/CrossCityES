@@ -12,7 +12,7 @@ easypackages::packages("sf", "tidyverse")
 #### Data ####
 # load data downloaded in 1-DataDownload.R
 # tree inventory
-mon_tree_raw <- read_csv("input/mon_tree_raw.csv")
+mon_tree_raw <- read_csv("large/mon_tree_raw.csv")
 # municipal boundaries 
 can_bound <- readRDS("large/MunicipalBoundariesCleaned.rds")
 # roads
@@ -54,7 +54,7 @@ mon_tree <- st_transform(mon_tree, crs = 6624)
 
 ## City Boundary & Roads 
 # select Montreal boundary
-mon_bound <- subset(can_bound, bound == "monifax")
+mon_bound <- subset(can_bound, bound == "Montreal")
 # select roads within the monifax boundary
 mon_road <- can_road[mon_bound,]
 mon_road <- st_transform(mon_road, crs = 6624)
@@ -69,6 +69,7 @@ saveRDS(mon_road, "large/MontrealRoadsCleaned.rds")
 # st_nearest_feature returns the index value not the street name
 mon_tree$street <- st_nearest_feature(mon_tree, mon_road)
 # replace index values with associated street
+# no available data in table after this code?
 mon_tree$street <- mon_road$streetid[match(as.character(mon_tree$street), as.character(mon_road$index))]
 
 #### Remove park trees ####
