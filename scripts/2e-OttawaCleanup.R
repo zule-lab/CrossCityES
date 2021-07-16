@@ -48,13 +48,15 @@ unique(duplicated(ott_tree_raw$OBJECTID))
 ott_tree_raw$city <- c("Ottawa")
 # select the required columns and rename 
 ott_tree <- ott_tree_raw %>%
-  select(c("X","Y","OBJECTID","ADDSTR","SPECIES","DBH")) %>%
+  select(c("X","Y","OBJECTID","ADDSTR","SPECIES","DBH","city")) %>%
   rename("long" = "X") %>%
   rename("lat" = "Y") %>%
   rename("id" = "OBJECTID") %>%
   rename("street" = "ADDSTR") %>%
   rename("species" = "SPECIES") %>%
   rename("dbh" = "DBH")
+# add streetid column to match other cities
+ott_tree$streetid <- c(NA)
 # drop any rows that have NA lat/long
 ott_tree <- drop_na(ott_tree, c(lat,long))
 # adding geometry column and specify projection outlined in City of Ottawa metadata 
@@ -70,6 +72,9 @@ ott_tree <- st_join(ott_tree, ott_hood, join = st_intersects)
 ## Parks 
 # want to identify which trees are park trees and which are street 
 ott_tree <- st_join(ott_tree, ott_park, join = st_intersects)
+# remove all trees on polygon boundaries after joining with parks by deleting duplicates
+ott_dupe <- ott_tree$id[duplicated(ott_tree$id)]
+ott_tree <- ott_tree %>% filter(!id %in% ott_dupe)
 # replace NAs with "no" to indicate street trees 
 ott_tree <- replace_na(ott_tree, list(park = "no"))
 # if value is not "no", change value to "yes" so park column is binary yes/no
@@ -80,7 +85,7 @@ ott_tree <- ott_tree %>% filter(park == "no")
 
 #### Save ####
 # reorder columns
-ott_tree <- ott_tree[,c("city","id","species","geometry","hood","street","park","dbh")]
+ott_tree <- ott_tree[,c("city","id","species","geometry","hood","streetid","street","park","dbh")]
 # save cleaned Ottawa tree dataset as rds and shapefile
 saveRDS(ott_tree, "large/OttawaTreesCleaned.rds")
 st_write(ott_tree, "large/OttawaTreesCleaned.shp")

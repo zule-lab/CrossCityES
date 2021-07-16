@@ -35,8 +35,6 @@ hal_hood <- hal_hood_raw %>%
 hal_hood$hood <- str_to_title(hal_hood$hood)
 # transform to EPSG: 6624 to be consistent with other layers
 hal_hood <- st_transform(hal_hood, crs = 6624)
-# remove Halifax row
-hal_hood<-hal_hood[!(hal_hood$hood=="HALIFAX"),]
 # save cleaned neighbourhoods layer 
 saveRDS(hal_hood, "large/HalifaxNeighbourhoodsCleaned.rds")
 
@@ -62,7 +60,6 @@ hal_tree <- hal_tree_raw %>%
   rename("id" = "TREEID") %>%
   rename("dbh" = "DBH")
 # recode species from code to scientific name
-# "BUROAK", "BLAOAK", "BOAK", "FMAPLE" undefined in metadata, "BUROAK" <- "Bur Oak", "BLAOAK" <- "Black Oak"
 hal_tree$botname <- hal_tree_spcode$botname[match(as.character(hal_tree$SP_SCIEN), as.character(hal_tree_spcode$code))]
 # sorting species name into genus, species, and cultivar columns
 hal_tree <- hal_tree %>% separate(botname, c("genus","species","var","cultivar"))
@@ -70,8 +67,11 @@ hal_tree$var[hal_tree$var == "var"] <- NA
 hal_treecul <- hal_tree %>% filter(species != "x") %>% unite(cultivar, c("var", "cultivar"), na.rm = TRUE, sep = " ")
 hal_treesp <- hal_tree %>% filter(species == "x") %>% unite(species, c("species", "var"), na.rm = TRUE, sep = " ")
 hal_tree <- rbind(hal_treecul, hal_treesp)
+hal_tree$cultivar[hal_tree$cultivar == ""] <- NA
 # assign blanks and NAs in species column to "sp."
 hal_tree$species[hal_tree$species %in% c("",NA)] <- "sp."
+# Assign "species" column as NA for "Unknown Species"
+hal_tree$species[hal_tree$species == "Species"] <- NA
 # recode dbh from categories to median measurements
 hal_tree$dbh <- hal_tree_dbhcode$dbh[match(as.character(hal_tree$dbh), as.character(hal_tree_dbhcode$code))]
 # drop geometry NAs
@@ -87,7 +87,7 @@ hal_bound <- subset(can_bound, bound == "Halifax")
 # select roads within the Halifax boundary
 hal_road <- can_road[hal_bound,]
 hal_road <- st_transform(hal_road, crs = 6624)
-hal_road <- select(hal_road, c("streetid", "geometry"))
+hal_road <- select(hal_road, c("street","streetid", "geometry"))
 #add row index numbers as a column for recoding later
 hal_road <- hal_road %>% mutate(index= 1:n())
 #save
@@ -95,27 +95,32 @@ saveRDS(hal_road, "large/HalifaxRoadsCleaned.rds")
 
 #### Spatial Joins ####
 ## Neighbourhood
-# returning HALIfAX for all rows??
+# Halifax is considered its own neighbourhood
 hal_tree <- st_join(hal_tree, hal_hood, join = st_intersects)
 ## Parks 
 # want to identify which trees are park trees and which are street
 hal_tree <- st_join(hal_tree, hal_park, join = st_intersects)
+# remove all trees on polygon boundaries after joining with parks by deleting duplicates
+hal_dupe <- hal_tree$id[duplicated(hal_tree$id)]
+hal_tree <- hal_tree %>% filter(!id %in% hal_dupe)
 # replace NAs with "no" to indicate street trees 
 hal_tree <- replace_na(hal_tree, list(park = "no"))
 # if value is not "no", change value to "yes" so park column is binary yes/no
 hal_tree$park[hal_tree$park != "no"] <- "yes"
 ## Streets
 # st_nearest_feature returns the index value not the street name
-hal_tree$street <- st_nearest_feature(hal_tree, hal_road)
-# replace index values with associated street
-hal_tree$street <- hal_road$streetid[match(as.character(hal_tree$street), as.character(hal_road$index))]
+hal_tree$streetid <- st_nearest_feature(hal_tree, hal_road)
+# return unique streetid based on index values
+hal_tree$streetid <- hal_road$streetid[match(as.character(hal_tree$streetid), as.character(hal_road$index))]
+# add column with street name
+hal_tree$street <- hal_road$street[match(as.character(hal_tree$streetid), as.character(hal_road$streetid))]
 
 #### Remove park trees ####
 hal_tree <- hal_tree %>% filter(park == "no")
 
 #### Save ####
 # reorder columns
-hal_tree <- hal_tree[,c("city","id","genus","species","cultivar","geometry","hood","street","park","dbh")]# Check and make output
+hal_tree <- hal_tree[,c("city","id","genus","species","cultivar","geometry","hood","streetid","street","park","dbh")]# Check and make output
 # save cleaned Ottawa tree dataset as rds and shapefile
 saveRDS(hal_tree, "large/HalifaxTreesCleaned.rds")
 st_write(hal_tree, "large/HalifaxTreesCleaned.shp")

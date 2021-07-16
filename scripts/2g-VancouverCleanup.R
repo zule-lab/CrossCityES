@@ -57,6 +57,8 @@ van_tree <- van_tree_raw %>%
   rename("street" = "ON_STREET") %>%
   rename("hood" = "NEIGHBOURHOOD_NAME") %>%
   rename("dbh" = "DIAMETER")
+# add streetid column to match other cities
+van_tree$streetid <- c(NA)
 # change case of characters
 van_tree$genus <- str_to_title(van_tree$genus) 
 van_tree$species <- tolower(van_tree$species) 
@@ -65,6 +67,8 @@ van_tree$street <- str_to_title(van_tree$street)
 van_tree$hood <- str_to_title(van_tree$hood) 
 # change "species in species" column to "sp."
 van_tree$species[van_tree$species == "species"] <- "sp."
+# convert empty as NA for cultivar
+van_tree$cultivar[van_tree$cultivar == ""] <- NA
 # converting dbh from inches to cm
 van_tree$dbh <- van_tree$dbh*2.54
 # data is formatted as GeoJSON
@@ -80,6 +84,9 @@ van_tree <- st_transform(van_tree, crs = 6624)
 ## Parks 
 # want to identify which trees are park trees and which are street 
 van_tree <- st_join(van_tree, van_park, join = st_intersects)
+# remove all trees on polygon boundaries after joining with parks by deleting duplicates
+van_dupe <- van_tree$id[duplicated(van_tree$id)]
+van_tree <- van_tree %>% filter(!id %in% van_dupe)
 # replace NAs with "no" to indicate street trees 
 van_tree <- replace_na(van_tree, list(park = "no"))
 # if value is not "no", change value to "yes" so park column is binary yes/no
@@ -90,7 +97,8 @@ van_tree <- van_tree %>% filter(park == "no")
 
 #### Save ####
 # reorder columns
-van_tree <- van_tree[,c("city","id","genus", "species", "cultivar", "geometry","hood","street","park","dbh")]# Check and make output
+van_tree <- van_tree[,c("city","id","genus", "species", "cultivar", "geometry","hood","streetid","street","park","dbh")]# Check and make output
 # save cleaned Vancouver tree dataset as rds and shapefile
 saveRDS(van_tree, "large/VancouverTreesCleaned.rds")
 st_write(van_tree, "large/VancouverTreesCleaned.shp")
+

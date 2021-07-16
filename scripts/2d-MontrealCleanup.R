@@ -41,8 +41,9 @@ mon_tree$var[mon_tree$var %in% c("","var")] <- NA
 mon_treecul <- mon_tree %>% filter(species != "x") %>% unite(cultivar, c("var", "cultivar"), na.rm = TRUE, sep = " ")
 mon_treesp <- mon_tree %>% filter(species == "x") %>% unite(species, c("species", "var"), na.rm = TRUE, sep = " ")
 mon_tree <- rbind(mon_treecul, mon_treesp)
+mon_tree$cultivar[mon_tree$cultivar == ""] <- NA
 # identify which trees are park trees and which are street 
-mon_tree$park <- ifelse(mon_tree$park == "","no","yes")
+mon_tree$park <- ifelse(is.na(mon_tree$park),"no","yes")
 # Converting dbh from mm to cm
 mon_tree$dbh <- mon_tree$dbh/10
 # drop any rows that have NA lat/long
@@ -55,10 +56,10 @@ mon_tree <- st_transform(mon_tree, crs = 6624)
 ## City Boundary & Roads 
 # select Montreal boundary
 mon_bound <- subset(can_bound, bound == "Montreal")
-# select roads within the monifax boundary
+# select roads within the Montreal boundary
 mon_road <- can_road[mon_bound,]
 mon_road <- st_transform(mon_road, crs = 6624)
-mon_road <- select(mon_road, c("streetid", "geometry"))
+mon_road <- select(mon_road, c("street","streetid", "geometry"))
 #add row index numbers as a column for recoding later
 mon_road <- mon_road %>% mutate(index= 1:n())
 #save
@@ -67,17 +68,18 @@ saveRDS(mon_road, "large/MontrealRoadsCleaned.rds")
 #### Spatial Joins ####
 ## Streets
 # st_nearest_feature returns the index value not the street name
-mon_tree$street <- st_nearest_feature(mon_tree, mon_road)
-# replace index values with associated street
-# no available data in table after this code?
-mon_tree$street <- mon_road$streetid[match(as.character(mon_tree$street), as.character(mon_road$index))]
+mon_tree$streetid <- st_nearest_feature(mon_tree, mon_road)
+# return unique streetid based on index values
+mon_tree$streetid <- mon_road$streetid[match(as.character(mon_tree$streetid), as.character(mon_road$index))]
+# add column with street name
+mon_tree$street <- mon_road$street[match(as.character(mon_tree$streetid), as.character(mon_road$streetid))]
 
 #### Remove park trees ####
 mon_tree <- mon_tree %>% filter(park == "no")
 
 #### Save ####
 # reorder columns
-mon_tree <- mon_tree[,c("city","id","genus","species","cultivar","geometry","hood","street","park","dbh")]
+mon_tree <- mon_tree[,c("city","id","genus","species","cultivar","geometry","hood","streetid","street","park","dbh")]
 # save cleaned Ottawa tree dataset as rds and shapefile
 saveRDS(mon_tree, "large/MontrealTreesCleaned.rds")
 st_write(mon_tree, "large/MontrealTreesCleaned.shp")

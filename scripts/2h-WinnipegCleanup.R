@@ -24,13 +24,17 @@ win_tree <- win_tree_raw %>%
   select(c("the_geom","tree_id","botanical","dbh","nbhd","park","street","city")) %>%
   rename("id" = "tree_id") %>%
   rename("hood" = "nbhd")
+# add streetid column to match other cities
+win_tree$streetid <- c(NA)
 # sorting species name into genus, species, and cultivar columns
 win_tree <- win_tree %>% separate(botanical, c("genus","species","var","cultivar"))
 # assign blanks and NAs in species column to "sp."
 win_tree$species[win_tree$species %in% c("", NA,"spp")]<-"sp."
 win_tree$var[win_tree$var == "var"] <- NA
-win_treesp <- win_tree %>% filter(species == "x") %>% unite(species, c("species", "var"), na.rm = TRUE, sep = " ")
-win_treecul <- win_tree %>% filter(species != "x") %>% unite(cultivar, c("var", "cultivar"), na.rm = TRUE, sep = " ")
+win_treesp <- win_tree %>% filter(species == "x") %>% unite(species, c("species", "var"), na.rm = TRUE, sep = " ") %>%
+  mutate(cultivar = na_if(cultivar, ""))
+win_treecul <- win_tree %>% filter(species != "x") %>% unite(cultivar, c("var", "cultivar"), na.rm = TRUE, sep = " ") %>%
+  mutate(cultivar = na_if(cultivar, ""))
 win_tree <- rbind(win_treecul, win_treesp)
 # changing case of hood column
 win_tree$hood <- str_to_title(win_tree$hood)
@@ -51,7 +55,7 @@ win_tree <- win_tree %>% filter(park == "no")
 
 #### Save ####
 # reorder columns
-win_tree <- win_tree[,c("city","id","genus","species","cultivar","geometry","hood","street","park","dbh")]
+win_tree <- win_tree[,c("city","id","genus","species","cultivar","geometry","hood","streetid","street","park","dbh")]
 # save cleaned Winnipeg tree dataset as rds and shapefile
 saveRDS(win_tree, "large/WinnipegTreesCleaned.rds")
 st_write(win_tree, "large/WinnipegTreesCleaned.shp")

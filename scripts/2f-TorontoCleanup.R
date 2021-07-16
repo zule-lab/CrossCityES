@@ -48,13 +48,17 @@ tor_tree <- tor_tree_raw %>%
   rename("id" = "STRUCTID") %>%
   rename("street" = "NAME") %>%
   rename("dbh" = "DBH_TRUNK") 
+# add streetid column to match other cities
+tor_tree$streetid <- c(NA)
 # sorting species name into genus, species, and cultivar columns
 tor_tree <- tor_tree %>% separate(BOTANICAL_, c("genus","species","var","cultivar", "cultivar2"))
 tor_tree$species[tor_tree$species == "sp"] <- "sp."
 tor_tree$species[tor_tree$species == "X"] <- "x"
 tor_tree$var[tor_tree$var == "var"] <- NA
-tor_treecul <- tor_tree %>% filter(species != "x") %>% unite(cultivar, c("var", "cultivar", "cultivar2"), na.rm = TRUE, sep = " ")
-tor_treesp <- tor_tree %>% filter(species == "x") %>% unite(species, c("species", "var"), na.rm = TRUE, sep = " ") %>% unite(cultivar, c("cultivar", "cultivar2"), na.rm = TRUE, sep = " ")
+tor_treecul <- tor_tree %>% filter(species != "x") %>% unite(cultivar, c("var", "cultivar", "cultivar2"), na.rm = TRUE, sep = " ")%>%
+  mutate(cultivar = na_if(cultivar, ""))
+tor_treesp <- tor_tree %>% filter(species == "x") %>% unite(species, c("species", "var"), na.rm = TRUE, sep = " ") %>% unite(cultivar, c("cultivar", "cultivar2"), na.rm = TRUE, sep = " ")%>%
+  mutate(cultivar = na_if(cultivar, ""))
 tor_tree <- rbind(tor_treecul, tor_treesp)
 tor_tree$street <- str_to_title(tor_tree$street)
 # transform
@@ -69,6 +73,9 @@ tor_tree <- st_join(tor_tree, tor_hood, join = st_intersects)
 # want to identify which trees are park trees and which are street 
 # code adds 11 columns to the dataset?? why?
 tor_tree <- st_join(tor_tree, tor_park, join = st_intersects)
+# remove all trees on polygon boundaries after joining with parks by deleting duplicates
+tor_dupe <- tor_tree$id[duplicated(tor_tree$id)]
+tor_tree <- tor_tree %>% filter(!id %in% tor_dupe)
 # replace NAs with "no" to indicate street trees 
 tor_tree <- replace_na(tor_tree, list(park = "no"))
 # if value is not "no", change value to "yes" so park column is binary yes/no
@@ -79,7 +86,7 @@ tor_tree <- tor_tree %>% filter(park == "no")
 
 #### Save ####
 # reorder columns
-tor_tree <- tor_tree[,c("city","id","genus","species","cultivar","geometry","hood","street","park","dbh")]
+tor_tree <- tor_tree[,c("city","id","genus","species","cultivar","geometry","hood","streetid","street","park","dbh")]
 # save cleaned Ottawa tree dataset as rds and shapefile
 saveRDS(tor_tree, "large/TorontoTreesCleaned.rds")
 st_write(tor_tree, "large/TorontoTreesCleaned.shp")
