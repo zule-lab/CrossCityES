@@ -281,7 +281,7 @@ PRCER,Prunus cerasus
 QULY,Quercus lyrata
 SOTH,Sorbus thuringiaca ‘Fastigiata’
 CATO,Carya tomentosa
-UNO,Unknown Species
+UNO,Unknown
 ACGRAN,Acer grandidentatum
 MALBAC,Malus baccata
 ROHIS,Robinia hispida
@@ -293,3 +293,5 @@ CYDOB,Cydonia oblonga
 ALRUB,Alnus Rubra
 BUROAK,Quercus macrocarpa
 BLAOAK,Quercus velutina
+BOAK,Quercus bicolor
+FMAPLE,Acer x fremanii
