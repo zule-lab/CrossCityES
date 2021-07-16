@@ -77,6 +77,11 @@ mon_tree$street <- mon_road$street[match(as.character(mon_tree$streetid), as.cha
 #### Remove park trees ####
 mon_tree <- mon_tree %>% filter(park == "no")
 
+#### Remove trees with incorrect coordinates ####
+# some trees have coordinates that place them outside the city's boundaries
+# remove the erroneous trees using spatial join
+mon_tree <- mon_tree[mon_bound,]
+
 #### Save ####
 # reorder columns
 mon_tree <- mon_tree[,c("city","id","genus","species","cultivar","geometry","hood","streetid","street","park","dbh")]
