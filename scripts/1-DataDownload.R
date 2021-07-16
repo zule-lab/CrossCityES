@@ -182,9 +182,9 @@ can_bound_raw <- read_sf("large/can_bound_raw/lcma000b16a_e.shp")
 # Canada road shapefile
 road_url <- "https://www12.statcan.gc.ca/census-recensement/2011/geo/RNF-FRR/files-fichiers/lrnf000r20a_e.zip"
 # saving to large folder
-road_dest <- "large/can_road.zip"
+road_dest <- "large/can_road_raw.zip"
 download.file(road_url,road_dest, mode="wb")
-unzip(road_dest, exdir="large/can_road")
+unzip(road_dest, exdir="large/can_road_raw")
 can_road_raw <- read_sf("large/can_road_raw/lrnf000r20a_e.shp")
 View(can_road_raw)
 
