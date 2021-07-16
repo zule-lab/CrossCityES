@@ -15,22 +15,8 @@ easypackages::packages("sf", "tidyverse")
 van_tree_raw <-read.csv("input/van_tree_raw.csv", sep=";")
 # parks
 van_park_raw <- read_sf("large/van_park_raw/parks-polygon-representation.shp")
-# neighbourhoods 
-# NOTE: where is this layer? Not in the data download or any folders
-van_hood_raw <- read_sf()
 
 #### Data Cleaning ####
-## Neighbourhoods
-# select neighbourhood name and geometry from hood dataset
-van_hood <- van_hood_raw %>% 
-  select(c("name", "geometry")) %>% 
-  rename("hood" = "name")
-# transform to EPSG: 6624 to be consistent with other layers
-van_hood <- st_transform(van_hood, crs = 6624)
-View(van_hood)
-# save cleaned neighbourhoods layer 
-saveRDS(van_hood, "large/VancouverNeighbourhoodsCleaned.rds")
-
 ## Parks
 # select relevant columns and rename 
 van_park <- van_park_raw %>%
@@ -42,7 +28,6 @@ van_park <- st_transform(van_park, crs = 6624)
 saveRDS(van_park, "large/VancouverParksCleaned.rds")
 
 ## Trees
-# NOTE: only common name for species, requires further sorting
 # check for dupes
 unique(duplicated(van_tree_raw$TREE_ID))
 # add city column
@@ -95,10 +80,13 @@ van_tree$park[van_tree$park != "no"] <- "yes"
 #### Remove park trees ####
 van_tree <- van_tree %>% filter(park == "no")
 
+#### Remove trees with incorrect coordinates ####
+# relevant tree ids: 163416, 271272
+van_tree <- subset(van_tree, c(id != 163416 & id != 271272))
+
 #### Save ####
 # reorder columns
 van_tree <- van_tree[,c("city","id","genus", "species", "cultivar", "geometry","hood","streetid","street","park","dbh")]# Check and make output
 # save cleaned Vancouver tree dataset as rds and shapefile
 saveRDS(van_tree, "large/VancouverTreesCleaned.rds")
-st_write(van_tree, "large/VancouverTreesCleaned.shp")
-
+st_write(van_tree, "large/VancouverTreesCleaned.gpkg", driver = "GPKG")
