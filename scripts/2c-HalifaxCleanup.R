@@ -123,4 +123,4 @@ hal_tree <- hal_tree %>% filter(park == "no")
 hal_tree <- hal_tree[,c("city","id","genus","species","cultivar","geometry","hood","streetid","street","park","dbh")]# Check and make output
 # save cleaned Ottawa tree dataset as rds and shapefile
 saveRDS(hal_tree, "large/HalifaxTreesCleaned.rds")
-st_write(hal_tree, "large/HalifaxTreesCleaned.shp")
+st_write(hal_tree, "large/HalifaxTreesCleaned.gpkg", driver = "GPKG")

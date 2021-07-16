@@ -82,4 +82,4 @@ mon_tree <- mon_tree %>% filter(park == "no")
 mon_tree <- mon_tree[,c("city","id","genus","species","cultivar","geometry","hood","streetid","street","park","dbh")]
 # save cleaned Ottawa tree dataset as rds and shapefile
 saveRDS(mon_tree, "large/MontrealTreesCleaned.rds")
-st_write(mon_tree, "large/MontrealTreesCleaned.shp")
+st_write(mon_tree, "large/MontrealTreesCleaned.gpkg", driver = "GPKG")

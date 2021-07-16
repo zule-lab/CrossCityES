@@ -26,7 +26,6 @@ ott_hood <- ott_hood_raw %>%
   rename("hood" = "Name")
 # transform to EPSG: 6624 to be consistent with other layers
 ott_hood <- st_transform(ott_hood, crs = 6624)
-View(ott_hood)
 # save cleaned neighbourhoods layer 
 saveRDS(ott_hood, "large/OttawaNeighbourhoodsCleaned.rds")
 
@@ -88,4 +87,4 @@ ott_tree <- ott_tree %>% filter(park == "no")
 ott_tree <- ott_tree[,c("city","id","species","geometry","hood","streetid","street","park","dbh")]
 # save cleaned Ottawa tree dataset as rds and shapefile
 saveRDS(ott_tree, "large/OttawaTreesCleaned.rds")
-st_write(ott_tree, "large/OttawaTreesCleaned.shp")
+st_write(ott_tree, "large/OttawaTreesCleaned.gpkg", driver = "GPKG")

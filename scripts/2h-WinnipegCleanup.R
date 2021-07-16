@@ -58,4 +58,4 @@ win_tree <- win_tree %>% filter(park == "no")
 win_tree <- win_tree[,c("city","id","genus","species","cultivar","geometry","hood","streetid","street","park","dbh")]
 # save cleaned Winnipeg tree dataset as rds and shapefile
 saveRDS(win_tree, "large/WinnipegTreesCleaned.rds")
-st_write(win_tree, "large/WinnipegTreesCleaned.shp")
+st_write(win_tree, "large/WinnipegTreesCleaned.gpkg", driver = "GPKG")

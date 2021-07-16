@@ -89,4 +89,4 @@ tor_tree <- tor_tree %>% filter(park == "no")
 tor_tree <- tor_tree[,c("city","id","genus","species","cultivar","geometry","hood","streetid","street","park","dbh")]
 # save cleaned Ottawa tree dataset as rds and shapefile
 saveRDS(tor_tree, "large/TorontoTreesCleaned.rds")
-st_write(tor_tree, "large/TorontoTreesCleaned.shp")
+st_write(tor_tree, "large/TorontoTreesCleaned.gpkg", driver = "GPKG")
