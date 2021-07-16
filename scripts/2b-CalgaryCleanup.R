@@ -109,4 +109,4 @@ cal_tree <- cal_tree %>% filter(park == "no")
 cal_tree <- cal_tree[,c("city","id","genus", "species", "cultivar", "geometry","hood","streetid","street","park","dbh")]# Check and make output
 # save cleaned Ottawa tree dataset as rds and shapefile
 saveRDS(cal_tree, "large/CalgaryTreesCleaned.rds")
-st_write(cal_tree, "large/CalgaryTreesCleaned.shp")
+st_write(cal_tree, "large/CalgaryTreesCleaned.gpkg", driver="GPKG")
