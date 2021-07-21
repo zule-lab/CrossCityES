@@ -197,3 +197,20 @@ hal_tree_spcode <-read.csv("input/hal_tree_spcode.csv")
 hal_tree_dbhcode <-read.csv("input/hal_tree_dbhcode.csv", row.names = NULL)
 # Montreal neighbourhood code
 mon_tree_hoodcode <-read.csv("input/mon_tree_hoodcode.csv", row.names = NULL)
+
+### 2016 Census data ###
+# Forward sortation area boundaries
+fsa_bound_url <- "https://www12.statcan.gc.ca/census-recensement/2011/geo/bound-limit/files-fichiers/2016/lfsa000b16a_e.zip" 
+fsa_bound_dest <- "large/fsa_bound_raw.zip"
+download.file(fsa_bound_url,fsa_bound_dest, mode="wb")
+unzip(fsa_bound_dest, exdir="large/fsa_bound_raw")
+# saving to large folder
+can_fsa_raw <- read_sf("large/fsa_bound_raw/lfsa000b16a_e.shp")
+
+# Census Survey Data
+# census Data downloaded is at the geographic scale of forward sortation areas
+can_cen_url <- "https://www12.statcan.gc.ca/census-recensement/2016/dp-pd/prof/details/download-telecharger/comp/GetFile.cfm?Lang=E&FILETYPE=CSV&GEONO=046"
+can_cen_dest <- "input/can_cen_raw.zip"
+download.file(can_cen_url,can_cen_dest, mode="wb")
+unzip(can_cen_dest, exdir="input/can_cen_raw")
+can_cen_raw <- read.csv("input/can_cen_raw/98-401-X2016046_English_CSV_data.csv")
