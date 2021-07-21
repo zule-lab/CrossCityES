@@ -20,6 +20,8 @@ cal_hood_raw <- read_csv("input/cal_hood_raw.csv")
 can_bound <- readRDS("large/MunicipalBoundariesCleaned.rds")
 # roads
 can_road <- readRDS("large/RoadsCleaned.rds")
+# forward sortation areas
+fsa_bound <- readRDS("large/FSACleaned.rds")
 
 #### Data Cleaning ####
 ## Neighbourhoods
@@ -100,13 +102,16 @@ cal_tree$streetid <- st_nearest_feature(cal_tree, cal_road)
 cal_tree$streetid <- cal_road$streetid[match(as.character(cal_tree$streetid), as.character(cal_road$index))]
 # add column with street name
 cal_tree$street <- cal_road$street[match(as.character(cal_tree$streetid), as.character(cal_road$streetid))]
+## Forward Sortation Areas
+# assign forward sortation areas based on 2016 census data
+cal_tree <- st_join(cal_tree, fsa_bound, join = st_intersects)
 
 #### Remove park trees ####
 cal_tree <- cal_tree %>% filter(park == "no")
 
 #### Save ####
 # reorder columns
-cal_tree <- cal_tree[,c("city","id","genus", "species", "cultivar", "geometry","hood","streetid","street","park","dbh")]# Check and make output
-# save cleaned Ottawa tree dataset as rds and shapefile
+cal_tree <- cal_tree[,c("city","id","genus", "species", "cultivar", "geometry","hood","streetid","street","park","fsa","dbh")]# Check and make output
+# save cleaned Calgary tree dataset as rds and shapefile
 saveRDS(cal_tree, "large/CalgaryTreesCleaned.rds")
 st_write(cal_tree, "large/CalgaryTreesCleaned.gpkg", driver="GPKG")
