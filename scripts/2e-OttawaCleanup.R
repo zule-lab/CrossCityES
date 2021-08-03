@@ -16,19 +16,9 @@ ott_tree_raw <- read_csv("input/ott_tree_raw.csv")
 # parks
 ott_park_raw <- read_sf("large/ott_park_raw/Parks_and_Greenspace.shp")
 # neighbourhoods 
-ott_hood_raw <- read_sf("large/ott_hood_raw/Ottawa_Neighbourhood_Study_(ONS)_-_Neighbourhood_Boundaries_Gen_2.shp")
+ott_hood <- readRDS("large/OttawaNeighbourhoodsCleaned.rds")
 
 #### Data Cleaning ####
-## Neighbourhoods
-# select neighbourhood name and geometry from hood dataset
-ott_hood <- ott_hood_raw %>% 
-  select(c("Name", "geometry")) %>% 
-  rename("hood" = "Name")
-# transform to EPSG: 6624 to be consistent with other layers
-ott_hood <- st_transform(ott_hood, crs = 6624)
-# save cleaned neighbourhoods layer 
-saveRDS(ott_hood, "large/OttawaNeighbourhoodsCleaned.rds")
-
 ## Parks
 # select relevant columns and rename 
 ott_park <- ott_park_raw %>%

@@ -16,17 +16,9 @@ tor_tree_raw <- read_sf("large/tor_tree_raw/TMMS_Open_Data_WGS84.shp")
 # parks
 tor_park_raw <- read_sf("large/tor_park_raw/CITY_GREEN_SPACE_WGS84.shp")
 # neighbourhoods
-tor_hood_raw <- read_sf("large/tor_hood_raw/Neighbourhoods.shp")
+tor_hood <- readRDS("large/TorontoNeighbourhoodsCleaned.rds")
 
 #### Data Cleaning ####
-## Neighbourhoods
-# select neighbourhood name and geometry from hood dataset
-tor_hood <- tor_hood_raw %>% 
-  select(c("FIELD_8", "geometry")) %>% 
-  rename("hood" = "FIELD_8")
-# transform to EPSG: 6624 to be consistent with other layers
-tor_hood <- st_transform(tor_hood, crs = 6624)
-
 ## Parks
 # select relevant columns and rename 
 tor_park <- tor_park_raw %>%

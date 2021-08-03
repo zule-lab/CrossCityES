@@ -20,19 +20,10 @@ cal_hood_raw <- read_csv("input/cal_hood_raw.csv")
 can_bound <- readRDS("large/MunicipalBoundariesCleaned.rds")
 # roads
 can_road <- readRDS("large/RoadsCleaned.rds")
-# forward sortation areas
-fsa_bound <- readRDS("large/FSACleaned.rds")
+# dissemination areas
+dsa_bound <- readRDS("large/DSACleaned.rds")
 
 #### Data Cleaning ####
-## Neighbourhoods
-# select neighbourhood codes and names columns and rename
-cal_hood <- cal_hood_raw %>% 
-  select(c("NAME", "COMM_CODE")) %>% 
-  rename("hood" = "NAME") %>% 
-  rename("code" = "COMM_CODE")
-# change case of hood names
-cal_hood$hood <- str_to_title(cal_hood$hood) 
-
 ## Parks
 # select relevant columns and rename 
 cal_park <- cal_park_raw %>%
@@ -63,7 +54,8 @@ cal_tree$species[cal_tree$species %in% c("",NA)]<-"sp."
 # remove quotations from cultivar names 
 cal_tree$cultivar <- substr(cal_tree$cultivar,2,nchar(cal_tree$cultivar)-1)
 # replace neighbourhood code in tree dataset with actual neighbourhood names 
-cal_tree$hood <- cal_hood$hood[match(as.character(cal_tree$COMM_CODE), as.character(cal_hood$code))]
+cal_tree$hood <- cal_hood_raw$NAME[match(as.character(cal_tree$COMM_CODE), as.character(cal_hood_raw$COMM_CODE))]
+cal_tree$hood <- str_to_title(cal_tree$hood) 
 cal_tree$COMM_CODE <- NULL
 # drop geometry NAs
 cal_tree <- drop_na(cal_tree, c(latitude,longitude))
@@ -104,14 +96,14 @@ cal_tree$streetid <- cal_road$streetid[match(as.character(cal_tree$streetid), as
 cal_tree$street <- cal_road$street[match(as.character(cal_tree$streetid), as.character(cal_road$streetid))]
 ## Forward Sortation Areas
 # assign forward sortation areas based on 2016 census data
-cal_tree <- st_join(cal_tree, fsa_bound, join = st_intersects)
+cal_tree <- st_join(cal_tree, dsa_bound, join = st_intersects)
 
 #### Remove park trees ####
 cal_tree <- cal_tree %>% filter(park == "no")
 
 #### Save ####
 # reorder columns
-cal_tree <- cal_tree[,c("city","id","genus", "species", "cultivar", "geometry","hood","streetid","street","park","fsa","dbh")]# Check and make output
+cal_tree <- cal_tree[,c("city","id","genus", "species", "cultivar", "geometry","hood","streetid","street","park","dsa","dbh")]# Check and make output
 # save cleaned Calgary tree dataset as rds and shapefile
 saveRDS(cal_tree, "large/CalgaryTreesCleaned.rds")
 st_write(cal_tree, "large/CalgaryTreesCleaned.gpkg", driver="GPKG")

@@ -15,7 +15,7 @@ hal_tree_raw <- read_csv("input/hal_tree_raw.csv")
 # parks
 hal_park_raw <- read_sf("large/hal_park_raw/HRM_Parks.shp")
 # neighbourhoods 
-hal_hood_raw <- read_sf("large/hal_hood_raw/Community_Boundaries.shp")
+hal_hood <- readRDS("large/HalifaxNeighbourhoodsCleaned.rds")
 # tree species code
 hal_tree_spcode <-read.csv("input/hal_tree_spcode.csv", row.names = NULL)
 # tree dbh code
@@ -26,18 +26,6 @@ can_bound <- readRDS("large/MunicipalBoundariesCleaned.rds")
 can_road <- readRDS("large/RoadsCleaned.rds")
   
 #### Data Cleaning ####
-## Neighbourhoods
-# select neighbourhood name and geometry from hood dataset
-hal_hood <- hal_hood_raw %>% 
-  select(c("GSA_NAME", "geometry")) %>% 
-  rename("hood" = "GSA_NAME")
-# change case of hood names
-hal_hood$hood <- str_to_title(hal_hood$hood)
-# transform to EPSG: 6624 to be consistent with other layers
-hal_hood <- st_transform(hal_hood, crs = 6624)
-# save cleaned neighbourhoods layer 
-saveRDS(hal_hood, "large/HalifaxNeighbourhoodsCleaned.rds")
-
 ## Parks
 # select relevant columns and rename 
 hal_park <- hal_park_raw %>%
