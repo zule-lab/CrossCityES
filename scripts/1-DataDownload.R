@@ -17,7 +17,6 @@ options(timeout=600)
 # instead of input/ so they are not tracked on Git
 
 ### Neighborhood data downloads ###
-## Excluding Montreal, Vancouver and Winnipeg
 ## Calgary neighbourhood data download
 cal_hood_url <- "https://data.calgary.ca/api/views/surr-xmvs/rows.csv?accessType=DOWNLOAD"
 cal_hood_dest <- "input/cal_hood_raw.csv"
@@ -32,6 +31,14 @@ download.file(hal_hood_url,hal_hood_dest, mode="wb")
 unzip(hal_hood_dest, exdir="large/hal_hood_raw")
 hal_hood_raw <- read_sf("large/hal_hood_raw/Community_Boundaries.shp")
 View(hal_hood_raw)
+
+## Montreal neighbourhood data download
+mon_hood_url <- "https://data.montreal.ca/dataset/00bd85eb-23aa-4669-8f1b-ba9a000e3dd8/resource/62f7ce10-36ce-4bbd-b419-8f0a10d3b280/download/limadmin-shp.zip"
+mon_hood_dest <- "large/mon_hood_raw.zip"
+download.file(mon_hood_url,mon_hood_dest, mode="wb")
+unzip(mon_hood_dest, exdir="large/mon_hood_raw")
+mon_hood_raw <- read_sf("large/mon_hood_raw/LIMADMIN.shp")
+View(mon_hood_raw)
 
 ## Ottawa neighbourhood data download
 ott_hood_url <- "https://opendata.arcgis.com/api/v3/datasets/32fe76b71c5e424fab19fec1f180ec18_0/downloads/data?format=shp&spatialRefId=4326"
@@ -48,6 +55,22 @@ download.file(tor_hood_url,tor_hood_dest, mode="wb")
 unzip(tor_hood_dest, exdir="large/tor_hood_raw")
 tor_hood_raw <- read_sf("large/tor_hood_raw/Neighbourhoods.shp")
 View(tor_hood_raw)
+
+## Vancouver neighbourhood data download
+van_hood_url <- "https://opendata.vancouver.ca/explore/dataset/local-area-boundary/download/?format=shp&timezone=Asia/Shanghai&lang=enn"
+van_hood_dest <- "large/van_hood_raw.zip"
+download.file(van_hood_url,van_hood_dest, mode="wb")
+unzip(van_hood_dest, exdir="large/van_hood_raw")
+van_hood_raw <- read_sf("large/van_hood_raw/local-area-boundary.shp")
+View(van_hood_raw)
+
+## Winnipeg neighbourhood data download
+win_hood_url <- "https://data.winnipeg.ca/api/geospatial/fen6-iygi?method=export&format=Shapefile"
+win_hood_dest <- "large/win_hood_raw.zip"
+download.file(win_hood_url,win_hood_dest, mode="wb")
+unzip(win_hood_dest, exdir="large/win_hood_raw")
+win_hood_raw <- read_sf("large/win_hood_raw/geo_export_a47a3525-fc99-4728-9039-eefec3dcf2de.shp")
+View(win_hood_raw)
 
 ### Park data downloads
 ## Excluding Montreal and Winnipeg
@@ -199,18 +222,18 @@ hal_tree_dbhcode <-read.csv("input/hal_tree_dbhcode.csv", row.names = NULL)
 mon_tree_hoodcode <-read.csv("input/mon_tree_hoodcode.csv", row.names = NULL)
 
 ### 2016 Census data ###
-# Forward sortation area boundaries
-fsa_bound_url <- "https://www12.statcan.gc.ca/census-recensement/2011/geo/bound-limit/files-fichiers/2016/lfsa000b16a_e.zip" 
-fsa_bound_dest <- "large/fsa_bound_raw.zip"
-download.file(fsa_bound_url,fsa_bound_dest, mode="wb")
-unzip(fsa_bound_dest, exdir="large/fsa_bound_raw")
-# saving to large folder
-can_fsa_raw <- read_sf("large/fsa_bound_raw/lfsa000b16a_e.shp")
+# Dissemination area boundaries
+dsa_bound_url <- "https://www12.statcan.gc.ca/census-recensement/2011/geo/bound-limit/files-fichiers/2016/lda_000b16a_e.zip" 
+dsa_bound_dest <- "large/dsa_bound_raw.zip"
+download.file(dsa_bound_url,dsa_bound_dest, mode="wb")
+unzip(dsa_bound_dest, exdir="large/dsa_bound_raw")
+dsa_bound_raw <- read_sf("large/dsa_bound_raw/lda_000b16a_e.shp")
 
 # Census Survey Data
-# census Data downloaded is at the geographic scale of forward sortation areas
-can_cen_url <- "https://www12.statcan.gc.ca/census-recensement/2016/dp-pd/prof/details/download-telecharger/comp/GetFile.cfm?Lang=E&FILETYPE=CSV&GEONO=046"
-can_cen_dest <- "input/can_cen_raw.zip"
+# census Data downloaded is at the geographic scale of provinces, territories, census divisions (CDs), census subdivisions (CSDs), and dissemination areas (DAs)
+can_cen_url <- "https://www12.statcan.gc.ca/census-recensement/2016/dp-pd/prof/details/download-telecharger/comp/GetFile.cfm?Lang=E&FILETYPE=CSV&GEONO=044"
+# saving to large folder
+can_cen_dest <- "large/can_cen_raw.zip"
 download.file(can_cen_url,can_cen_dest, mode="wb")
-unzip(can_cen_dest, exdir="input/can_cen_raw")
-can_cen_raw <- read.csv("input/can_cen_raw/98-401-X2016046_English_CSV_data.csv")
+unzip(can_cen_dest, exdir="large/can_cen_raw")
+can_cen_raw <- read.csv("large/can_cen_raw/98-401-X2016044_English_CSV_data.csv")
