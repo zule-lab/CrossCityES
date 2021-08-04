@@ -2,7 +2,7 @@
 # Author: Nicole Yu
 
 # This script is for cleaning the Winnipeg public tree inventory
-# Winnipeg dataset has neighbourhood, streett and park/street column
+# Winnipeg dataset has neighbourhood, street and park/street column
 
 #### Packages #### 
 # load packages 

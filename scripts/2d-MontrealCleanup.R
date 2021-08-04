@@ -22,7 +22,6 @@ can_road <- readRDS("large/RoadsCleaned.rds")
 ## Trees
 # NOTE: only common name for species, requires further sorting
 # Check for dupes
-colnames(mon_tree_raw)
 unique(duplicated(mon_tree_raw))
 # add city column
 mon_tree_raw$city <- c("Montreal")
