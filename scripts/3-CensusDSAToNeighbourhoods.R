@@ -6,16 +6,16 @@ easypackages::packages("tidyverse","sf")
 
 #### Data ####
 # Cleaned Neighbourhood boundary data
-all_hood <- readRDS("large/AllNeighbourhoodsCleaned.rds")
+can_hood <- readRDS("large/AllNeighbourhoodsCleaned.rds")
 # Cleaned 2016 Census survey data with spatial coordinates 
 can_cen <- readRDS("large/CensusDSACleaned.rds")
 
 #### Spatially weighted join ####
 ## Use a spatially weighted join to get the mean values of each dissemination area within each Calgary neighbourhood
 # find all the DSAs that intersect with each neighbourhood
-hood_cen <- st_intersection(all_hood, can_cen)
+hood_cen <- st_intersection(can_hood, can_cen)
  # calculate the area of each DSA, weight of each DSA, and the weighted mean
-all_hood_cen <- cal_hood_cen %>%
+can_hood_cen <- can_hood_cen %>%
   select(c("dsa","city","hood","totpop","opdwel","sideho","aptfiv","oadwel","semhou","rowhou","aptdup","aptbui","otsiho","mvdwel",
            "totpri","prione","pritwo","prithr","prifou","prifiv","numper","avhosi","medtax","medemp","empinc")) %>%
   group_by(hood) %>% 
@@ -23,7 +23,7 @@ all_hood_cen <- cal_hood_cen %>%
   mutate(weight = as.numeric(area / sum(area))) %>%
   mutate(wmean = weighted.mean(as.numeric(totpop), as.numeric(area)))
 # make new dataset with one entry per neighbourhood 
-cal_hood_sum <- cal_hood_cen %>%
+can_hood_sum <- can_hood_cen %>%
   group_by(hood) %>% 
   mutate(DSAcount = n()) %>%
   mutate(weight = sum(weight)) %>%
@@ -53,5 +53,5 @@ cal_hood_sum <- cal_hood_cen %>%
   mutate(empinc = median(as.numeric(empinc))) %>%
   distinct(hood, .keep_all = TRUE)
 # save
-saveRDS(cal_hood_sum, "large/NeighbourhoodsCensusSum.rds")
-st_write(cal_hood_sum, "large/NeighbourhoodsCensusSum.gpkg", driver = "GPKG")
+saveRDS(can_hood_sum, "large/NeighbourhoodsCensusSum.rds")
+st_write(can_hood_sum, "large/NeighbourhoodsCensusSum.gpkg", driver = "GPKG")
