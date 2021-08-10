@@ -13,6 +13,8 @@ easypackages::packages("sf", "tidyverse")
 # load data downloaded in 1-DataDownload.R
 # tree inventory
 mon_tree_raw <- read_csv("large/mon_tree_raw.csv")
+# neighbourhoods
+mon_hood <- readRDS("large/MontrealNeighbourhoodsCleaned.rds")
 # municipal boundaries 
 can_bound <- readRDS("large/MunicipalBoundariesCleaned.rds")
 # roads
@@ -23,12 +25,9 @@ can_road <- readRDS("large/RoadsCleaned.rds")
 # NOTE: only common name for species, requires further sorting
 # Check for dupes
 unique(duplicated(mon_tree_raw))
-# add city column
-mon_tree_raw$city <- c("Montreal")
 # select the required columns and rename
 mon_tree <- mon_tree_raw %>%
-  select(c("ARROND_NOM","Essence_latin","DHP","CODE_PARC","Longitude","Latitude","city")) %>%
-  rename("hood" = "ARROND_NOM") %>%
+  select(c("Essence_latin","DHP","CODE_PARC","Longitude","Latitude")) %>%
   rename("dbh" = "DHP") %>%
   rename("park" = "CODE_PARC") 
 # adding id column
@@ -65,6 +64,8 @@ mon_road <- mon_road %>% mutate(index= 1:n())
 saveRDS(mon_road, "large/MontrealRoadsCleaned.rds")
 
 #### Spatial Joins ####
+## Neighbourhoods
+mon_tree <- st_join(mon_tree, mon_hood)
 ## Streets
 # st_nearest_feature returns the index value not the street name
 mon_tree$streetid <- st_nearest_feature(mon_tree, mon_road)
@@ -77,7 +78,7 @@ mon_tree$street <- mon_road$street[match(as.character(mon_tree$streetid), as.cha
 mon_tree <- mon_tree %>% filter(park == "no")
 
 #### Remove trees with incorrect coordinates ####
-# some trees have coordinates that place them outside the city's boundaries
+# some trees may have coordinates that place them outside the city's boundaries
 # remove the erroneous trees using spatial join
 mon_tree <- mon_tree[mon_bound,]
 
@@ -87,3 +88,4 @@ mon_tree <- mon_tree[,c("city","id","genus","species","cultivar","geometry","hoo
 # save cleaned Ottawa tree dataset as rds and shapefile
 saveRDS(mon_tree, "large/MontrealTreesCleaned.rds")
 st_write(mon_tree, "large/MontrealTreesCleaned.gpkg", driver = "GPKG")
+

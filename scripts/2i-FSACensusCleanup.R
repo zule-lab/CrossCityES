@@ -2,8 +2,7 @@
 # Author: Nicole Yu & Isabella Richmond
 
 #### Packages ####
-easypackages::packages("tidyverse","sf","data.table", "bit64")
-install.packages("data.table")
+easypackages::packages("tidyverse","sf","data.table")
 
 #### Data ####
 # Cleaned canada boundary data

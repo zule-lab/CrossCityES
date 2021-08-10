@@ -15,7 +15,7 @@ cal_tree_raw <- read_csv("large/cal_tree_raw.csv")
 # parks
 cal_park_raw <- read_csv("input/cal_park_raw.csv")
 # neighbourhoods 
-cal_hood_raw <- read_csv("input/cal_hood_raw.csv")
+cal_hood <- readRDS("large/CalgaryNeighbourhoodsCleaned.rds")
 # municipal boundaries 
 can_bound <- readRDS("large/MunicipalBoundariesCleaned.rds")
 # roads
@@ -39,11 +39,9 @@ saveRDS(cal_park, "large/CalgaryParksCleaned.rds")
 ## Trees
 # check for dupes
 unique(duplicated(cal_tree_raw$WAM_ID))
-# add city column
-cal_tree_raw$city <- c("Calgary")
 # select the required columns and rename 
 cal_tree <- cal_tree_raw %>%
-  select(c("GENUS", "SPECIES", "CULTIVAR", "DBH_CM", "WAM_ID", "COMM_CODE", "latitude", "longitude","city")) %>%
+  select(c("GENUS", "SPECIES", "CULTIVAR", "DBH_CM", "WAM_ID", "latitude", "longitude")) %>%
   rename("genus" = "GENUS") %>% 
   rename("species" = "SPECIES") %>%
   rename("cultivar" = "CULTIVAR") %>%
@@ -53,10 +51,6 @@ cal_tree <- cal_tree_raw %>%
 cal_tree$species[cal_tree$species %in% c("",NA)]<-"sp."
 # remove quotations from cultivar names 
 cal_tree$cultivar <- substr(cal_tree$cultivar,2,nchar(cal_tree$cultivar)-1)
-# replace neighbourhood code in tree dataset with actual neighbourhood names 
-cal_tree$hood <- cal_hood_raw$NAME[match(as.character(cal_tree$COMM_CODE), as.character(cal_hood_raw$COMM_CODE))]
-cal_tree$hood <- str_to_title(cal_tree$hood) 
-cal_tree$COMM_CODE <- NULL
 # drop geometry NAs
 cal_tree <- drop_na(cal_tree, c(latitude,longitude))
 # convert to sf object 
@@ -77,6 +71,10 @@ cal_road <- cal_road %>% mutate(index= 1:n())
 saveRDS(cal_road, "large/CalgaryRoadsCleaned.rds")
 
 #### Spatial Joins ####
+## Neighbourhoods
+# want to add columns that specifies what city and neighbourhood each tree belongs to
+# join trees and neighbourhoods using st_intersects
+cal_tree <- st_join(cal_tree, cal_hood, join = st_intersects)
 ## Parks 
 # want to identify which trees are park trees and which are street 
 cal_tree <- st_join(cal_tree, cal_park, join = st_intersects)
@@ -94,12 +92,17 @@ cal_tree$streetid <- st_nearest_feature(cal_tree, cal_road)
 cal_tree$streetid <- cal_road$streetid[match(as.character(cal_tree$streetid), as.character(cal_road$index))]
 # add column with street name
 cal_tree$street <- cal_road$street[match(as.character(cal_tree$streetid), as.character(cal_road$streetid))]
-## Forward Sortation Areas
+## Dissemination Areas
 # assign forward sortation areas based on 2016 census data
-cal_tree <- st_join(cal_tree, dsa_bound, join = st_intersects)
+cal_tree <- st_join(cal_tree, can_cen, join = st_intersects)
 
 #### Remove park trees ####
 cal_tree <- cal_tree %>% filter(park == "no")
+
+#### Remove trees with incorrect coordinates ####
+# some trees may have coordinates that place them outside the city's boundaries
+# remove the erroneous trees using spatial join
+cal_tree <- cal_tree[cal_bound,]
 
 #### Save ####
 # reorder columns

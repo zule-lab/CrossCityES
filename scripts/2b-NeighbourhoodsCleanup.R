@@ -1,4 +1,4 @@
-# Script to cleanup Canada roads and city boundary raw data
+# Script to clean up Canada roads and city boundary raw data
 # Author: Nicole Yu & Isabella Richmond
 
 #### Packages ####
@@ -26,7 +26,8 @@ win_hood_raw <- read_sf("large/win_hood_raw/geo_export_a47a3525-fc99-4728-9039-e
 cal_hood <- cal_hood_raw %>% 
   select(c("NAME", "the_geom")) %>% 
   rename("hood" = "NAME") %>% 
-  rename("geometry" = "the_geom")
+  rename("geometry" = "the_geom") %>%
+  mutate(city = c("Calgary"))
 # change case of hood names
 cal_hood$hood <- str_to_title(cal_hood$hood) 
 # convert to sf object
@@ -37,10 +38,13 @@ saveRDS(cal_hood, "large/CalgaryNeighbourhoodsCleaned.rds")
 st_write(cal_hood, "large/CalgaryNeighbourhoodsCleaned.gpkg", driver = "GPKG")
 
 ## Halifax
-# select neighbourhood name and geometry from hood dataset
+# add city column, select neighbourhood and geometry from hood dataset
+# Halifax peninsula is considered to be one neighbourhood
 hal_hood <- hal_hood_raw %>% 
   select(c("GSA_NAME", "geometry")) %>% 
-  rename("hood" = "GSA_NAME")
+  rename("hood" = "GSA_NAME") %>% 
+  filter(hood == "HALIFAX") %>%
+  mutate(city = c("Halifax"))
 # change case of hood names
 hal_hood$hood <- str_to_title(hal_hood$hood)
 # transform to EPSG: 6624 to be consistent with other layers
@@ -52,7 +56,8 @@ st_write(hal_hood, "large/HalifaxNeighbourhoodsCleaned.gpkg", driver = "GPKG")
 ## Montreal
 # select neighbourhood name and geometry from hood dataset
 mon_hood <- mon_hood_raw %>% select(c("NOM","geometry")) %>%
-  rename("hood" = "NOM")
+  rename("hood" = "NOM") %>%
+  mutate(city = c("Montreal"))
 # transform
 mon_hood <- st_transform(mon_hood,crs = 6624)
 # save
@@ -63,7 +68,8 @@ st_write(mon_hood, "large/MontrealNeighbourhoodsCleaned.gpkg", driver = "GPKG")
 # select neighbourhood name and geometry from hood dataset
 ott_hood <- ott_hood_raw %>% 
   select(c("Name", "geometry")) %>% 
-  rename("hood" = "Name")
+  rename("hood" = "Name") %>%
+  mutate(city = c("Ottawa"))
 # transform
 ott_hood <- st_transform(ott_hood, crs = 6624)
 # save cleaned neighbourhoods layer 
@@ -73,7 +79,8 @@ st_write(ott_hood, "large/OttawaNeighbourhoodsCleaned.gpkg", driver = "GPKG")
 ## Toronto
 # select neighbourhood name and geometry from hood dataset
 tor_hood <- tor_hood_raw %>% select(c("FIELD_8", "geometry")) %>% 
-  rename("hood" = "FIELD_8")
+  rename("hood" = "FIELD_8")%>%
+  mutate(city = c("Toronto"))
 # transform
 tor_hood <- st_transform(tor_hood, crs = 6624)
 # save
@@ -83,7 +90,8 @@ st_write(tor_hood, "large/TorontoNeighbourhoodsCleaned.gpkg", driver = "GPKG")
 ## Vancouver
 # select neighbourhood name and geometry from hood dataset
 van_hood <- van_hood_raw %>% select(c("name","geometry"))%>%
-  rename(hood = "name")
+  rename(hood = "name") %>%
+  mutate(city = c("Vancouver"))
 # transform
 van_hood <- st_transform(van_hood,crs = 6624)
 # save
@@ -92,11 +100,17 @@ st_write(van_hood, "large/VancouverNeighbourhoodsCleaned.gpkg", driver = "GPKG")
 
 ## Winnipeg
 # rename neighbourhood name column
-win_hood <- win_hood_raw %>% select(c(,"name","geometry")) %>%
-  rename(hood = "name")
+win_hood <- win_hood_raw %>% select(c("name","geometry")) %>%
+  rename(hood = "name") %>%
+  mutate(city = c("Winnipeg"))
 # transform
 win_hood <- st_transform(win_hood,crs = 6624)
 # save
 saveRDS(win_hood, "large/WinnipegNeighbourhoodsCleaned.rds")
 st_write(win_hood, "large/WinnipegNeighbourhoodsCleaned.gpkg", driver = "GPKG")
-  
+
+## Combine all neighbourhoods of all cities
+can_hood <- rbind(cal_hood, hal_hood, mon_hood, ott_hood, tor_hood, van_hood, win_hood)
+# save
+saveRDS(can_hood, "large/AllNeighbourhoodsCleaned.rds")
+st_write(can_hood, "large/AllNeighbourhoodsCleaned.gpkg", driver = "GPKG")

@@ -2,12 +2,12 @@
 # Authors: Nicole Yu & Isabella Richmond
 
 #### Packages ####
-# if installing sf for the first time on mac, use line 6
+# if installing sf, data.table for the first time on mac, use line 6 and 7
 # install.packages("sf", configure.args = "--with-proj-lib=/usr/local/lib/")
-easypackages::packages("sf", "downloader", "tidyverse")
+# install.packages("data.table", type = "source",repos = "https://Rdatatable.gitlab.io/data.table")
+easypackages::packages("sf", "downloader", "tidyverse", "data.table", "bit64")
 
 #### Setting download time ####
-
 # Need a longer timeout for roads and bounds 
 getOption('timeout')
 options(timeout=600)
@@ -222,7 +222,7 @@ hal_tree_dbhcode <-read.csv("input/hal_tree_dbhcode.csv", row.names = NULL)
 mon_tree_hoodcode <-read.csv("input/mon_tree_hoodcode.csv", row.names = NULL)
 
 ### 2016 Census data ###
-# Dissemination area boundaries
+# Dissemination Area boundaries
 dsa_bound_url <- "https://www12.statcan.gc.ca/census-recensement/2011/geo/bound-limit/files-fichiers/2016/lda_000b16a_e.zip" 
 dsa_bound_dest <- "large/dsa_bound_raw.zip"
 download.file(dsa_bound_url,dsa_bound_dest, mode="wb")
@@ -230,10 +230,11 @@ unzip(dsa_bound_dest, exdir="large/dsa_bound_raw")
 dsa_bound_raw <- read_sf("large/dsa_bound_raw/lda_000b16a_e.shp")
 
 # Census Survey Data
-# census Data downloaded is at the geographic scale of provinces, territories, census divisions (CDs), census subdivisions (CSDs), and dissemination areas (DAs)
+# census data downloaded is at the geographic scale of provinces, territories, census divisions (CDs), census subdivisions (CSDs), and dissemination areas (DAs)
 can_cen_url <- "https://www12.statcan.gc.ca/census-recensement/2016/dp-pd/prof/details/download-telecharger/comp/GetFile.cfm?Lang=E&FILETYPE=CSV&GEONO=044"
 # saving to large folder
 can_cen_dest <- "large/can_cen_raw.zip"
 download.file(can_cen_url,can_cen_dest, mode="wb")
 unzip(can_cen_dest, exdir="large/can_cen_raw")
-can_cen_raw <- read.csv("large/can_cen_raw/98-401-X2016044_English_CSV_data.csv")
+can_cen_raw <- fread("large/can_cen_raw/98-401-X2016044_English_CSV_data.csv")
+

@@ -1,19 +1,22 @@
+# Script to spatially weigh census data by dissemination areas into neighbourhoods
+# Author: Nicole Yu & Isabella Richmond
+
 #### Packages ####
-easypackages::packages("sf", "tidyverse")
+easypackages::packages("tidyverse","sf")
 
 #### Data ####
-# Cleaned Calgary Neighbourhood boundary data
-cal_hood <- readRDS("large/CalgaryNeighbourhoodsCleaned.rds")
+# Cleaned Neighbourhood boundary data
+all_hood <- readRDS("large/AllNeighbourhoodsCleaned.rds")
 # Cleaned 2016 Census survey data with spatial coordinates 
 can_cen <- readRDS("large/CensusDSACleaned.rds")
 
 #### Spatially weighted join ####
 ## Use a spatially weighted join to get the mean values of each dissemination area within each Calgary neighbourhood
 # find all the DSAs that intersect with each neighbourhood
-cal_hood_cen <- st_intersection(cal_hood, can_cen)
-# calculate the area of each DSA, weight of each DSA, and the weighted mean
-cal_hood_cen <- cal_hood_cen %>%
-  select(c("dsa","hood","totpop","opdwel","sideho","aptfiv","oadwel","semhou","rowhou","aptdup","aptbui","otsiho","mvdwel",
+hood_cen <- st_intersection(all_hood, can_cen)
+ # calculate the area of each DSA, weight of each DSA, and the weighted mean
+all_hood_cen <- cal_hood_cen %>%
+  select(c("dsa","city","hood","totpop","opdwel","sideho","aptfiv","oadwel","semhou","rowhou","aptdup","aptbui","otsiho","mvdwel",
            "totpri","prione","pritwo","prithr","prifou","prifiv","numper","avhosi","medtax","medemp","empinc")) %>%
   group_by(hood) %>% 
   mutate(area = st_area(geometry)) %>% 
@@ -50,5 +53,5 @@ cal_hood_sum <- cal_hood_cen %>%
   mutate(empinc = median(as.numeric(empinc))) %>%
   distinct(hood, .keep_all = TRUE)
 # save
-saveRDS(cal_hood_sum, "large/CalgaryNeighbourhoodsCensusSum.rds")
-st_write(cal_hood_sum, "large/CalgaryNeighbourhoodsCensusSum.gpkg", driver = "GPKG")
+saveRDS(cal_hood_sum, "large/NeighbourhoodsCensusSum.rds")
+st_write(cal_hood_sum, "large/NeighbourhoodsCensusSum.gpkg", driver = "GPKG")

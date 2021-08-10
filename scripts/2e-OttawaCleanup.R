@@ -55,7 +55,7 @@ ott_tree <- st_transform(ott_tree, crs = 6624)
 
 #### Spatial Joins ####
 ## Neighbourhoods
-# want to add a column that specifies what neighbourhood each tree belongs to
+# want to add columns that specifies what city and neighbourhood each tree belongs to
 # join trees and neighbourhoods using st_intersects
 ott_tree <- st_join(ott_tree, ott_hood, join = st_intersects)
 ## Parks 
