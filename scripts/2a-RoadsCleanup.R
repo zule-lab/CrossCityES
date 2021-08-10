@@ -5,7 +5,10 @@
 easypackages::packages("tidyverse","sf")
 
 #### Data ####
+# load data downloaded in 1-DataDownload.R
+# All Canadian City boundaries
 can_bound_raw <- read_sf("large/can_bound_raw/lcma000b16a_e.shp")
+# Canadian Roads
 can_road_raw <- read_sf("large/can_road_raw/lrnf000r20a_e.shp")
 
 #### Cleanup ####
@@ -29,6 +32,7 @@ can_bound$bound[can_bound$bound == "Ottawa - Gatineau (Ontario part / partie de 
 can_bound <- st_transform(can_bound, crs = 6624)
 # save cleaned version
 saveRDS(can_bound, "large/MunicipalBoundariesCleaned.rds")
+st_write(can_bound, "large/MunicipalBoundariesCleaned.shp", driver = "ESRI Shapefile")
 
 ### Roads ###
 # select relevant columns 
