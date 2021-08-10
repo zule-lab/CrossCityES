@@ -5,6 +5,7 @@
 easypackages::packages("tidyverse","sf")
 
 #### Data ####
+# load data downloaded in 1-DataDownload.R
 # Calgary neighbourhood boundaries
 cal_hood_raw <- read.csv("input/cal_hood_raw.csv")
 # Halifax neighbourhood boundaries
