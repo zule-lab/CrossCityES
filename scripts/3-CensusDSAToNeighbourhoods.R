@@ -15,7 +15,7 @@ can_cen <- readRDS("large/CensusDSACleaned.rds")
 # find all the DSAs that intersect with each neighbourhood
 hood_cen <- st_intersection(can_hood, can_cen)
  # calculate the area of each DSA, weight of each DSA, and the weighted mean
-can_hood_cen <- can_hood_cen %>%
+can_hood_cen <- hood_cen %>%
   select(c("dsa","city","hood","totpop","opdwel","sideho","aptfiv","oadwel","semhou","rowhou","aptdup","aptbui","otsiho","mvdwel",
            "totpri","prione","pritwo","prithr","prifou","prifiv","numper","avhosi","medtax","medemp","empinc")) %>%
   group_by(hood) %>% 
