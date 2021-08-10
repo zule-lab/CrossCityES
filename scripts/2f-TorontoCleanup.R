@@ -17,6 +17,8 @@ tor_tree_raw <- read_sf("large/tor_tree_raw/TMMS_Open_Data_WGS84.shp")
 tor_park_raw <- read_sf("large/tor_park_raw/CITY_GREEN_SPACE_WGS84.shp")
 # neighbourhoods
 tor_hood <- readRDS("large/TorontoNeighbourhoodsCleaned.rds")
+# municipal boundaries 
+can_bound <- readRDS("large/MunicipalBoundariesCleaned.rds")
 
 #### Data Cleaning ####
 ## Parks
@@ -32,11 +34,9 @@ saveRDS(tor_park, "large/TorontoParksCleaned.rds")
 ## Trees
 # Check for dupes
 unique(duplicated(tor_tree_raw$STRUCTID))
-# add city column
-tor_tree_raw$city <- c("Toronto")
 # select the required columns and rename
 tor_tree <- tor_tree_raw %>%
-  select(c("STRUCTID","NAME","DBH_TRUNK","BOTANICAL_","geometry","city")) %>%
+  select(c("STRUCTID","NAME","DBH_TRUNK","BOTANICAL_","geometry")) %>%
   rename("id" = "STRUCTID") %>%
   rename("street" = "NAME") %>%
   rename("dbh" = "DBH_TRUNK") 
@@ -58,7 +58,7 @@ tor_tree <- st_transform(tor_tree, crs = 6624)
 
 #### Spatial Joins ####
 ## Neighbourhoods
-# want to add a column that specifies what neighbourhood each tree belongs to
+# want to add columns that specifies what city and neighbourhood each tree belongs to
 # join trees and neighbourhoods using st_intersects
 tor_tree <- st_join(tor_tree, tor_hood, join = st_intersects)
 ## Parks 
@@ -75,6 +75,13 @@ tor_tree$park[tor_tree$park != "no"] <- "yes"
 
 #### Remove park trees ####
 tor_tree <- tor_tree %>% filter(park == "no")
+
+#### Remove trees with incorrect coordinates ####
+# some trees may have coordinates that place them outside the city's boundaries
+# select Toronto boundary
+tor_bound <- subset(can_bound, bound == "Toronto")
+# remove the erroneous trees using spatial join
+tor_tree <- tor_tree[tor_bound,]
 
 #### Save ####
 # reorder columns

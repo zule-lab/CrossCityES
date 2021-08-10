@@ -15,6 +15,10 @@ easypackages::packages("sf", "tidyverse")
 van_tree_raw <-read.csv("input/van_tree_raw.csv", sep=";")
 # parks
 van_park_raw <- read_sf("large/van_park_raw/parks-polygon-representation.shp")
+# neighbourhoods
+van_hood <- readRDS("large/VancouverNeighbourhoodsCleaned.rds")
+# municipal boundaries 
+can_bound <- readRDS("large/MunicipalBoundariesCleaned.rds")
 
 #### Data Cleaning ####
 ## Parks
@@ -30,17 +34,14 @@ saveRDS(van_park, "large/VancouverParksCleaned.rds")
 ## Trees
 # check for dupes
 unique(duplicated(van_tree_raw$TREE_ID))
-# add city column
-van_tree_raw$city <- c("Vancouver")
 # select the required columns and rename 
 van_tree <- van_tree_raw %>%
-  select(c("TREE_ID","GENUS_NAME","SPECIES_NAME","CULTIVAR_NAME","ON_STREET","NEIGHBOURHOOD_NAME","DIAMETER","Geom","city")) %>%
+  select(c("TREE_ID","GENUS_NAME","SPECIES_NAME","CULTIVAR_NAME","ON_STREET","DIAMETER","Geom")) %>%
   rename("id" = "TREE_ID") %>%
   rename("genus" = "GENUS_NAME") %>%
   rename("species" = "SPECIES_NAME") %>%
   rename("cultivar" = "CULTIVAR_NAME") %>%
   rename("street" = "ON_STREET") %>%
-  rename("hood" = "NEIGHBOURHOOD_NAME") %>%
   rename("dbh" = "DIAMETER")
 # add streetid column to match other cities
 van_tree$streetid <- c(NA)
@@ -66,6 +67,10 @@ van_tree <- drop_na(van_tree, c(lat,long))
 van_tree <- st_transform(van_tree, crs = 6624)
 
 #### Spatial Joins ####
+## Neighbourhoods
+# want to add columns that specifies what city and neighbourhood each tree belongs to
+# join trees and neighbourhoods using st_intersects
+van_tree <- st_join(van_tree, van_hood, join = st_intersects)
 ## Parks 
 # want to identify which trees are park trees and which are street 
 van_tree <- st_join(van_tree, van_park, join = st_intersects)
@@ -81,8 +86,11 @@ van_tree$park[van_tree$park != "no"] <- "yes"
 van_tree <- van_tree %>% filter(park == "no")
 
 #### Remove trees with incorrect coordinates ####
-# relevant tree ids: 163416, 271272
-van_tree <- subset(van_tree, c(id != 163416 & id != 271272))
+# some trees may have coordinates that place them outside the city's boundaries
+# select Vancouver boundary
+van_bound <- subset(can_bound, bound == "Vancouver")
+# remove the erroneous trees using spatial join
+van_tree <- van_tree[van_bound,]
 
 #### Save ####
 # reorder columns

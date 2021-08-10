@@ -17,6 +17,8 @@ ott_tree_raw <- read_csv("input/ott_tree_raw.csv")
 ott_park_raw <- read_sf("large/ott_park_raw/Parks_and_Greenspace.shp")
 # neighbourhoods 
 ott_hood <- readRDS("large/OttawaNeighbourhoodsCleaned.rds")
+# municipal boundaries 
+can_bound <- readRDS("large/MunicipalBoundariesCleaned.rds")
 
 #### Data Cleaning ####
 ## Parks
@@ -33,11 +35,9 @@ saveRDS(ott_park, "large/OttawaParksCleaned.rds")
 # NOTE: only common name for species, requires further sorting
 # check for dupes
 unique(duplicated(ott_tree_raw$OBJECTID))
-# add city column
-ott_tree_raw$city <- c("Ottawa")
 # select the required columns and rename 
 ott_tree <- ott_tree_raw %>%
-  select(c("X","Y","OBJECTID","ADDSTR","SPECIES","DBH","city")) %>%
+  select(c("X","Y","OBJECTID","ADDSTR","SPECIES","DBH")) %>%
   rename("long" = "X") %>%
   rename("lat" = "Y") %>%
   rename("id" = "OBJECTID") %>%
@@ -71,6 +71,13 @@ ott_tree$park[ott_tree$park != "no"] <- "yes"
 
 #### Remove park trees ####
 ott_tree <- ott_tree %>% filter(park == "no")
+
+#### Remove trees with incorrect coordinates ####
+# some trees may have coordinates that place them outside the city's boundaries
+# select Ottawa boundary
+ott_bound <- subset(can_bound, bound == "Ottawa")
+# remove the erroneous trees using spatial join
+ott_tree <- ott_tree[ott_bound,]
 
 #### Save ####
 # reorder columns

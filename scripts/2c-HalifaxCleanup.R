@@ -39,12 +39,10 @@ saveRDS(hal_park, "large/HalifaxParksCleaned.rds")
 ## Trees
 # check for dupes
 unique(duplicated(hal_tree_raw$TREEID))
-# add city column
-hal_tree_raw$city <- c("Halifax")
 # select only trees in service, columns needed, and rename
 hal_tree <- hal_tree_raw %>% 
   filter(ASSETSTAT == "INS") %>%
-  select(c("X", "Y", "TREEID", "SP_SCIEN", "DBH","city")) %>%
+  select(c("X", "Y", "TREEID", "SP_SCIEN", "DBH")) %>%
   rename("id" = "TREEID") %>%
   rename("dbh" = "DBH")
 # recode species from code to scientific name
@@ -83,7 +81,9 @@ saveRDS(hal_road, "large/HalifaxRoadsCleaned.rds")
 
 #### Spatial Joins ####
 ## Neighbourhood
-# Halifax is considered its own neighbourhood
+# want to add columns that specifies what city and neighbourhood each tree belongs to
+# join trees and neighbourhoods using st_intersects
+# Halifax peninsula is considered its own neighbourhood
 hal_tree <- st_join(hal_tree, hal_hood, join = st_intersects)
 ## Parks 
 # want to identify which trees are park trees and which are street
@@ -105,6 +105,11 @@ hal_tree$street <- hal_road$street[match(as.character(hal_tree$streetid), as.cha
 
 #### Remove park trees ####
 hal_tree <- hal_tree %>% filter(park == "no")
+
+#### Remove trees with incorrect coordinates ####
+# some trees may have coordinates that place them outside the city's boundaries
+# remove the erroneous trees using spatial join
+hal_tree <- hal_tree[hal_bound,]
 
 #### Save ####
 # reorder columns

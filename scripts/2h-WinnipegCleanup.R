@@ -12,18 +12,19 @@ easypackages::packages("sf", "tidyverse")
 # load data downloaded in 1-DataDownload.R
 # tree inventory
 win_tree_raw <-read.csv("large/win_tree_raw.csv")
+# neighbourhoods
+win_hood <- readRDS("large/WinnipegNeighbourhoodsCleaned.rds")
+# municipal boundaries 
+can_bound <- readRDS("large/MunicipalBoundariesCleaned.rds")
 
 #### Data Cleaning ####
 ## Trees
 # check for dupes
 unique(duplicated(win_tree_raw$tree_id))
-# add city column
-win_tree_raw$city <- c("Winnipeg")
 # select the required columns and rename 
 win_tree <- win_tree_raw %>%
-  select(c("the_geom","tree_id","botanical","dbh","nbhd","park","street","city")) %>%
-  rename("id" = "tree_id") %>%
-  rename("hood" = "nbhd")
+  select(c("the_geom","tree_id","botanical","dbh","park","street")) %>%
+  rename("id" = "tree_id")
 # add streetid column to match other cities
 win_tree$streetid <- c(NA)
 # sorting species name into genus, species, and cultivar columns
@@ -36,8 +37,6 @@ win_treesp <- win_tree %>% filter(species == "x") %>% unite(species, c("species"
 win_treecul <- win_tree %>% filter(species != "x") %>% unite(cultivar, c("var", "cultivar"), na.rm = TRUE, sep = " ") %>%
   mutate(cultivar = na_if(cultivar, ""))
 win_tree <- rbind(win_treecul, win_treesp)
-# changing case of hood column
-win_tree$hood <- str_to_title(win_tree$hood)
 # identifying whether trees are street trees or park trees
 win_tree$park <- ifelse(win_tree$park == "Not In Park","no","yes")
 ## extract coordinates from the_geom column
@@ -50,8 +49,21 @@ win_tree <- st_as_sf(win_tree, coords = c("lat", "long"), crs = 4326)
 # transform
 win_tree <- st_transform(win_tree, crs = 6624)
 
+#### Spatial Joins ####
+## Neighbourhoods
+# want to add columns that specifies what city and neighbourhood each tree belongs to
+# join trees and neighbourhoods using st_intersects
+win_tree <- st_join(win_tree, win_hood, join = st_intersects)
+
 #### Remove park trees ####
 win_tree <- win_tree %>% filter(park == "no")
+
+#### Remove trees with incorrect coordinates ####
+# some trees may have coordinates that place them outside the city's boundaries
+# select Winnipeg boundary
+win_bound <- subset(can_bound, bound == "Winnipeg")
+# remove the erroneous trees using spatial join
+win_tree <- win_tree[win_bound,]
 
 #### Save ####
 # reorder columns

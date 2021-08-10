@@ -58,13 +58,15 @@ mon_bound <- subset(can_bound, bound == "Montreal")
 mon_road <- can_road[mon_bound,]
 mon_road <- st_transform(mon_road, crs = 6624)
 mon_road <- select(mon_road, c("street","streetid", "geometry"))
-#add row index numbers as a column for recoding later
+# add row index numbers as a column for recoding later
 mon_road <- mon_road %>% mutate(index= 1:n())
-#save
+# save
 saveRDS(mon_road, "large/MontrealRoadsCleaned.rds")
 
 #### Spatial Joins ####
 ## Neighbourhoods
+# want to add columns that specifies what city and neighbourhood each tree belongs to
+# join trees and neighbourhoods using st_intersects
 mon_tree <- st_join(mon_tree, mon_hood)
 ## Streets
 # st_nearest_feature returns the index value not the street name
