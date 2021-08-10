@@ -19,7 +19,7 @@ tor_hood_raw <- read_sf("large/tor_hood_raw/Neighbourhoods.shp")
 ## Vancouver neighbourhood boundaries
 van_hood_raw <- read_sf("large/van_hood_raw/local-area-boundary.shp")
 ## Winnipeg neighbourhood boundaries
-win_hood_raw <- read_sf("large/win_hood_raw/geo_export_a47a3525-fc99-4728-9039-eefec3dcf2de.shp")
+win_hood_raw <- read_sf("large/win_hood_raw/geo_export_c2f40e6f-aab6-4ccf-81a4-8efba843c644.shp")
 
 #### Neighbourhood boundary cleanup
 ## Calgary
