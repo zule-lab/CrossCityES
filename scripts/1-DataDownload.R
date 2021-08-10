@@ -69,7 +69,7 @@ win_hood_url <- "https://data.winnipeg.ca/api/geospatial/fen6-iygi?method=export
 win_hood_dest <- "large/win_hood_raw.zip"
 download.file(win_hood_url,win_hood_dest, mode="wb")
 unzip(win_hood_dest, exdir="large/win_hood_raw")
-win_hood_raw <- read_sf("large/win_hood_raw/geo_export_a47a3525-fc99-4728-9039-eefec3dcf2de.shp")
+win_hood_raw <- read_sf("large/win_hood_raw/geo_export_c2f40e6f-aab6-4ccf-81a4-8efba843c644.shp")
 View(win_hood_raw)
 
 ### Park data downloads
