@@ -70,6 +70,5 @@ can_cen_dsa <- st_as_sf(can_cen_dsa, sf_column_name = c("geometry"), crs = 6624)
 
 # save to large first, though only 1.5MB
 saveRDS(can_cen_dsa, "large/CensusDSACleaned.rds")
-# not working
 write_csv(can_cen_dsa, "large/CensusDSACleaned.csv")
 
