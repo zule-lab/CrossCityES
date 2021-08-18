@@ -19,7 +19,7 @@ tor_hood_raw <- read_sf("large/tor_hood_raw/Neighbourhoods.shp")
 ## Vancouver neighbourhood boundaries
 van_hood_raw <- read_sf("large/van_hood_raw/local-area-boundary.shp")
 ## Winnipeg neighbourhood boundaries
-win_hood_raw <- read_sf("large/win_hood_raw/geo_export_c2f40e6f-aab6-4ccf-81a4-8efba843c644.shp")
+win_hood_raw <- read_sf("large/win_hood_raw/geo_export_697d136b-604a-4123-94b6-0e5fc2baaa4a.shp")
 
 #### Neighbourhood boundary cleanup
 ## Calgary
@@ -34,6 +34,8 @@ cal_hood$hood <- str_to_title(cal_hood$hood)
 # convert to sf object
 cal_hood <- st_as_sf(cal_hood, wkt = "geometry", crs = 4326)
 cal_hood <- st_transform(cal_hood, crs = 6624)
+# add neighbourhood area column
+cal_hood$hood_area <- st_area(cal_hood)
 # save
 saveRDS(cal_hood, "large/CalgaryNeighbourhoodsCleaned.rds")
 st_write(cal_hood, "large/CalgaryNeighbourhoodsCleaned.gpkg", driver = "GPKG")
@@ -50,6 +52,8 @@ hal_hood <- hal_hood_raw %>%
 hal_hood$hood <- str_to_title(hal_hood$hood)
 # transform to EPSG: 6624 to be consistent with other layers
 hal_hood <- st_transform(hal_hood, crs = 6624)
+# add neighbourhood area column
+hal_hood$hood_area <- st_area(hal_hood)
 # save cleaned neighbourhoods layer 
 saveRDS(hal_hood, "large/HalifaxNeighbourhoodsCleaned.rds")
 st_write(hal_hood, "large/HalifaxNeighbourhoodsCleaned.gpkg", driver = "GPKG")
@@ -61,6 +65,8 @@ mon_hood <- mon_hood_raw %>% select(c("NOM","geometry")) %>%
   mutate(city = c("Montreal"))
 # transform
 mon_hood <- st_transform(mon_hood,crs = 6624)
+# add neighbourhood area column
+mon_hood$hood_area <- st_area(mon_hood)
 # save
 saveRDS(mon_hood, "large/MontrealNeighbourhoodsCleaned.rds")
 st_write(mon_hood, "large/MontrealNeighbourhoodsCleaned.gpkg", driver = "GPKG")
@@ -73,6 +79,8 @@ ott_hood <- ott_hood_raw %>%
   mutate(city = c("Ottawa"))
 # transform
 ott_hood <- st_transform(ott_hood, crs = 6624)
+# add neighbourhood area column
+ott_hood$hood_area <- st_area(ott_hood)
 # save cleaned neighbourhoods layer 
 saveRDS(ott_hood, "large/OttawaNeighbourhoodsCleaned.rds")
 st_write(ott_hood, "large/OttawaNeighbourhoodsCleaned.gpkg", driver = "GPKG")
@@ -84,6 +92,8 @@ tor_hood <- tor_hood_raw %>% select(c("FIELD_8", "geometry")) %>%
   mutate(city = c("Toronto"))
 # transform
 tor_hood <- st_transform(tor_hood, crs = 6624)
+# add neighbourhood area column
+tor_hood$hood_area <- st_area(tor_hood)
 # save
 saveRDS(tor_hood, "large/TorontoNeighbourhoodsCleaned.rds")
 st_write(tor_hood, "large/TorontoNeighbourhoodsCleaned.gpkg", driver = "GPKG")
@@ -95,6 +105,8 @@ van_hood <- van_hood_raw %>% select(c("name","geometry"))%>%
   mutate(city = c("Vancouver"))
 # transform
 van_hood <- st_transform(van_hood,crs = 6624)
+# add neighbourhood area column
+van_hood$hood_area <- st_area(van_hood)
 # save
 saveRDS(van_hood, "large/VancouverNeighbourhoodsCleaned.rds")
 st_write(van_hood, "large/VancouverNeighbourhoodsCleaned.gpkg", driver = "GPKG")
@@ -106,6 +118,8 @@ win_hood <- win_hood_raw %>% select(c("name","geometry")) %>%
   mutate(city = c("Winnipeg"))
 # transform
 win_hood <- st_transform(win_hood,crs = 6624)
+# add neighbourhood area column
+win_hood$hood_area <- st_area(win_hood)
 # save
 saveRDS(win_hood, "large/WinnipegNeighbourhoodsCleaned.rds")
 st_write(win_hood, "large/WinnipegNeighbourhoodsCleaned.gpkg", driver = "GPKG")
