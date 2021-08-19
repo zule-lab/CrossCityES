@@ -238,3 +238,14 @@ download.file(can_cen_url,can_cen_dest, mode="wb")
 unzip(can_cen_dest, exdir="large/can_cen_raw")
 can_cen_raw <- fread("large/can_cen_raw/98-401-X2016044_English_CSV_data.csv")
 
+#### Building Footprint Data by Regional Municipality ####
+# defining the municipality names used in the links
+municipality <- c("Alberta", "NovaScotia", "Quebec", "Ontario", "BritishColumbia", "Manitoba")
+# download and unzip data from all 6 regional municipalities to large file
+for (i in 1:length(municipality)){
+  build_url <- paste0("https://usbuildingdata.blob.core.windows.net/canadian-buildings-v2/", municipality, ".zip")
+  build_dest <- paste0("large/", municipality, "_building_density.zip")
+  build_output <- paste0("large/", municipality, "_building_density")
+  download.file(build_url[i], build_dest[i], mode="wb")
+  unzip(zipfile = build_dest[i], exdir = build_output[i])
+}
