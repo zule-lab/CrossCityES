@@ -29,6 +29,8 @@ cal_hood <- cal_hood_raw %>%
   rename("hood" = "NAME") %>% 
   rename("geometry" = "the_geom") %>%
   mutate(city = c("Calgary"))
+# add hood id
+cal_hood <- cal_hood %>% mutate(hood_id = paste0("cal_", seq.int(nrow(cal_hood))))
 # change case of hood names
 cal_hood$hood <- str_to_title(cal_hood$hood) 
 # convert to sf object
@@ -48,6 +50,8 @@ hal_hood <- hal_hood_raw %>%
   rename("hood" = "GSA_NAME") %>% 
   filter(hood == "HALIFAX") %>%
   mutate(city = c("Halifax"))
+# add hood id
+hal_hood <- hal_hood %>% mutate(hood_id = paste0("hal_", seq.int(nrow(hal_hood))))
 # change case of hood names
 hal_hood$hood <- str_to_title(hal_hood$hood)
 # transform to EPSG: 6624 to be consistent with other layers
@@ -63,6 +67,8 @@ st_write(hal_hood, "large/HalifaxNeighbourhoodsCleaned.gpkg", driver = "GPKG")
 mon_hood <- mon_hood_raw %>% select(c("NOM","geometry")) %>%
   rename("hood" = "NOM") %>%
   mutate(city = c("Montreal"))
+# add hood id
+mon_hood <- mon_hood %>% mutate(hood_id = paste0("mon_", seq.int(nrow(mon_hood))))
 # transform
 mon_hood <- st_transform(mon_hood,crs = 6624)
 # add neighbourhood area column
@@ -77,6 +83,8 @@ ott_hood <- ott_hood_raw %>%
   select(c("Name", "geometry")) %>% 
   rename("hood" = "Name") %>%
   mutate(city = c("Ottawa"))
+# add hood id
+ott_hood <- ott_hood %>% mutate(hood_id = paste0("ott_", seq.int(nrow(ott_hood))))
 # transform
 ott_hood <- st_transform(ott_hood, crs = 6624)
 # add neighbourhood area column
@@ -90,6 +98,8 @@ st_write(ott_hood, "large/OttawaNeighbourhoodsCleaned.gpkg", driver = "GPKG")
 tor_hood <- tor_hood_raw %>% select(c("FIELD_8", "geometry")) %>% 
   rename("hood" = "FIELD_8")%>%
   mutate(city = c("Toronto"))
+# add hood id
+tor_hood <- tor_hood %>% mutate(hood_id = paste0("tor_", seq.int(nrow(tor_hood))))
 # transform
 tor_hood <- st_transform(tor_hood, crs = 6624)
 # add neighbourhood area column
@@ -103,6 +113,8 @@ st_write(tor_hood, "large/TorontoNeighbourhoodsCleaned.gpkg", driver = "GPKG")
 van_hood <- van_hood_raw %>% select(c("name","geometry"))%>%
   rename(hood = "name") %>%
   mutate(city = c("Vancouver"))
+# add hood id
+van_hood <- van_hood %>% mutate(hood_id = paste0("van_", seq.int(nrow(van_hood))))
 # transform
 van_hood <- st_transform(van_hood,crs = 6624)
 # add neighbourhood area column
@@ -116,6 +128,8 @@ st_write(van_hood, "large/VancouverNeighbourhoodsCleaned.gpkg", driver = "GPKG")
 win_hood <- win_hood_raw %>% select(c("name","geometry")) %>%
   rename(hood = "name") %>%
   mutate(city = c("Winnipeg"))
+# add hood id
+win_hood <- win_hood %>% mutate(hood_id = paste0("win_", seq.int(nrow(win_hood))))
 # transform
 win_hood <- st_transform(win_hood,crs = 6624)
 # add neighbourhood area column
@@ -125,6 +139,7 @@ saveRDS(win_hood, "large/WinnipegNeighbourhoodsCleaned.rds")
 st_write(win_hood, "large/WinnipegNeighbourhoodsCleaned.gpkg", driver = "GPKG")
 
 ## Combine all neighbourhoods of all cities
+# combine
 can_hood <- rbind(cal_hood, hal_hood, mon_hood, ott_hood, tor_hood, van_hood, win_hood)
 # save
 saveRDS(can_hood, "large/AllNeighbourhoodsCleaned.rds")
