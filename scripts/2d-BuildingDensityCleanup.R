@@ -69,10 +69,10 @@ ont_sf <- st_transform(ont_sf, crs = 6624)
 # join with municipal boundaries
 ont_build <- st_join(ont_sf, can_bound)
 # save for Ottawa
-ott_build <- ont_build %>% filter(city %in% "Ottawa")
+ott_build <- ont_build %>% filter(bound %in% "Ottawa")
 saveRDS(ott_build, "large/OttawaBuildingFootprintsCleaned.rds")
 # save for Toronto
-tor_build <- ont_build %>% filter(city %in% "Toronto")
+tor_build <- ont_build %>% filter(bound %in% "Toronto")
 saveRDS(tor_build, "large/TorontoBuildingFootprintsCleaned.rds")
 
 ## British Columbia
@@ -84,9 +84,9 @@ bco_sf <- st_transform(bco_sf, crs = 6624)
 # add city column
 bco_sf <- bco_sf %>% mutate(city = c("Vancouver"))
 # intersect with municipal boundaries
-van_build <- bci_sf[can_bound,]
+van_build <- bco_sf[can_bound,]
 # save
-saveRDS(win_build, "large/WinnipegBuildingFootprintsCleaned.rds")
+saveRDS(van_build, "large/VancouverBuildingFootprintsCleaned.rds")
 
 ## Manitoba
 # convert to sf
@@ -103,7 +103,14 @@ saveRDS(win_build, "large/WinnipegBuildingFootprintsCleaned.rds")
 
 ## All 7 city building densities
 # combine all 7 files
-can_build <- cbind(cal_build, hal_build, mon_build, ott_build, tor_build, van_build, win_build)
+ott_build <- ott_build %>%
+  rename(city = bound) %>%
+  rename(x = geometry)
+tor_build <- tor_build %>%
+  rename(city = bound) %>%
+  rename(x = geometry)
+
+can_build <- rbind(cal_build, hal_build, mon_build, ott_build, tor_build, van_build, win_build)
 # save
 saveRDS(can_build, "large/AllBuildingFootprintsCleaned.rds")
 
