@@ -1,41 +1,12 @@
-
+# Script to calculate building densities of neighbourhoods of all 7 cities
+# Author: Nicole Yu & Isabella Richmond
 
 #### Packages ####
-easypackages::packages("tidyverse", "sf")
-
-#### Data ####
-# Calgary building footprint
-cal_build <- readRDS("large/CalgaryBuildingFootprintsCleaned.rds")
-# Calgary neighbourhoods
-cal_hood <- readRDS("large/CalgaryNeighbourhoodsCleaned.rds")
-# Halifax building footprint
-hal_build <- readRDS("large/HalifaxBuildingFootprintsCleaned.rds")
-# Halifax neighbourhoods
-hal_hood <- readRDS("large/HalifaxNeighbourhoodsCleaned.rds")
-# Montreal building footprint
-mon_build <- readRDS("large/MontrealBuildingFootprintsCleaned.rds")
-# Montreal neighbourhoods
-mon_hood <- readRDS("large/MontrealNeighbourhoodsCleaned.rds")
-# Ottawa building footprint
-ott_build <- readRDS("large/OttawaBuildingFootprintsCleaned.rds")
-# Ottawa neighbourhoods
-ott_hood <- readRDS("large/OttawaNeighbourhoodsCleaned.rds")
-# Toronto building footprint
-tor_build <- readRDS("large/TorontoBuildingFootprintsCleaned.rds")
-# Toronto neighbourhoods
-tor_hood <- readRDS("large/TorontoNeighbourhoodsCleaned.rds")
-# Vancouver building footprint
-van_build <- readRDS("large/VancouverBuildingFootprintsCleaned.rds")
-# Vancouver neighbourhoods
-van_hood <- readRDS("large/VancouverNeighbourhoodsCleaned.rds")
-# Winnipeg building footprint
-win_build <- readRDS("large/WinnipegBuildingFootprintsCleaned.rds")
-# Winnipeg neighbourhoods
-win_hood <- readRDS("large/WinnipegNeighbourhoodsCleaned.rds")
+easypackages::packages("tidyverse", "sf", "units")
 
 #### Data ####
 # all city building footprints
-can_build <- ("large/AllBuildingFootprintsCleaned.rds")
+can_build <- readRDS("large/AllBuildingFootprintsCleaned.rds")
 # all city neighbourhoods
 can_hood <- readRDS("large/AllNeighbourhoodsCleaned.rds")
 
@@ -51,32 +22,21 @@ can_build$centroid <- substr(can_build$centroid,3,nchar(can_build$centroid)-1)
 can_build <- separate(data = can_build, col = centroid, into = c("lat", "long"), sep = "\\, ")
 can_build <- st_as_sf(x = can_build, coords = c("lat","long"), crs = 6624, na.fail = FALSE, remove = TRUE)
 # join building centroids with neighborhoods
-can_build <- st_join(can_build, hal_hood)
-# select only those in Halifax peninsula
-can_build <- can_build %>% filter(hood !%in% NA)
+can_build <- st_join(can_build, can_hood)
+# filter NAs
+can_build <- can_build %>% filter(!is.na(hood))
+# set units as km^2
+units(can_build$build_area) <- make_units(km^2)
+units(can_build$hood_area) <- make_units(km^2)
+# group by neighbourhood ids and calculate building densities
+group_by(hood_id) %>%
+  mutate(city = city.x,
+         centroids=n(), 
+         build_area = sum(build_area),
+         centroid_den = as.numeric(centroids/hood_area),
+         area_den = as.numeric(build_area/hood_area)) %>%
+  distinct(hood, .keep_all = TRUE) %>%
+  select(city, hood, hood_id, hood_area, centroids, build_area, centroid_den, area_den, geometry)
 
-# Group hoods
-# define hood areas
-# geometry represents all centroids of buildings
-can_build_hoodsum <- can_build %>% 
-  summarise(centroid_den = as.numeric(n()/17.89),
-            area_den = as.numeric(sum(build_area*0.000001)/17.89)) %>%
-  select(city, hood, centroid_den, area_den, geometry)
 # save
 saveRDS(can_build_hoodsum, "large/HalifaxBuildingDensity.rds")
-
-
-
-# Roads
-cal_road <- readRDS("large/CalgaryRoadsCleaned.rds")
-hal_road <- readRDS("large/HalifaxRoadsCleaned.rds")
-mon_road <- readRDS("large/MontrealRoadsCleaned.rds")
-ott_road <- readRDS("large/OttawaRoadsCleaned.rds")
-tor_road <- readRDS("large/TorontoRoadsCleaned.rds")
-van_road <- readRDS("large/VancouverRoadsCleaned.rds")
-win_road <- readRDS("large/WinnipegRoadsCleaned.rds")
-
-## Roads building density
-# Join building centroids with roads
-can_build$street <- st_nearest_feature(can_build, hal_road)
-
