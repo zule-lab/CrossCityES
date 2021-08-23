@@ -36,7 +36,7 @@ group_by(hood_id) %>%
          centroid_den = as.numeric(centroids/hood_area),
          area_den = as.numeric(build_area/hood_area)) %>%
   distinct(hood, .keep_all = TRUE) %>%
-  select(city, hood, hood_id, hood_area, centroids, build_area, centroid_den, area_den, geometry)
+  select(city, hood, hood_id, hood_area, centroids, build_area, centroid_den, area_den)
 
 # save
 saveRDS(can_build_hoodsum, "large/HalifaxBuildingDensity.rds")
