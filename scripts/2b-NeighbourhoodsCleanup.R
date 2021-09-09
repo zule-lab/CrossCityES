@@ -1,146 +1,88 @@
 # Script to clean up Canada roads and city boundary raw data
 # Author: Nicole Yu & Isabella Richmond
 
-#### Packages ####
-easypackages::packages("tidyverse","sf")
+#### PACKAGES ####
+p <- c("sf", "dplyr")
+lapply(p, library, character.only = T)
 
-#### Data ####
-# load data downloaded in 1-DataDownload.R
-# Calgary neighbourhood boundaries
-cal_hood_raw <- read.csv("input/cal_hood_raw.csv")
-# Halifax neighbourhood boundaries
-hal_hood_raw <- read_sf("large/hal_hood_raw/Community_Boundaries.shp")
-# Montreal neighbourhood boundaries
-mon_hood_raw <- read_sf("large/mon_hood_raw/LIMADMIN.shp")
-## Ottawa neighbourhood boundaries
-ott_hood_raw <- read_sf("large/ott_hood_raw/Ottawa_Neighbourhood_Study_(ONS)_-_Neighbourhood_Boundaries_Gen_2.shp")
-## Toronto neighbourhood boundaries
-tor_hood_raw <- read_sf("large/tor_hood_raw/Neighbourhoods.shp")
-## Vancouver neighbourhood boundaries
-van_hood_raw <- read_sf("large/van_hood_raw/local-area-boundary.shp")
-## Winnipeg neighbourhood boundaries
-win_hood_raw <- read_sf("large/win_hood_raw/geo_export_697d136b-604a-4123-94b6-0e5fc2baaa4a.shp")
+#### FUNCTIONS ####
+hood_cleaned <- function(df, prefix, dest){
+  p <- c("dplyr", "stringr", "sf")
+  lapply(p, library, character.only = T)
+  df %>% mutate(hood_id = paste0("prefix", seq.int(nrow(df)))) # add hood id
+  df$hood <- str_to_title(df$hood)   # change case of hood names
+  df <- st_transform(df, crs = 3347) # transform
+  df$hood_area <- st_area(df) # add area column
+  saveRDS(df, dest)
+  df <- readRDS(dest)
+  
+}
 
-#### Neighbourhood boundary cleanup
-## Calgary
-# select neighbourhood codes and names columns and rename
+#### DATA #### 
+# Calgary 
+cal_hood_raw <- read.csv("large/neighbourhoods/cal_hood_raw.csv")
+# Halifax
+hal_hood_raw <- st_read(file.path("/vsizip", "large/neighbourhoods/hal_hood_raw.zip"))
+# Montreal
+mon_hood_raw <- st_read(file.path("/vsizip", "large/neighbourhoods/mon_hood_raw.zip"))
+# Ottawa
+ott_hood_raw <- st_read(file.path("/vsizip", "large/neighbourhoods/ott_hood_raw.zip"))
+# Toronto
+tor_hood_raw <- st_read(file.path("/vsizip", "large/neighbourhoods/tor_hood_raw.zip"))
+# Vancouver
+van_hood_raw <- st_read(file.path("/vsizip", "large/neighbourhoods/van_hood_raw.zip"))
+# Winnipeg
+win_hood_raw <- st_read(file.path("/vsizip", "large/neighbourhoods/win_hood_raw.zip"))
+
+#### CLEANUP ####
+# Calgary
 cal_hood <- cal_hood_raw %>% 
   select(c("NAME", "the_geom")) %>% 
   rename("hood" = "NAME") %>% 
   rename("geometry" = "the_geom") %>%
-  mutate(city = c("Calgary"))
-# add hood id
-cal_hood <- cal_hood %>% mutate(hood_id = paste0("cal_", seq.int(nrow(cal_hood))))
-# change case of hood names
-cal_hood$hood <- str_to_title(cal_hood$hood) 
-# convert to sf object
+  mutate(city = c("Calgary")) # select neighbourhood codes and names columns and rename
 cal_hood <- st_as_sf(cal_hood, wkt = "geometry", crs = 4326)
-cal_hood <- st_transform(cal_hood, crs = 6624)
-# add neighbourhood area column
-cal_hood$hood_area <- st_area(cal_hood)
-# save
-saveRDS(cal_hood, "large/CalgaryNeighbourhoodsCleaned.rds")
-st_write(cal_hood, "large/CalgaryNeighbourhoodsCleaned.gpkg", driver = "GPKG")
+cal_hood <- hood_cleaned(cal_hood, cal, "large/neighbourhoods/CalgaryNeighbourhoodsCleaned.rds")
 
-## Halifax
-# add city column, select neighbourhood and geometry from hood dataset
-# Halifax peninsula is considered to be one neighbourhood
+# Halifax
 hal_hood <- hal_hood_raw %>% 
   select(c("GSA_NAME", "geometry")) %>% 
   rename("hood" = "GSA_NAME") %>% 
   filter(hood == "HALIFAX") %>%
-  mutate(city = c("Halifax"))
-# add hood id
-hal_hood <- hal_hood %>% mutate(hood_id = paste0("hal_", seq.int(nrow(hal_hood))))
-# change case of hood names
-hal_hood$hood <- str_to_title(hal_hood$hood)
-# transform to EPSG: 6624 to be consistent with other layers
-hal_hood <- st_transform(hal_hood, crs = 6624)
-# add neighbourhood area column
-hal_hood$hood_area <- st_area(hal_hood)
-# save cleaned neighbourhoods layer 
-saveRDS(hal_hood, "large/HalifaxNeighbourhoodsCleaned.rds")
-st_write(hal_hood, "large/HalifaxNeighbourhoodsCleaned.gpkg", driver = "GPKG")
+  mutate(city = c("Halifax")) # Halifax peninsula is considered to be one neighbourhood as per correspondence with city officials
+hal_hood <- hood_cleaned(hal_hood, hal, "large/neighbourhoods/HalifaxNeighbourhoodsCleaned.rds")
 
-## Montreal
-# select neighbourhood name and geometry from hood dataset
+# Montreal
 mon_hood <- mon_hood_raw %>% select(c("NOM","geometry")) %>%
   rename("hood" = "NOM") %>%
   mutate(city = c("Montreal"))
-# add hood id
-mon_hood <- mon_hood %>% mutate(hood_id = paste0("mon_", seq.int(nrow(mon_hood))))
-# transform
-mon_hood <- st_transform(mon_hood,crs = 6624)
-# add neighbourhood area column
-mon_hood$hood_area <- st_area(mon_hood)
-# save
-saveRDS(mon_hood, "large/MontrealNeighbourhoodsCleaned.rds")
-st_write(mon_hood, "large/MontrealNeighbourhoodsCleaned.gpkg", driver = "GPKG")
+mon_hood <- hood_cleaned(mon_hood, mon, "large/neighbourhoods/MontrealNeighbourhoodsCleaned.rds")
 
-## Ottawa
-# select neighbourhood name and geometry from hood dataset
+# Ottawa
 ott_hood <- ott_hood_raw %>% 
   select(c("Name", "geometry")) %>% 
   rename("hood" = "Name") %>%
   mutate(city = c("Ottawa"))
-# add hood id
-ott_hood <- ott_hood %>% mutate(hood_id = paste0("ott_", seq.int(nrow(ott_hood))))
-# transform
-ott_hood <- st_transform(ott_hood, crs = 6624)
-# add neighbourhood area column
-ott_hood$hood_area <- st_area(ott_hood)
-# save cleaned neighbourhoods layer 
-saveRDS(ott_hood, "large/OttawaNeighbourhoodsCleaned.rds")
-st_write(ott_hood, "large/OttawaNeighbourhoodsCleaned.gpkg", driver = "GPKG")
+ott_hood <- hood_cleaned(ott_hood, ott, "large/neighbourhoods/OttawaNeighbourhoodsCleaned.rds")
 
-## Toronto
-# select neighbourhood name and geometry from hood dataset
+# Toronto
 tor_hood <- tor_hood_raw %>% select(c("FIELD_8", "geometry")) %>% 
   rename("hood" = "FIELD_8")%>%
   mutate(city = c("Toronto"))
-# add hood id
-tor_hood <- tor_hood %>% mutate(hood_id = paste0("tor_", seq.int(nrow(tor_hood))))
-# transform
-tor_hood <- st_transform(tor_hood, crs = 6624)
-# add neighbourhood area column
-tor_hood$hood_area <- st_area(tor_hood)
-# save
-saveRDS(tor_hood, "large/TorontoNeighbourhoodsCleaned.rds")
-st_write(tor_hood, "large/TorontoNeighbourhoodsCleaned.gpkg", driver = "GPKG")
+tor_hood <- hood_cleaned(tor_hood, tor, "large/neighbourhoods/TorontoNeighbourhoodsCleaned.rds")
 
-## Vancouver
-# select neighbourhood name and geometry from hood dataset
+# Vancouver
 van_hood <- van_hood_raw %>% select(c("name","geometry"))%>%
   rename(hood = "name") %>%
   mutate(city = c("Vancouver"))
-# add hood id
-van_hood <- van_hood %>% mutate(hood_id = paste0("van_", seq.int(nrow(van_hood))))
-# transform
-van_hood <- st_transform(van_hood,crs = 6624)
-# add neighbourhood area column
-van_hood$hood_area <- st_area(van_hood)
-# save
-saveRDS(van_hood, "large/VancouverNeighbourhoodsCleaned.rds")
-st_write(van_hood, "large/VancouverNeighbourhoodsCleaned.gpkg", driver = "GPKG")
+van_hood <- hood_cleaned(van_hood, van, "large/neighbourhoods/VancouverNeighbourhoodsCleaned.rds")
 
-## Winnipeg
-# rename neighbourhood name column
+# Winnipeg
 win_hood <- win_hood_raw %>% select(c("name","geometry")) %>%
   rename(hood = "name") %>%
   mutate(city = c("Winnipeg"))
-# add hood id
-win_hood <- win_hood %>% mutate(hood_id = paste0("win_", seq.int(nrow(win_hood))))
-# transform
-win_hood <- st_transform(win_hood,crs = 6624)
-# add neighbourhood area column
-win_hood$hood_area <- st_area(win_hood)
-# save
-saveRDS(win_hood, "large/WinnipegNeighbourhoodsCleaned.rds")
-st_write(win_hood, "large/WinnipegNeighbourhoodsCleaned.gpkg", driver = "GPKG")
+win_hood <- hood_cleaned(win_hood, win, "large/neighbourhoods/WinnipegNeighbourhoodsCleaned.rds")
 
-## Combine all neighbourhoods of all cities
-# combine
+#### COMBINE ####
 can_hood <- rbind(cal_hood, hal_hood, mon_hood, ott_hood, tor_hood, van_hood, win_hood)
-# save
-saveRDS(can_hood, "large/AllNeighbourhoodsCleaned.rds")
-st_write(can_hood, "large/AllNeighbourhoodsCleaned.gpkg", driver = "GPKG")
+saveRDS(can_hood, "large/neighbourhoods/AllNeighbourhoodsCleaned.rds")
