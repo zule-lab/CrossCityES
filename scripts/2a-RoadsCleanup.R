@@ -2,17 +2,17 @@
 # Author: Nicole Yu & Isabella Richmond
 
 #### Packages ####
-easypackages::packages("tidyverse","sf")
+p <- c("sf", "dplyr")
+lapply(p, library, character.only = T)
 
 #### Data ####
-# load data downloaded in 1-DataDownload.R
-# All Canadian City boundaries
-can_bound_raw <- read_sf("large/can_bound_raw/lcma000b16a_e.shp")
-# Canadian Roads
-can_road_raw <- read_sf("large/can_road_raw/lrnf000r20a_e.shp")
+# Canadian municipal boundaries
+can_bound_raw <- st_read(file.path("/vsizip", "large/national/can_bound_raw.zip"))
+# Canadian roads
+can_road_raw <- st_read(file.path("/vsizip", "large/national/can_road_raw.zip"))
 
 #### Cleanup ####
-## Municipal Boundaries
+## MUNICIPAL BOUNDARIES ##
 # select relevant columns and rename 
 can_bound <- can_bound_raw %>%
   select(c("CMANAME", "geometry")) %>%
@@ -29,12 +29,12 @@ can_bound <- subset(can_bound, bound == "Calgary" |
 can_bound$bound[can_bound$bound == "Montréal"] <- "Montreal"
 can_bound$bound[can_bound$bound == "Ottawa - Gatineau (Ontario part / partie de l'Ontario)"] <- "Ottawa"
 # transform
-can_bound <- st_transform(can_bound, crs = 6624)
+can_bound <- st_transform(can_bound, crs = 3347)
 # save cleaned version
-saveRDS(can_bound, "large/MunicipalBoundariesCleaned.rds")
-st_write(can_bound, "large/MunicipalBoundariesCleaned.shp", driver = "ESRI Shapefile")
+saveRDS(can_bound, "large/national/MunicipalBoundariesCleaned.rds")
+#st_write(can_bound, "large/MunicipalBoundariesCleaned.shp", driver = "ESRI Shapefile")
 
-### Roads ###
+## ROADS ##
 # select relevant columns 
 can_road <- can_road_raw[,c("NAME", "TYPE", "DIR", "NGD_UID", "geometry")]
 can_road <- can_road %>%
@@ -43,10 +43,10 @@ can_road <- can_road %>%
   rename(streetdir = DIR) %>%
   rename(streetid = NGD_UID)
 # transform
-can_road <- st_transform(can_road, crs = 6624)
+can_road <- st_transform(can_road, crs = 3347)
 # intersect with municipal boundaries
 can_road <- can_road[can_bound,]
 # add city label
 can_road <- st_join(can_road, can_bound)
 # save cleaned roads 
-saveRDS(can_road, "large/RoadsCleaned.rds")
+saveRDS(can_road, "large/national/RoadsCleaned.rds")
