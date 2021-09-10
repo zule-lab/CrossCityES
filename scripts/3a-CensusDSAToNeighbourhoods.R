@@ -1,17 +1,19 @@
 # Script to spatially weigh census data by dissemination areas into neighbourhoods
 # Author: Nicole Yu & Isabella Richmond
 
-#### Packages ####
-easypackages::packages("tidyverse","sf")
+#### PACKAGES ####
+p <- c("sf", "dplyr")
+lapply(p, library, character.only = T)
 
-#### Data ####
+
+#### DATA ####
 # Cleaned Neighbourhood boundary data
-can_hood <- readRDS("large/AllNeighbourhoodsCleaned.rds")
+can_hood <- readRDS("large/neighbourhoods/AllNeighbourhoodsCleaned.rds")
 # Cleaned 2016 Census survey data with spatial coordinates 
-can_cen <- readRDS("large/CensusDSACleaned.rds")
+can_cen <- readRDS("large/national/CensusDSACleaned.rds")
 
-#### Spatially weighted join ####
-## Use a spatially weighted join to get the mean values of each dissemination area within each Calgary neighbourhood
+#### SPATIALLY WEIGHTED JOIN ####
+## Use a spatially weighted join to get the mean values of each dissemination area within each neighbourhood
 # find all the DSAs that intersect with each neighbourhood
 hood_cen <- st_intersection(can_hood, can_cen)
 # calculate the area of each DSA, weight of each DSA, and the weighted mean
@@ -53,5 +55,5 @@ can_hood_sum <- can_hood_cen %>%
          empinc = median(as.numeric(empinc))) %>%
   distinct(hood, .keep_all = TRUE)
 # save
-saveRDS(can_hood_sum, "large/NeighbourhoodsCensusSum.rds")
-st_write(can_hood_sum, "large/NeighbourhoodsCensusSum.gpkg", driver = "GPKG")
+saveRDS(can_hood_sum, "large/national/NeighbourhoodsCensusSum.rds")
+st_write(can_hood_sum, "large/national/NeighbourhoodsCensusSum.gpkg", driver = "GPKG")
