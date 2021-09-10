@@ -1,16 +1,17 @@
 # Script to calculate building densities of neighbourhoods of all 7 cities
 # Author: Nicole Yu & Isabella Richmond
 
-#### Packages ####
-easypackages::packages("tidyverse", "sf", "units")
+#### PACKAGES ####
+p <- c("sf", "dplyr", "tidyr", "units")
+lapply(p, library, character.only = T)
 
-#### Data ####
+#### DATA ####
 # all city building footprints
-can_build <- readRDS("large/AllBuildingFootprintsCleaned.rds")
+can_build <- readRDS("large/national/AllBuildingsCleaned.rds")
 # all city neighbourhoods
-can_hood <- readRDS("large/AllNeighbourhoodsCleaned.rds")
+can_hood <- readRDS("large/neighbourhoods/AllNeighbourhoodsCleaned.rds")
 
-#### Data cleanup ####
+#### CLEANUP ####
 # calculate building footprint area
 can_build$build_area <- st_area(can_build$x)
 # find building centroid
@@ -20,7 +21,7 @@ can_build$x <- NULL
 # Set centroids geometry of sf
 can_build$centroid <- substr(can_build$centroid,3,nchar(can_build$centroid)-1)
 can_build <- separate(data = can_build, col = centroid, into = c("lat", "long"), sep = "\\, ")
-can_build <- st_as_sf(x = can_build, coords = c("lat","long"), crs = 6624, na.fail = FALSE, remove = TRUE)
+can_build <- st_as_sf(x = can_build, coords = c("lat","long"), crs = 3347, na.fail = FALSE, remove = TRUE)
 # join building centroids with neighborhoods
 can_build <- st_join(can_build, can_hood)
 # filter NAs
@@ -29,7 +30,8 @@ can_build <- can_build %>% filter(!is.na(hood))
 units(can_build$build_area) <- make_units(km^2)
 units(can_build$hood_area) <- make_units(km^2)
 # group by neighbourhood ids and calculate building densities
-group_by(hood_id) %>%
+can_build_hoodsum <- can_build %>%
+  group_by(hood_id) %>%
   mutate(city = city.x,
          centroids=n(), 
          build_area = sum(build_area),
@@ -39,4 +41,4 @@ group_by(hood_id) %>%
   select(city, hood, hood_id, hood_area, centroids, build_area, centroid_den, area_den)
 
 # save
-saveRDS(can_build_hoodsum, "large/HalifaxBuildingDensity.rds")
+saveRDS(can_build_hoodsum, "large/national/NeighbourhoodsBuildingDensity.rds")
