@@ -18,10 +18,10 @@ tree_cleaning <- function(city, trees, parks, hoods, boundaries, roads){
   trees <- st_transform(trees, crs = 3347)
   saveRDS(parks, paste0("large/parks/", city, "ParksCleaned.rds"))
   
-  city_bound <- subset(boundaries, bound == "city")
+  city_bound <- subset(boundaries, bound == city)
   city_road <- roads[city_bound,]
   city_road <- select(city_road, c("street", "streetid", "geometry"))
-  city_road <- city_road %>% mutate(index = rownames(city_road))
+  city_road <- city_road %>% mutate(index = 1:n())
   saveRDS(city_road, paste0("large/national/", city, "RoadsCleaned.rds"))
   
   trees <- st_join(trees, hoods, join = st_intersects)
@@ -30,25 +30,25 @@ tree_cleaning <- function(city, trees, parks, hoods, boundaries, roads){
   dup <- trees$id[duplicated(trees$id)]
   trees <- trees %>% filter(!id %in% dup)
   # replace NAs with "no" to indicate street trees 
-  trees$park %>% replace_na("no")
+  trees <- mutate(trees, park = replace_na(park, "no"))
   # if value is not "no", change value to "yes" so park column is binary yes/no
-  trees$park[trees$park != "no"] <- "yes"
+  trees <- mutate(trees, park = ifelse(park == "no", "no", "yes"))
   # st_nearest_feature returns the index value not the street name
-  #trees$streetid <- st_nearest_feature(trees, city_road)
+  trees <- mutate(trees, streetid = st_nearest_feature(trees, city_road))
   # return unique streetid based on index values
-  #trees$streetid <- city_road$streetid[match(as.character(trees$streetid), as.character(trees$index))]
+  #trees <- mutate(trees, streetid = city_road$streetid[match(as.character(trees$streetid), as.character(city_road$index))])
   # add column with street name
-  #trees$street <- trees$street[match(as.character(trees$streetid), as.character(trees$streetid))]
-  #trees <- trees %>% filter(park == "no")
+  #trees <- mutate(trees, street = match(as.character(trees$streetid), as.character(city_road$streetid)))
   
-  #trees <- trees[city_bound,]
+  trees <- trees %>% filter(park == "no")
+  
+  trees <- trees[city_bound,]
   
   # reorder columns
-  #trees <- trees[,c("city","id","genus", "species", "cultivar", "geometry","hood","streetid","park", "street", "dbh")]# Check and make output
+  trees <- trees[,c("city","id","genus", "species", "cultivar", "geometry","hood","streetid","park", "street", "dbh")]# Check and make output
   
-  #saveRDS(trees,  paste0("large/trees/", city, "TreesCleaned.rds"))
+  saveRDS(trees,  paste0("large/trees/", city, "TreesCleaned.rds"))
 }
-
 
 #### DATA ####
 # load data downloaded in 1-DataDownload.R
@@ -94,5 +94,6 @@ cal_tree <- drop_na(cal_tree, c(latitude,longitude))
 cal_tree <- st_as_sf(cal_tree, coords = c("longitude", "latitude"), crs = 4326)
 
 
-tree_cleaning("Calgary", cal_tree, cal_park, cal_hood, can_bound, can_road)
+## Final Dataset
+t <- tree_cleaning("Calgary", cal_tree, cal_park, cal_hood, can_bound, can_road)
 
