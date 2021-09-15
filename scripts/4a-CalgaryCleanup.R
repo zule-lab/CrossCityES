@@ -55,5 +55,5 @@ cal_tree <- drop_na(cal_tree, c(latitude,longitude))
 cal_tree <- st_as_sf(cal_tree, coords = c("longitude", "latitude"), crs = 4326)
 
 ## Final Dataset
-t <- tree_cleaning("Calgary", cal_tree, cal_park, cal_hood, can_bound, can_road)
+tree_cleaning("Calgary", cal_tree, cal_park, cal_hood, can_bound, can_road)
 

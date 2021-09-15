@@ -2,34 +2,44 @@
 # Author: Nicole Yu
 
 # This script is for cleaning the Montreal public tree inventory
-# Montreal dataset has neighbourhood and park/street columns
-# Still require street column
 
-#### Packages #### 
+#### PACKAGES #### 
 # load packages 
-easypackages::packages("sf", "tidyverse")
+p <- c("sf", "dplyr", "tidyr", "data.table")
+lapply(p, library, character.only = T)
 
-#### Data ####
-# load data downloaded in 1-DataDownload.R
+#### FUNCTIONS ####
+source("scripts/function-TreeCleaning.R")
+
+#### DATA ####
 # tree inventory
-mon_tree_raw <- read_csv("large/mon_tree_raw.csv")
+mon_tree_raw <- fread("large/trees/mon_tree_raw.csv", encoding = "UTF-8", na.strings = c("",NA))
+# parks 
+mon_park_raw <- st_read(file.path("/vsizip", "large/parks/mon_park_raw.zip"))
 # neighbourhoods
-mon_hood <- readRDS("large/MontrealNeighbourhoodsCleaned.rds")
+mon_hood <- readRDS("large/neighbourhoods/MontrealNeighbourhoodsCleaned.rds")
 # municipal boundaries 
-can_bound <- readRDS("large/MunicipalBoundariesCleaned.rds")
+can_bound <- readRDS("large/national/MunicipalBoundariesCleaned.rds")
 # roads
-can_road <- readRDS("large/RoadsCleaned.rds")
+can_road <- readRDS("large/national/RoadsCleaned.rds")
 
-#### Data Cleaning ####
+#### CLEANING ####
+## Parks
+# select relevant columns and rename 
+mon_park <- mon_park_raw %>%
+  select(c("Nom", "geometry")) %>%
+  rename("park" = "Nom")
+
 ## Trees
 # NOTE: only common name for species, requires further sorting
 # Check for dupes
 unique(duplicated(mon_tree_raw))
 # select the required columns and rename
 mon_tree <- mon_tree_raw %>%
-  select(c("Essence_latin","DHP","CODE_PARC","Longitude","Latitude")) %>%
-  rename("dbh" = "DHP") %>%
-  rename("park" = "CODE_PARC") 
+  select(c("Essence_latin","DHP", "Rue", "NOM_PARC","Longitude","Latitude")) %>%
+  rename("dbh" = "DHP",
+         "park" = "NOM_PARC",
+         "street" = "Rue")
 # adding id column
 mon_tree$id <- seq.int(nrow(mon_tree))
 # sorting species name into genus, species, and cultivar columns
@@ -40,54 +50,12 @@ mon_treecul <- mon_tree %>% filter(species != "x") %>% unite(cultivar, c("var", 
 mon_treesp <- mon_tree %>% filter(species == "x") %>% unite(species, c("species", "var"), na.rm = TRUE, sep = " ")
 mon_tree <- rbind(mon_treecul, mon_treesp)
 mon_tree$cultivar[mon_tree$cultivar == ""] <- NA
-# identify which trees are park trees and which are street 
-mon_tree$park <- ifelse(is.na(mon_tree$park),"no","yes")
 # Converting dbh from mm to cm
 mon_tree$dbh <- mon_tree$dbh/10
 # drop any rows that have NA lat/long
 mon_tree <- drop_na(mon_tree, c(Latitude,Longitude))
 # adding geometry column and specify projection outlined in City of Montreal metadata 
 mon_tree <- st_as_sf(x = mon_tree, coords = c("Longitude", "Latitude"), crs = 4326, na.fail = FALSE, remove = FALSE)
-# transform
-mon_tree <- st_transform(mon_tree, crs = 6624)
 
-## City Boundary & Roads 
-# select Montreal boundary
-mon_bound <- subset(can_bound, bound == "Montreal")
-# select roads within the Montreal boundary
-mon_road <- can_road[mon_bound,]
-mon_road <- st_transform(mon_road, crs = 6624)
-mon_road <- select(mon_road, c("street","streetid", "geometry"))
-# add row index numbers as a column for recoding later
-mon_road <- mon_road %>% mutate(index= 1:n())
-# save
-saveRDS(mon_road, "large/MontrealRoadsCleaned.rds")
-
-#### Spatial Joins ####
-## Neighbourhoods
-# want to add columns that specifies what city and neighbourhood each tree belongs to
-# join trees and neighbourhoods using st_intersects
-mon_tree <- st_join(mon_tree, mon_hood)
-## Streets
-# st_nearest_feature returns the index value not the street name
-mon_tree$streetid <- st_nearest_feature(mon_tree, mon_road)
-# return unique streetid based on index values
-mon_tree$streetid <- mon_road$streetid[match(as.character(mon_tree$streetid), as.character(mon_road$index))]
-# add column with street name
-mon_tree$street <- mon_road$street[match(as.character(mon_tree$streetid), as.character(mon_road$streetid))]
-
-#### Remove park trees ####
-mon_tree <- mon_tree %>% filter(park == "no")
-
-#### Remove trees with incorrect coordinates ####
-# some trees may have coordinates that place them outside the city's boundaries
-# remove the erroneous trees using spatial join
-mon_tree <- mon_tree[mon_bound,]
-
-#### Save ####
-# reorder columns
-mon_tree <- mon_tree[,c("city","id","genus","species","cultivar","geometry","hood","streetid","street","park","dbh")]
-# save cleaned Ottawa tree dataset as rds and shapefile
-saveRDS(mon_tree, "large/MontrealTreesCleaned.rds")
-st_write(mon_tree, "large/MontrealTreesCleaned.gpkg", driver = "GPKG")
-
+## Final dataset 
+tree_cleaning("Montreal", mon_tree, mon_park, mon_hood, can_bound, can_road)
