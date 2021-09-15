@@ -2,7 +2,6 @@
 # Author: Nicole Yu
 
 # This script is for cleaning the Ottawa public tree inventory
-# Still require neighbourhood and park/street columns
 
 #### PACKAGES #### 
 # load packages 
