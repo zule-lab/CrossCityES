@@ -2,39 +2,38 @@
 # Author: Nicole Yu
 
 # This script is for cleaning the Halifax public tree inventory
-# Still requires neighbourhood, street, and park/street tree columns
 
-#### Packages #### 
+#### PACKAGES #### 
 # load packages 
-easypackages::packages("sf", "tidyverse")
+p <- c("sf", "dplyr", "tidyr", "readr")
+lapply(p, library, character.only = T)
 
-#### Data ####
+#### FUNCTIONS ####
+source("scripts/function-TreeCleaning.R")
+
+#### DATA ####
 # load data downloaded in 1-DataDownload.R
 # tree inventory
-hal_tree_raw <- read_csv("input/hal_tree_raw.csv")
+hal_tree_raw <- read_csv("large/trees/hal_tree_raw.csv")
 # parks
-hal_park_raw <- read_sf("large/hal_park_raw/HRM_Parks.shp")
+hal_park_raw <- st_read(file.path("/vsizip", "large/parks/hal_park_raw.zip"))
 # neighbourhoods 
-hal_hood <- readRDS("large/HalifaxNeighbourhoodsCleaned.rds")
+hal_hood <- readRDS("large/neighbourhoods/HalifaxNeighbourhoodsCleaned.rds")
 # tree species code
-hal_tree_spcode <-read.csv("input/hal_tree_spcode.csv", row.names = NULL)
+hal_tree_spcode <-read_csv("input/hal_tree_spcode.csv")
 # tree dbh code
-hal_tree_dbhcode <-read.csv("input/hal_tree_dbhcode.csv", row.names = NULL)
+hal_tree_dbhcode <-read_csv("input/hal_tree_dbhcode.csv")
 # municipal boundaries 
-can_bound <- readRDS("large/MunicipalBoundariesCleaned.rds")
+can_bound <- readRDS("large/national/MunicipalBoundariesCleaned.rds")
 # roads
-can_road <- readRDS("large/RoadsCleaned.rds")
-  
-#### Data Cleaning ####
+can_road <- readRDS("large/national/RoadsCleaned.rds")
+
+#### CLEANING ####
 ## Parks
 # select relevant columns and rename 
 hal_park <- hal_park_raw %>%
   select(c("PARK_NAME", "geometry")) %>%
   rename("park" = "PARK_NAME")
-# transform to ESPG: 6624
-hal_park <- st_transform(hal_park, crs = 6624)
-# save 
-saveRDS(hal_park, "large/HalifaxParksCleaned.rds")
 
 ## Trees
 # check for dupes
@@ -64,56 +63,6 @@ hal_tree$dbh <- hal_tree_dbhcode$dbh[match(as.character(hal_tree$dbh), as.charac
 hal_tree <- drop_na(hal_tree, c(X,Y))
 # convert to sf object 
 hal_tree <- st_as_sf(hal_tree, coords = c("X", "Y"), crs = 4326)
-# transform
-hal_tree <- st_transform(hal_tree, crs = 6624)
 
-## City Boundary & Roads 
-# select Halifax boundary
-hal_bound <- subset(can_bound, bound == "Halifax")
-# select roads within the Halifax boundary
-hal_road <- can_road[hal_bound,]
-hal_road <- st_transform(hal_road, crs = 6624)
-hal_road <- select(hal_road, c("street","streetid", "geometry"))
-#add row index numbers as a column for recoding later
-hal_road <- hal_road %>% mutate(index= 1:n())
-#save
-saveRDS(hal_road, "large/HalifaxRoadsCleaned.rds")
-
-#### Spatial Joins ####
-## Neighbourhood
-# want to add columns that specifies what city and neighbourhood each tree belongs to
-# join trees and neighbourhoods using st_intersects
-# Halifax peninsula is considered its own neighbourhood
-hal_tree <- st_join(hal_tree, hal_hood, join = st_intersects)
-## Parks 
-# want to identify which trees are park trees and which are street
-hal_tree <- st_join(hal_tree, hal_park, join = st_intersects)
-# remove all trees on polygon boundaries after joining with parks by deleting duplicates
-hal_dupe <- hal_tree$id[duplicated(hal_tree$id)]
-hal_tree <- hal_tree %>% filter(!id %in% hal_dupe)
-# replace NAs with "no" to indicate street trees 
-hal_tree <- replace_na(hal_tree, list(park = "no"))
-# if value is not "no", change value to "yes" so park column is binary yes/no
-hal_tree$park[hal_tree$park != "no"] <- "yes"
-## Streets
-# st_nearest_feature returns the index value not the street name
-hal_tree$streetid <- st_nearest_feature(hal_tree, hal_road)
-# return unique streetid based on index values
-hal_tree$streetid <- hal_road$streetid[match(as.character(hal_tree$streetid), as.character(hal_road$index))]
-# add column with street name
-hal_tree$street <- hal_road$street[match(as.character(hal_tree$streetid), as.character(hal_road$streetid))]
-
-#### Remove park trees ####
-hal_tree <- hal_tree %>% filter(park == "no")
-
-#### Remove trees with incorrect coordinates ####
-# some trees may have coordinates that place them outside the city's boundaries
-# remove the erroneous trees using spatial join
-hal_tree <- hal_tree[hal_bound,]
-
-#### Save ####
-# reorder columns
-hal_tree <- hal_tree[,c("city","id","genus","species","cultivar","geometry","hood","streetid","street","park","dbh")]# Check and make output
-# save cleaned Ottawa tree dataset as rds and shapefile
-saveRDS(hal_tree, "large/HalifaxTreesCleaned.rds")
-st_write(hal_tree, "large/HalifaxTreesCleaned.gpkg", driver = "GPKG")
+## Final Dataset
+tree_cleaning("Halifax", hal_tree, hal_park, hal_hood, can_bound, can_road)
