@@ -47,5 +47,18 @@ all %>% group_by(city) %>%
   geom_bar()+
   theme_classic() + 
   labs(x = "", y = "Tree Count") + 
-  geom_text(aes(label = Freq), vjust = -0.1)
+  geom_text(stat='count', aes(label=..count..), vjust=-0.1)
 ggsave("graphics/TreeCountCities.jpg")
+
+
+#### ABUNDANCE ####
+ab <- all %>%
+  group_by(city, fullname) %>%
+  summarise(n = n()) %>%
+  mutate(freq = (n / sum(n))*100) %>%
+  arrange(desc(freq), .by_group = T)
+
+ab_1 <- ab %>%
+  filter(freq > 0.999)
+
+ab_1 %>% group_by(city) %>% summarize(s = sum(freq))
