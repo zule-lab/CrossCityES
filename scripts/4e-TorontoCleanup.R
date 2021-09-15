@@ -2,90 +2,67 @@
 # Author: Nicole Yu
 
 # This script is for cleaning the Toronto public tree inventory
-# Toronto dataset has street column
-# Still require neighbourhood and park/street tree column
 
-#### Packages #### 
+#### PACKAGES #### 
 # load packages 
-easypackages::packages("sf", "tidyverse")
+p <- c("sf", "dplyr", "readr", "stringr")
+lapply(p, library, character.only = T)
 
-#### Data ####
+#### FUNCTIONS ####
+source("scripts/function-TreeCleaning.R")
+
+#### DATA ####
 # load data downloaded in 1-DataDownload.R
 # tree inventory
-tor_tree_raw <- read_sf("large/tor_tree_raw/TMMS_Open_Data_WGS84.shp")
+tor_tree_raw <- read_csv("large/trees/tor_tree_raw.csv")
 # parks
-tor_park_raw <- read_sf("large/tor_park_raw/CITY_GREEN_SPACE_WGS84.shp")
+tor_park_raw <- st_read(file.path("/vsizip", "large/parks/tor_park_raw.zip"))
 # neighbourhoods
-tor_hood <- readRDS("large/TorontoNeighbourhoodsCleaned.rds")
+tor_hood <- readRDS("large/neighbourhoods/TorontoNeighbourhoodsCleaned.rds")
 # municipal boundaries 
-can_bound <- readRDS("large/MunicipalBoundariesCleaned.rds")
+can_bound <- readRDS("large/national/MunicipalBoundariesCleaned.rds")
+# roads
+can_road <- readRDS("large/national/RoadsCleaned.rds")
 
-#### Data Cleaning ####
+#### CLEANING ####
 ## Parks
 # select relevant columns and rename 
 tor_park <- tor_park_raw %>%
   select(c("OBJECTID", "geometry")) %>%
   rename("park" = "OBJECTID")
-# transform to EPSG: 6624 to be consistent with other layers
-tor_park <- st_transform(tor_park, crs = 6624)
-# save
-saveRDS(tor_park, "large/TorontoParksCleaned.rds")
 
 ## Trees
 # Check for dupes
 unique(duplicated(tor_tree_raw$STRUCTID))
 # select the required columns and rename
 tor_tree <- tor_tree_raw %>%
-  select(c("STRUCTID","NAME","DBH_TRUNK","BOTANICAL_","geometry")) %>%
-  rename("id" = "STRUCTID") %>%
-  rename("street" = "NAME") %>%
-  rename("dbh" = "DBH_TRUNK") 
-# add streetid column to match other cities
-tor_tree$streetid <- c(NA)
-# sorting species name into genus, species, and cultivar columns
-tor_tree <- tor_tree %>% separate(BOTANICAL_, c("genus","species","var","cultivar", "cultivar2"))
-tor_tree$species[tor_tree$species == "sp"] <- "sp."
-tor_tree$species[tor_tree$species == "X"] <- "x"
-tor_tree$var[tor_tree$var == "var"] <- NA
-tor_treecul <- tor_tree %>% filter(species != "x") %>% unite(cultivar, c("var", "cultivar", "cultivar2"), na.rm = TRUE, sep = " ")%>%
-  mutate(cultivar = na_if(cultivar, ""))
-tor_treesp <- tor_tree %>% filter(species == "x") %>% unite(species, c("species", "var"), na.rm = TRUE, sep = " ") %>% unite(cultivar, c("cultivar", "cultivar2"), na.rm = TRUE, sep = " ")%>%
-  mutate(cultivar = na_if(cultivar, ""))
-tor_tree <- rbind(tor_treecul, tor_treesp)
+  select(c("STRUCTID","DBH_TRUNK","COMMON_NAME", "STREETNAME","geometry")) %>%
+  rename("id" = "STRUCTID",
+         "street" = "STREETNAME",
+         "dbh" = "DBH_TRUNK",
+         "species"= "COMMON_NAME") 
 tor_tree$street <- str_to_title(tor_tree$street)
-# transform
-tor_tree <- st_transform(tor_tree, crs = 6624)
+# new downloaded dataset doesn't have scientific names, revisit lines 44-53 later
+# sorting species name into genus, species, and cultivar columns
+#tor_tree <- tor_tree %>% separate(BOTANICAL_, c("genus","species","var","cultivar", "cultivar2"))
+#tor_tree$species[tor_tree$species == "sp"] <- "sp."
+#tor_tree$species[tor_tree$species == "X"] <- "x"
+#tor_tree$var[tor_tree$var == "var"] <- NA
+#tor_treecul <- tor_tree %>% filter(species != "x") %>% unite(cultivar, c("var", "cultivar", "cultivar2"), na.rm = TRUE, sep = " ")%>%
+#  mutate(cultivar = na_if(cultivar, ""))
+#tor_treesp <- tor_tree %>% filter(species == "x") %>% unite(species, c("species", "var"), na.rm = TRUE, sep = " ") %>% unite(cultivar, c("cultivar", "cultivar2"), na.rm = TRUE, sep = " ")%>%
+#  mutate(cultivar = na_if(cultivar, ""))
+#tor_tree <- rbind(tor_treecul, tor_treesp)
+tor_tree$genus <- c(NA)
+tor_tree$cultivar <- c(NA)
+# data is formatted as GeoJSON
+tor_tree$geometry <- substr(tor_tree$geometry,38,nchar(tor_tree$geometry)-2)
+tor_tree <- separate(data = tor_tree, col = geometry, into = c("long", "lat"), sep = "\\, ")
+# drop any rows that have NA lat/long
+tor_tree <- drop_na(tor_tree, c(lat,long))
+tor_tree <- st_as_sf(x = tor_tree, coords = c("long", "lat"), crs = 4326, na.fail = FALSE, remove = FALSE)
 
-#### Spatial Joins ####
-## Neighbourhoods
-# want to add columns that specifies what city and neighbourhood each tree belongs to
-# join trees and neighbourhoods using st_intersects
-tor_tree <- st_join(tor_tree, tor_hood, join = st_intersects)
-## Parks 
-# want to identify which trees are park trees and which are street 
-# code adds 11 columns to the dataset?? why?
-tor_tree <- st_join(tor_tree, tor_park, join = st_intersects)
-# remove all trees on polygon boundaries after joining with parks by deleting duplicates
-tor_dupe <- tor_tree$id[duplicated(tor_tree$id)]
-tor_tree <- tor_tree %>% filter(!id %in% tor_dupe)
-# replace NAs with "no" to indicate street trees 
-tor_tree <- replace_na(tor_tree, list(park = "no"))
-# if value is not "no", change value to "yes" so park column is binary yes/no
-tor_tree$park[tor_tree$park != "no"] <- "yes"
 
-#### Remove park trees ####
-tor_tree <- tor_tree %>% filter(park == "no")
+## Final Dataset
+tree_cleaning("Toronto", tor_tree, tor_park, tor_hood, can_bound, can_road)
 
-#### Remove trees with incorrect coordinates ####
-# some trees may have coordinates that place them outside the city's boundaries
-# select Toronto boundary
-tor_bound <- subset(can_bound, bound == "Toronto")
-# remove the erroneous trees using spatial join
-tor_tree <- tor_tree[tor_bound,]
-
-#### Save ####
-# reorder columns
-tor_tree <- tor_tree[,c("city","id","genus","species","cultivar","geometry","hood","streetid","street","park","dbh")]
-# save cleaned Ottawa tree dataset as rds and shapefile
-saveRDS(tor_tree, "large/TorontoTreesCleaned.rds")
-st_write(tor_tree, "large/TorontoTreesCleaned.gpkg", driver = "GPKG")
