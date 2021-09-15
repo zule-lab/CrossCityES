@@ -27,9 +27,15 @@ tree_cleaning <- function(city, trees, parks, hoods, boundaries, roads){
     # st_nearest_feature returns the index value not the street name
     trees <- mutate(trees, streetid = st_nearest_feature(trees, city_road))
     # return unique streetid based on index values
-    trees <- mutate(trees, streetid = match(as.character(trees$streetid), as.character(city_road$index)))
+    trees <- mutate(trees, index = match(as.character(trees$streetid), as.character(city_road$index)))
     # add column with street name
-    trees <- mutate(trees, street = replace(trees$streetid, city_road$index, city_road$street))
+    trees <- mutate(trees, street = city_road$street[match(trees$index, city_road$index)])
+  }
+  else { NULL }
+  
+  
+  if ("hood" %in% colnames(trees) == "FALSE") {
+    trees <- st_join(trees, hoods)
   }
   else { NULL }
   
