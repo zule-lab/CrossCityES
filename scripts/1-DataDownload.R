@@ -72,7 +72,6 @@ download_shp("https://data.winnipeg.ca/api/geospatial/fen6-iygi?method=export&fo
              "large/neighbourhoods/win_hood_raw.zip")
 
 ### PARKS ###
-## Excluding Montreal and Winnipeg
 ## Calgary park data download
 download_csv("https://data.calgary.ca/api/views/kami-qbfh/rows.csv?accessType=DOWNLOAD",
              "large/parks/cal_park_raw.csv")
@@ -80,6 +79,10 @@ download_csv("https://data.calgary.ca/api/views/kami-qbfh/rows.csv?accessType=DO
 ## Halifax park data download
 download_shp("https://opendata.arcgis.com/api/v3/datasets/3df29a3d088a42d890f11d027ea1c0be_0/downloads/data?format=shp&spatialRefId=4326",
              "large/parks/hal_park_raw.zip")
+
+## Montreal park data download 
+download_shp("https://data.montreal.ca/dataset/2e9e4d2f-173a-4c3d-a5e3-565d79baa27d/resource/c57baaf4-0fa8-4aa4-9358-61eb7457b650/download/shapefile.zip",
+             "large/parks/mon_park_raw.zip")
 
 ## Ottawa park data download
 download_shp("https://opendata.arcgis.com/api/v3/datasets/cfb079e407494c33b038e86c7e05288e_24/downloads/data?format=shp&spatialRefId=4326",
@@ -92,6 +95,10 @@ download_shp("https://ckan0.cf.opendata.inter.prod-toronto.ca/download_resource/
 ## Vancouver park data download
 download_shp("https://opendata.vancouver.ca/explore/dataset/parks-polygon-representation/download/?format=shp&timezone=Asia/Shanghai&lang=en",
              "large/parks/van_park_raw.zip")
+
+## Winnipeg park data download
+download_shp("https://data.winnipeg.ca/api/geospatial/tug6-p73s?method=export&format=Shapefile",
+             "large/parks/win_park_raw.zip")
 
 
 ### TREES ###
