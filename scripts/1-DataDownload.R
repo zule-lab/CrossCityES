@@ -171,3 +171,5 @@ hal_tree_spcode <- read.csv("input/hal_tree_spcode.csv")
 hal_tree_dbhcode <- read.csv("input/hal_tree_dbhcode.csv", row.names = NULL)
 # Montreal neighbourhood code
 mon_tree_hoodcode <- read.csv("input/mon_tree_hoodcode.csv", row.names = NULL)
+# Toronto tree species codes (obtained by emailing opendata@toronto.com)
+tor_tree_spcode <- read.csv("input/tor_tree_spcode.csv")
