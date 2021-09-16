@@ -43,9 +43,6 @@ van_tree <- van_tree_raw %>%
   rename("street" = "ON_STREET") %>%
   rename("dbh" = "DIAMETER")
 # change case of characters
-van_tree$genus <- str_to_title(van_tree$genus) 
-van_tree$species <- tolower(van_tree$species) 
-van_tree$cultivar <- str_to_title(van_tree$cultivar) 
 van_tree$street <- str_to_title(van_tree$street) 
 # change "species in species" column to "sp."
 van_tree$species[van_tree$species == "species"] <- "sp."
