@@ -1,7 +1,7 @@
 tree_cleaning <- function(city, trees, parks, hoods, boundaries, roads){
   
   # packages
-  p <- c("sf", "dplyr", "tidyr")
+  p <- c("sf", "dplyr", "tidyr", "stringr")
   lapply(p, library, character.only = T)
   
   
@@ -50,6 +50,11 @@ tree_cleaning <- function(city, trees, parks, hoods, boundaries, roads){
   trees <- mutate(trees, park = replace_na(park, "no"))
   trees <- mutate(trees, park = ifelse(park == "no", "no", "yes"))
   trees <- trees %>% filter(park == "no")
+  
+  # ensuring proper formatting
+  trees <- mutate(trees, genus = str_to_title(trees$genus)) 
+  trees <- mutate(trees, species = str_to_lower(trees$species))
+  trees <- mutate(trees, cultivar = str_to_lower(trees$cultivar))
   
   
   # filtering for trees in city boundaries
