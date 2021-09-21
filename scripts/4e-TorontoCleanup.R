@@ -43,7 +43,6 @@ tor_tree <- tor_tree_raw %>%
          "street" = "STREETNAME",
          "dbh" = "DBH_TRUNK")
 tor_tree$street <- str_to_title(tor_tree$street)
-# new downloaded dataset doesn't have scientific names, revisit lines 44-53 later
 # sorting species name into genus, species, and cultivar columns
 tor_tree$BOTANICAL_NAME <- tor_tree_spcode$BOTANICAL_NAME[match(as.character(tor_tree$COMMON_NAME), as.character(tor_tree_spcode$COMMON_NAME))]
 tor_tree <- select(tor_tree, -"COMMON_NAME")
@@ -63,7 +62,5 @@ tor_tree <- separate(data = tor_tree, col = geometry, into = c("long", "lat"), s
 tor_tree <- drop_na(tor_tree, c(lat,long))
 tor_tree <- st_as_sf(x = tor_tree, coords = c("long", "lat"), crs = 4326, na.fail = FALSE, remove = FALSE)
 
-
 ## Final Dataset
 tree_cleaning("Toronto", tor_tree, tor_park, tor_hood, can_bound, can_road)
-
