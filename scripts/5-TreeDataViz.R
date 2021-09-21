@@ -58,7 +58,27 @@ ab <- all %>%
   mutate(freq = (n / sum(n))*100) %>%
   arrange(desc(freq), .by_group = T)
 
+# 1% of city
 ab_1 <- ab %>%
   filter(freq > 0.999)
-
 ab_1 %>% group_by(city) %>% summarize(s = sum(freq))
+
+# 1% of neighbourhoods
+ab_1_hood <- all %>%
+  group_by(city, hood, fullname) %>% 
+  summarise(n = n()) %>%
+  mutate(freq_hood = (n / sum(n))*100)
+
+ab_1_hood <- ab_1_hood %>%
+  filter(freq_hood > 1)
+
+ab_1_hood %>% summarize(nspecies = n_distinct(fullname))  
+ab_1_hood %>% group_by(city, hood) %>% summarize(s = sum(freq_hood))
+
+
+#### OVERLAP #### 
+ov <- ab_1 %>% 
+  group_by(city) %>% 
+  mutate(shared = n_distinct(fullname) == n_distinct(.$fullname))
+
+Reduce(intersect, split(ab_1$fullname, ab_1$city))
