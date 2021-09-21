@@ -36,10 +36,13 @@ unique(duplicated(win_tree_raw$tree_id))
 win_tree <- win_tree_raw %>%
   select(c("the_geom","tree_id","botanical","dbh","park","street")) %>%
   rename("id" = "tree_id")
+# recode problematic species names 
+win_tree$botanical[win_tree$botanical == "Not Available"] <- "Unknown sp."
 # sorting species name into genus, species, and cultivar columns
 win_tree <- win_tree %>% separate(botanical, c("genus","species","var","cultivar"))
 # assign blanks and NAs in species column to "sp."
 win_tree$species[win_tree$species %in% c("", NA,"spp")]<-"sp."
+win_tree$species[win_tree$species == "sp"] <- "sp."
 win_tree$var[win_tree$var == "var"] <- NA
 win_treesp <- win_tree %>% filter(species == "x") %>% unite(species, c("species", "var"), na.rm = TRUE, sep = " ") %>%
   mutate(cultivar = na_if(cultivar, ""))
