@@ -5,7 +5,7 @@
 
 #### PACKAGES #### 
 # load packages 
-p <- c("sf", "dplyr", "tidyr", "data.table")
+p <- c("sf", "dplyr", "plyr", "tidyr", "stringr", "data.table")
 lapply(p, library, character.only = T)
 
 #### FUNCTIONS ####
@@ -27,8 +27,8 @@ can_road <- readRDS("large/national/RoadsCleaned.rds")
 ## Parks
 # select relevant columns and rename 
 mon_park <- mon_park_raw %>%
-  select(c("Nom", "geometry")) %>%
-  rename("park" = "Nom")
+  dplyr::select(c("Nom", "geometry")) %>%
+  dplyr::rename("park" = "Nom")
 
 ## Trees
 # NOTE: only common name for species, requires further sorting
@@ -36,21 +36,35 @@ mon_park <- mon_park_raw %>%
 unique(duplicated(mon_tree_raw))
 # select the required columns and rename
 mon_tree <- mon_tree_raw %>%
-  select(c("Essence_latin","DHP", "Rue", "NOM_PARC","Longitude","Latitude")) %>%
-  rename("dbh" = "DHP",
+  dplyr::select(c("Essence_latin","DHP", "Rue", "NOM_PARC","Longitude","Latitude")) %>%
+  dplyr::rename("dbh" = "DHP",
          "park" = "NOM_PARC",
          "street" = "Rue")
 # adding id column
 mon_tree$id <- seq.int(nrow(mon_tree))
+# dealing with problematic species names 
+mal <- colwise(function(x) str_replace_all(x, "Malus x", "Malus sp. x"))
+mon_tree <- mal(mon_tree)
+mal2 <- colwise(function(x) str_replace_all(x, "Malus 'Adams'", "Malus sp. Adams"))
+mon_tree <- mal2(mon_tree)
+am <- colwise(function(x) str_replace_all(x, "Amelanchier Autumn", "Amelanchier x grandiflora Autumn"))
+mon_tree <- am(mon_tree)
 # sorting species name into genus, species, and cultivar columns
-mon_tree <- mon_tree %>% separate(Essence_latin, c("genus","species","var","cultivar"))
+mon_tree <- mon_tree %>% separate(Essence_latin, c("genus","species","var","cultivar"), sep = " ")
 mon_tree$species[mon_tree$species %in% c("ssp", NA)]<-"sp."
+mon_tree$species[mon_tree$species %in% c("sp", NA)]<-"sp."
+mon_tree$species[mon_tree$species %in% c("sub", NA)]<-"sp."
+mon_tree$species[mon_tree$species %in% c("sp.(hybrides)", NA)]<-"sp."
 mon_tree$var[mon_tree$var %in% c("","var")] <- NA
 mon_treecul <- mon_tree %>% filter(species != "x") %>% unite(cultivar, c("var", "cultivar"), na.rm = TRUE, sep = " ")
 mon_treesp <- mon_tree %>% filter(species == "x") %>% unite(species, c("species", "var"), na.rm = TRUE, sep = " ")
 mon_tree <- rbind(mon_treecul, mon_treesp)
 mon_tree$cultivar[mon_tree$cultivar == ""] <- NA
+# remove quotation marks
+del <- colwise(function(x) str_replace_all(x, "'", ""))
+mon_tree <- del(mon_tree)
 # Converting dbh from mm to cm
+mon_tree$dbh <- as.numeric(mon_tree$dbh)
 mon_tree$dbh <- mon_tree$dbh/10
 # drop any rows that have NA lat/long
 mon_tree <- drop_na(mon_tree, c(Latitude,Longitude))
