@@ -14,14 +14,14 @@ tree_cleaning <- function(city, trees, parks, hoods, boundaries, roads){
   # cleaning roads
   city_bound <- subset(boundaries, bound == city)
   city_road <- roads[city_bound,]
-  city_road <- select(city_road, c("street", "streetid", "geometry"))
-  city_road <- city_road %>% mutate(index = 1:n())
+  city_road <- dplyr::select(city_road, c("street", "streetid", "geometry"))
+  city_road <- city_road %>% dplyr::mutate(index = 1:n())
   saveRDS(city_road, paste0("large/national/", city, "RoadsCleaned.rds"))
   
   
   # check for duplicates
   dup <- trees$id[duplicated(trees$id)]
-  trees <- trees %>% filter(!id %in% dup)
+  trees <- trees %>% dplyr::filter(!id %in% dup)
   
   # joining neighbourhoods
   if ("hood" %in% colnames(trees) == "FALSE") {
@@ -39,22 +39,22 @@ tree_cleaning <- function(city, trees, parks, hoods, boundaries, roads){
   
   # joining streets
   if ("street" %in% colnames(trees) == "FALSE") {
-    trees <- mutate(trees, streetid = st_nearest_feature(trees, city_road)) # st_nearest_feature returns the index value not the street name
-    trees <- mutate(trees, index = match(as.character(trees$streetid), as.character(city_road$index))) # return unique streetid based on index values
-    trees <- mutate(trees, street = city_road$street[match(trees$index, city_road$index)]) # add column with street name
+    trees <-dplyr::mutate(trees, streetid = st_nearest_feature(trees, city_road)) # st_nearest_feature returns the index value not the street name
+    trees <- dplyr::mutate(trees, index = match(as.character(trees$streetid), as.character(city_road$index))) # return unique streetid based on index values
+    trees <- dplyr::mutate(trees, street = city_road$street[match(trees$index, city_road$index)]) # add column with street name
   }
   else { NULL }
   
   
   # filtering for street trees 
-  trees <- mutate(trees, park = replace_na(park, "no"))
-  trees <- mutate(trees, park = ifelse(park == "no", "no", "yes"))
-  trees <- trees %>% filter(park == "no")
+  trees <- dplyr::mutate(trees, park = replace_na(park, "no"))
+  trees <- dplyr::mutate(trees, park = ifelse(park == "no", "no", "yes"))
+  trees <- trees %>% dplyr::filter(park == "no")
   
   # ensuring proper formatting
-  trees <- mutate(trees, genus = str_to_title(trees$genus)) 
-  trees <- mutate(trees, species = str_to_lower(trees$species))
-  trees <- mutate(trees, cultivar = str_to_lower(trees$cultivar))
+  trees <- dplyr::mutate(trees, genus = str_to_title(trees$genus)) 
+  trees <- dplyr::mutate(trees, species = str_to_lower(trees$species))
+  trees <- dplyr::mutate(trees, cultivar = str_to_lower(trees$cultivar))
   
   
   # filtering for trees in city boundaries
