@@ -45,7 +45,8 @@ van_tree <- van_tree_raw %>%
 # change case of characters
 van_tree$street <- str_to_title(van_tree$street) 
 # change "species in species" column to "sp."
-van_tree$species[van_tree$species == "species"] <- "sp."
+van_tree$species[van_tree$species == "SPECIES"] <- "sp."
+van_tree$species[van_tree$species == "XX"] <- "sp."
 # convert empty as NA for cultivar
 van_tree$cultivar[van_tree$cultivar == ""] <- NA
 # converting dbh from inches to cm
