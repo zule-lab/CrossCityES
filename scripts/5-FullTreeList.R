@@ -162,4 +162,9 @@ sp <- as_tibble(unique(ab_1_hood$fullname)) %>%
 write.csv(sp, "output/NeighbourhoodSpeciesList.csv")
 
 #### OVERLAP #### 
-# to-do
+ft <- read.csv("input/Tree_Functional_Trait_Application_Project_V1_2021_02_03.csv")
+sp <- read.csv("output/NeighbourhoodSpeciesList.csv")
+
+ft <- rename(ft, Species = Latin)
+ftsp <- left_join(sp, ft, by = "Species")
+ftsp <- drop_na(ftsp)
