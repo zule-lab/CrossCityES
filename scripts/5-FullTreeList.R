@@ -33,6 +33,8 @@ all <- all %>%
 
 #### DATA CLEANING ####
 # manually inspected for spelling errors and inconsistencies 
+# Abies balsamea 
+all$fullname[all$fullname %in% c("Abies balsamaea")] <-"Abies balsamea"
 # Acer × freemanii
 all$fullname[all$fullname %in% c("Acer x fremannii", "Acer freemanii", "Acer freemanii   x")]<- "Acer x freemanii"
 # Acer pensylvanicum
@@ -153,9 +155,14 @@ ab_1_hood %>% group_by(city, hood) %>% summarize(s = sum(freq_hood))
 saveRDS(ab_1_hood, "large/trees/NeighbourhoodTreesCleaned.rds")
 write.csv(ab_1_hood, "output/NeighbourhoodTreesCleaned.csv")
 
+# list of species 
+sp <- as_tibble(unique(ab_1_hood$fullname)) %>% 
+  rename(Species = value) %>% 
+  arrange(Species)
+write.csv(sp, "output/NeighbourhoodSpeciesList.csv")
 
 #### OVERLAP #### 
-ov <- ab_1 %>% 
+ab_1_hood %>% 
   group_by(city) %>% 
   mutate(shared = n_distinct(fullname) == n_distinct(.$fullname))
 
