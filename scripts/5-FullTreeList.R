@@ -104,6 +104,7 @@ all$fullname[all$fullname %in% c("Ulmus hollandica   x")]<- "Ulmus x hollandica"
 # Unknown sp.
 all$fullname[all$fullname %in% c("NA sp.", "See notes", "Various sp.")] <- "Unknown sp."
 
+saveRDS(all, "large/trees/AllTreesCleaned.rds")
 
 #### VISUALIZATION ####
 all %>% group_by(city) %>% 
@@ -148,6 +149,9 @@ ab_1_hood <- ab_1_hood %>%
 
 ab_1_hood %>% summarize(nspecies = n_distinct(fullname))  
 ab_1_hood %>% group_by(city, hood) %>% summarize(s = sum(freq_hood))
+
+saveRDS(ab_1_hood, "large/trees/NeighbourhoodTreesCleaned.rds")
+write.csv(ab_1_hood, "output/NeighbourhoodTreesCleaned.csv")
 
 
 #### OVERLAP #### 
