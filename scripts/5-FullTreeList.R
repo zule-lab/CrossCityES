@@ -162,8 +162,4 @@ sp <- as_tibble(unique(ab_1_hood$fullname)) %>%
 write.csv(sp, "output/NeighbourhoodSpeciesList.csv")
 
 #### OVERLAP #### 
-ab_1_hood %>% 
-  group_by(city) %>% 
-  mutate(shared = n_distinct(fullname) == n_distinct(.$fullname))
-
-Reduce(intersect, split(ab_1$fullname, ab_1$city))
+# to-do
