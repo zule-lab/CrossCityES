@@ -1,8 +1,8 @@
 # Chapter 1: Cross-city drivers of urban forest regulatory ecosystem services  
 ## Contributors: Isabella Richmond & Nicole Yu  
-**Work in Progress**
+**Work in Progress**   
 
-## Proposed first chapter of my PhD thesis, asking:  
+Proposed first chapter of my PhD thesis, asking:  
 
 > What are the cross-city drivers of regulatory ecosystem services provided by the urban forest in Canadian temperate cities?  
 
