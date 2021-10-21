@@ -30,12 +30,14 @@ can_cen <- can_cen_raw %>%
   rename(dsa = "GEO_CODE (POR)") %>%
   rename(sofac = "Member ID: Profile of Dissemination Areas (2247)") %>%
   rename(sonum = "Dim: Sex (3): Member ID: [1]: Total - Sex") %>%
-  filter(sofac %in% c(1, 41:58, 665, 685, 689))
+  filter(sofac %in% c(1, 6:7, 41:50, 665, 857, 1149, 1290, 1324, 1692))
 # pivot to wide format
 can_cen_wide <- can_cen %>% pivot_wider(names_from = sofac, values_from = sonum)
 # rename columns
 can_cen_wide <- can_cen_wide %>%
   rename(totpop = "1") %>%
+  rename(popdens = "6") %>%
+  rename(area = "7") %>%
   rename(opdwel = "41") %>%
   rename(sideho = "42") %>%
   rename(aptfiv = "43") %>%
@@ -46,20 +48,24 @@ can_cen_wide <- can_cen_wide %>%
   rename(aptbui = "48") %>%
   rename(otsiho = "49") %>%
   rename(mvdwel = "50") %>%
-  rename(totpri = "51") %>%
-  rename(prione = "52") %>%
-  rename(pritwo = "53") %>%
-  rename(prithr = "54") %>%
-  rename(prifou = "55") %>%
-  rename(prifiv = "56") %>%
-  rename(numper = "57") %>%
-  rename(avhosi = "58") %>%
-  rename(medtax = "665") %>%
-  rename(medemp = "685") %>%
-  rename(empinc = "689")
+  rename(medinc = "665") %>%
+  rename(lowinc = "857") %>%
+  rename(recimm = "1149") %>%
+  rename(aborig = "1290") %>%
+  rename(vismin = "1324") %>%
+  rename(edubac = "1692")
 # match dissemination area to boundary polygon
 can_cen_dsa<- merge(can_cen_wide, dsa_bound, by = "dsa")
 # transform to sf object
 can_cen_dsa <- st_as_sf(can_cen_dsa, sf_column_name = c("geometry"), crs = 3347)
+# change x, F to NA 
+can_cen_dsa<- can_cen_dsa %>% mutate(across(c(2:20), ~na_if(., "x")))
+can_cen_dsa<- can_cen_dsa %>% mutate(across(c(2:20), ~na_if(., "F")))
+# transform to factor for DSAs and numeric for values
+can_cen_dsa$dsa <- as.factor(can_cen_dsa$dsa)
+can_cen_dsa<- can_cen_dsa %>% mutate(across(c(2:20), ~as.numeric(.)))
+# transform into useful values 
+can_cen_dsa <- can_cen_dsa %>%
+  mutate()
 # save
 saveRDS(can_cen_dsa, "large/national/CensusDSACleaned.rds")
