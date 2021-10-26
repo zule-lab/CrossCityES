@@ -64,8 +64,37 @@ can_cen_dsa<- can_cen_dsa %>% mutate(across(c(2:20), ~na_if(., "F")))
 # transform to factor for DSAs and numeric for values
 can_cen_dsa$dsa <- as.factor(can_cen_dsa$dsa)
 can_cen_dsa<- can_cen_dsa %>% mutate(across(c(2:20), ~as.numeric(.)))
-# transform into useful values 
-can_cen_dsa <- can_cen_dsa %>%
-  mutate()
+# drop NA 
+can_cen_dsa <- drop_na(can_cen_dsa)
+
+# 41 = Total - Occupied private dwellings by structural type of dwelling - 100% data (7)
+# 42 = Single-detached house
+# 43 = Apartment in a building that has five or more storeys
+# 44 = Other attached dwelling (8)
+# 45 = Semi-detached house
+# 46 = Row house
+# 47 = Apartment or flat in a duplex
+# 48 = Apartment in a building that has fewer than five storeys
+# 49 = Other single-attached house
+# 50 = Movable dwelling (9)
+# 665 = Median after-tax income in 2015 among recipients 
+# 857 = Prevalence of low income based on the Low-income measure, after tax (LIM-AT) (%)
+# 1149 = Total - Immigrant status and period of immigration for the population in private households - 25% sample data (63) -> Immigrants -> 2011-2016 (recent immigrants)
+# 1290 = Total - Aboriginal identity for the population in private households - 25% sample data (104) -> Aboriginal identity (105)
+# 1324 = Total - Visible minority for the population in private households - 25% sample data (121) -> Total visible minority population (122)
+# 1692 = Total - Highest certificate, diploma or degree for the population aged 15 years and over in private households - 25% sample data (178) -> University certificate, diploma or degree at bachelor level or above
+# we want percentages for all datasets except median income - need to transform 41:50, 1149, 1290, 1324, 1692
+# start with dwelling types
+setDT(can_cen_dsa)
+can_cen_dsa_clean <- can_cen_dsa[ , lapply(.SD, function(x) x / sum(x)), .SDcols = 6:14]
+column.names <- paste0(names(can_cen_dsa[,6:14]), "p")
+setnames(can_cen_dsa_clean, column.names)
+can_cen_dsa <- cbind(can_cen_dsa, can_cen_dsa_clean)
+# population percentages 
+can_cen_dsa_clean <- can_cen_dsa[ , lapply(.SD, function(x) x/totpop), .SDcols = 17:20]
+column.names <- paste0(names(can_cen_dsa[,17:20]), "p")
+setnames(can_cen_dsa_clean, column.names)
+can_cen_dsa <- cbind(can_cen_dsa, can_cen_dsa_clean)
+
 # save
 saveRDS(can_cen_dsa, "large/national/CensusDSACleaned.rds")
