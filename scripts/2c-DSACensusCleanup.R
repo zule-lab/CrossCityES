@@ -30,7 +30,7 @@ can_cen <- can_cen_raw %>%
   rename(dsa = "GEO_CODE (POR)") %>%
   rename(sofac = "Member ID: Profile of Dissemination Areas (2247)") %>%
   rename(sonum = "Dim: Sex (3): Member ID: [1]: Total - Sex") %>%
-  filter(sofac %in% c(1, 6:7, 41:50, 665, 857, 1149, 1290, 1324, 1692))
+  filter(sofac %in% c(1, 6:7, 42:50, 665, 857, 1149, 1290, 1324, 1692))
 # pivot to wide format
 can_cen_wide <- can_cen %>% pivot_wider(names_from = sofac, values_from = sonum)
 # rename columns
@@ -38,7 +38,6 @@ can_cen_wide <- can_cen_wide %>%
   rename(totpop = "1") %>%
   rename(popdens = "6") %>%
   rename(area = "7") %>%
-  rename(opdwel = "41") %>%
   rename(sideho = "42") %>%
   rename(aptfiv = "43") %>%
   rename(oadwel = "44") %>%
@@ -63,7 +62,7 @@ can_cen_dsa<- can_cen_dsa %>% mutate(across(c(2:20), ~na_if(., "x")))
 can_cen_dsa<- can_cen_dsa %>% mutate(across(c(2:20), ~na_if(., "F")))
 # transform to factor for DSAs and numeric for values
 can_cen_dsa$dsa <- as.factor(can_cen_dsa$dsa)
-can_cen_dsa<- can_cen_dsa %>% mutate(across(c(2:20), ~as.numeric(.)))
+can_cen_dsa<- can_cen_dsa %>% mutate(across(c(2:19), ~as.numeric(.)))
 can_cen_dsa <- drop_na(can_cen_dsa)
 
 # 41 = Total - Occupied private dwellings by structural type of dwelling - 100% data (7)
@@ -85,9 +84,9 @@ can_cen_dsa <- drop_na(can_cen_dsa)
 # we want percentages for all datasets except median income - need to transform 41:50, 1149, 1290, 1324, 1692
 # start with dwelling types
 setDT(can_cen_dsa)
-can_cen_dsa <- can_cen_dsa[, c(paste0(names(can_cen_dsa[,6:14]), "p")) := lapply(.SD, function(x) x / sum(.SD)), by=1:nrow(can_cen_dsa), .SDcols = c(6:14)]
+can_cen_dsa <- can_cen_dsa[, c(paste0(names(can_cen_dsa[,5:13]), "p")) := lapply(.SD, function(x) x / sum(.SD)), by=1:nrow(can_cen_dsa), .SDcols = c(5:13)]
 # population percentages 
-can_cen_dsa <- can_cen_dsa[ , c(paste0(names(can_cen_dsa[,17:20]), "p")) := lapply(.SD, function(x) x/totpop), .SDcols = 17:20]
+can_cen_dsa <- can_cen_dsa[ , c(paste0(names(can_cen_dsa[,16:19]), "p")) := lapply(.SD, function(x) x/totpop), .SDcols = 16:19]
 
 # save
 saveRDS(can_cen_dsa, "large/national/CensusDSACleaned.rds")
