@@ -64,7 +64,6 @@ can_cen_dsa<- can_cen_dsa %>% mutate(across(c(2:20), ~na_if(., "F")))
 # transform to factor for DSAs and numeric for values
 can_cen_dsa$dsa <- as.factor(can_cen_dsa$dsa)
 can_cen_dsa<- can_cen_dsa %>% mutate(across(c(2:20), ~as.numeric(.)))
-# drop NA 
 can_cen_dsa <- drop_na(can_cen_dsa)
 
 # 41 = Total - Occupied private dwellings by structural type of dwelling - 100% data (7)
@@ -86,15 +85,9 @@ can_cen_dsa <- drop_na(can_cen_dsa)
 # we want percentages for all datasets except median income - need to transform 41:50, 1149, 1290, 1324, 1692
 # start with dwelling types
 setDT(can_cen_dsa)
-can_cen_dsa_clean <- can_cen_dsa[ , lapply(.SD, function(x) x / sum(x)), .SDcols = 6:14]
-column.names <- paste0(names(can_cen_dsa[,6:14]), "p")
-setnames(can_cen_dsa_clean, column.names)
-can_cen_dsa <- cbind(can_cen_dsa, can_cen_dsa_clean)
+can_cen_dsa <- can_cen_dsa[, c(paste0(names(can_cen_dsa[,6:14]), "p")) := lapply(.SD, function(x) x / sum(.SD)), by=1:nrow(can_cen_dsa), .SDcols = c(6:14)]
 # population percentages 
-can_cen_dsa_clean <- can_cen_dsa[ , lapply(.SD, function(x) x/totpop), .SDcols = 17:20]
-column.names <- paste0(names(can_cen_dsa[,17:20]), "p")
-setnames(can_cen_dsa_clean, column.names)
-can_cen_dsa <- cbind(can_cen_dsa, can_cen_dsa_clean)
+can_cen_dsa <- can_cen_dsa[ , c(paste0(names(can_cen_dsa[,17:20]), "p")) := lapply(.SD, function(x) x/totpop), .SDcols = 17:20]
 
 # save
 saveRDS(can_cen_dsa, "large/national/CensusDSACleaned.rds")
