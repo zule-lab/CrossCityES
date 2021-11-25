@@ -6,33 +6,19 @@ p <- c("sf", "dplyr")
 lapply(p, library, character.only = T)
 
 #### Data ####
-# Canadian municipal boundaries
-can_bound_raw <- st_read(file.path("/vsizip", "large/national/can_bound_raw.zip"))
+# Canadian municipal boundaries derived from neighbourhoods
+can_bound_raw <- readRDS("large/neighbourhoods/AllNeighbourhoodsCleaned.rds")
 # Canadian roads
 can_road_raw <- st_read(file.path("/vsizip", "large/national/can_road_raw.zip"))
 
 #### Cleanup ####
 ## MUNICIPAL BOUNDARIES ##
 # select relevant columns and rename 
-can_bound <- can_bound_raw %>%
-  select(c("CMANAME", "geometry")) %>%
-  rename("bound" = "CMANAME")
-# select only the cities we are using 
-can_bound <- subset(can_bound, bound == "Calgary" | 
-                      bound == "Halifax" | 
-                      bound == "Montréal" | 
-                      bound == "Ottawa - Gatineau (Ontario part / partie de l'Ontario)" | 
-                      bound == "Toronto" | 
-                      bound == "Vancouver" |
-                      bound == "Winnipeg")
-# rename Montreal and Ottawa 
-can_bound$bound[can_bound$bound == "Montréal"] <- "Montreal"
-can_bound$bound[can_bound$bound == "Ottawa - Gatineau (Ontario part / partie de l'Ontario)"] <- "Ottawa"
-# transform
-can_bound <- st_transform(can_bound, crs = 3347)
+can_bound <- can_bound_raw %>% 
+  group_by(city) %>% 
+  summarise()
 # save cleaned version
 saveRDS(can_bound, "large/national/MunicipalBoundariesCleaned.rds")
-#st_write(can_bound, "large/MunicipalBoundariesCleaned.shp", driver = "ESRI Shapefile")
 
 ## ROADS ##
 # select relevant columns 
