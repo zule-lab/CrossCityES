@@ -11,6 +11,7 @@ lapply(p, library, character.only = T)
 can_hood <- readRDS("large/neighbourhoods/AllNeighbourhoodsCleaned.rds")
 # Cleaned 2016 Census survey data with spatial coordinates 
 can_cen <- readRDS("large/national/CensusDSACleaned.rds")
+can_cen <- st_as_sf(can_cen)
 
 #### SPATIALLY WEIGHTED JOIN ####
 ## Use a spatially weighted join to get the mean values of each dissemination area within each neighbourhood
@@ -18,8 +19,8 @@ can_cen <- readRDS("large/national/CensusDSACleaned.rds")
 hood_cen <- st_intersection(can_hood, can_cen)
 # calculate the area of each DSA, weight of each DSA, and the weighted mean
 can_hood_cen <- hood_cen %>%
-  select(c("dsa","city","hood","totpop","opdwel","sideho","aptfiv","oadwel","semhou","rowhou","aptdup","aptbui","otsiho","mvdwel",
-           "totpri","prione","pritwo","prithr","prifou","prifiv","numper","avhosi","medtax","medemp","empinc")) %>%
+  select(c("city","hood","hood_id","dsa","totpop","popdens", "area", "sidehop","aptfivp","oadwelp","semhoup","rowhoup","aptdupp","aptbuip","otsihop","mvdwelp",
+           "medinc", "lowinc", "recimmp", "aborigp", "visminp", "edubacp")) %>%
   group_by(hood) %>% 
   mutate(area = st_area(geometry)) %>% 
   mutate(weight = as.numeric(area / sum(area))) %>%
@@ -32,27 +33,23 @@ can_hood_sum <- can_hood_cen %>%
          area = sum(area),
          dsa = list(dsa),
          totpop = sum(as.numeric(totpop)),
-         opdwel = mean(as.numeric(opdwel)),
-         sideho = mean(as.numeric(sideho)),
-         aptfiv = mean(as.numeric(aptfiv)),
-         oadwel = mean(as.numeric(oadwel)),
-         semhou = mean(as.numeric(semhou)),
-         rowhou = mean(as.numeric(rowhou)),
-         aptdup = mean(as.numeric(aptdup)),
-         aptbui = mean(as.numeric(aptbui)),
-         otsiho = mean(as.numeric(otsiho)),
-         mvdwel = mean(as.numeric(mvdwel)),
-         totpri = mean(as.numeric(totpri)),
-         prione = mean(as.numeric(prione)),
-         pritwo = mean(as.numeric(pritwo)),
-         prithr = mean(as.numeric(prithr)),
-         prifou = mean(as.numeric(prifou)),
-         prifiv = mean(as.numeric(prifiv)),
-         numper = mean(as.numeric(numper)),
-         avhosi = mean(as.numeric(avhosi)),
-         medtax = median(as.numeric(medtax)),
-         medemp = median(as.numeric(medemp)),
-         empinc = median(as.numeric(empinc))) %>%
+         popdens = mean(as.numeric(popdens)),
+         sidehop = mean(as.numeric(sidehop)),
+         aptfivp = mean(as.numeric(aptfivp)),
+         oadwelp = mean(as.numeric(oadwelp)),
+         semhoup = mean(as.numeric(semhoup)),
+         rowhoup = mean(as.numeric(rowhoup)),
+         aptdupp = mean(as.numeric(aptdupp)),
+         aptbuip = mean(as.numeric(aptbuip)),
+         otsihop = mean(as.numeric(otsihop)),
+         mvdwelp = mean(as.numeric(mvdwelp)),
+         medinc = mean(as.numeric(medinc)),
+         lowinc = mean(as.numeric(lowinc)),
+         recimmp = mean(as.numeric(recimmp)),
+         aborigp = mean(as.numeric(aborigp)),
+         visminp = mean(as.numeric(visminp)),
+         edubacp = mean(as.numeric(edubacp))
+  ) %>%
   distinct(hood, .keep_all = TRUE)
 # save
 saveRDS(can_hood_sum, "large/national/NeighbourhoodsCensusSum.rds")
