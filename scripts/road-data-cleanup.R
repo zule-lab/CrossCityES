@@ -3,7 +3,7 @@ road_data_cleanup <- c(
   tar_target(
     mun_bound,
     mun_bound_raw %>%
-      group_by(city) %>%
+      group_by(CMANAME) %>%
       summarise()
   ),
   
