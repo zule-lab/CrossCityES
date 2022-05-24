@@ -19,7 +19,7 @@ road_data_cleanup <- c(
       rename(streettype = TYPE) %>%
       rename(streetdir = DIR) %>%
       rename(streetid = NGD_UID) %>%
-      st_transform(crs = 3347) # does this work?
+      st_transform(crs = 3347)
   ),
   
   tar_target(
