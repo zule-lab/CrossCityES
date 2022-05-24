@@ -44,16 +44,15 @@ cal_tree <- cal_tree_raw %>%
   rename("species" = "SPECIES") %>%
   rename("cultivar" = "CULTIVAR") %>%
   rename("dbh" = "DBH_CM") %>%
-  rename("id" = "WAM_ID")
+  rename("id" = "WAM_ID") %>%
+  drop_na(c(latitude,longitude)) %>%
+  st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
+
 # assign blanks and NAs in species column to "sp."
 cal_tree$species[cal_tree$species %in% c("",NA)]<-"sp."
 cal_tree$species[cal_tree$species == "deltoides / balsamifera (?)"] <- "sp."
 # remove quotations from cultivar names 
 cal_tree$cultivar <- substr(cal_tree$cultivar,2,nchar(cal_tree$cultivar)-1)
-# drop geometry NAs
-cal_tree <- drop_na(cal_tree, c(latitude,longitude))
-# convert to sf object 
-cal_tree <- st_as_sf(cal_tree, coords = c("longitude", "latitude"), crs = 4326)
 
 ## Final Dataset
-tree_cleaning("Calgary", cal_tree, cal_park, cal_hood, can_bound, can_road)
+tree_cleaning("Calgary", cal_tree, cal_park, cal_hood, mun_bound, mun_road)
