@@ -1,15 +1,8 @@
 tree_cleaning <- function(city, trees, parks, hoods, boundaries, roads){
   
-  # packages
-  p <- c("sf", "dplyr", "tidyr", "stringr")
-  lapply(p, library, character.only = T)
-  
-  
   # transformations
   parks <- st_transform(parks, crs = 3347)
   trees <- st_transform(trees, crs = 3347)
-  saveRDS(parks, paste0("large/parks/", city, "ParksCleaned.rds"))
-  
   
   # cleaning roads
   city_bound <- subset(boundaries, bound == city)
@@ -17,7 +10,6 @@ tree_cleaning <- function(city, trees, parks, hoods, boundaries, roads){
   city_road <- dplyr::select(city_road, c("street", "streetid", "geometry"))
   city_road <- city_road %>% dplyr::mutate(index = 1:n())
   saveRDS(city_road, paste0("large/national/", city, "RoadsCleaned.rds"))
-  
   
   # check for duplicates
   dup <- trees$id[duplicated(trees$id)]
@@ -63,5 +55,7 @@ tree_cleaning <- function(city, trees, parks, hoods, boundaries, roads){
   # reordering columns & saving
   trees <- trees[,c("city","id","genus", "species", "cultivar", "geometry","hood","park", "street", "dbh")]# Check and make output
   saveRDS(trees,  paste0("large/trees/", city, "TreesCleaned.rds"))
-
+  
+  return(trees)
+  
 }
