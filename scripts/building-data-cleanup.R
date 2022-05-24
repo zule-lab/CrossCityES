@@ -1,6 +1,47 @@
 building_data_cleanup <- c(
   
   tar_target(
+    build_unzip,
+    unzip_build()
+  ),
+  
+  tar_file_read(
+    alb_json,
+    file.path("large/national/ABBuildings", "Alberta.geojson"),
+    geojson_read(!!.x, what = "sp")
+  ),
+  
+  tar_file_read(
+    nov_json,
+    file.path("large/national/NSBuildings", "NovaScotia.geojson"),
+    geojson_read(!!.x, what = "sp")
+  ),
+  
+  tar_file_read(
+    que_json,
+    file.path("large/national/QCBuildings", "Quebec.geojson"),
+    geojson_read(!!.x, what = "sp")
+  ),
+  
+  tar_file_read(
+    ont_json,
+    file.path("large/national/ONBuildings", "Ontario.geojson"),
+    geojson_read(!!.x, what = "sp")
+  ),
+  
+  tar_file_read(
+    bco_json,
+    file.path("large/national/BCBuildings", "BritishColumbia.geojson"),
+    geojson_read(!!.x, what = "sp")
+  ),
+  
+  tar_file_read(
+    man_json,
+    file.path("large/national/MBBuildings", "Manitoba.geojson"),
+    geojson_read(!!.x, what = "sp")
+  ),
+
+  tar_target(
     cal_build,
     building_cleanup(alb_json, "Calgary", mun_bound)
   ),
