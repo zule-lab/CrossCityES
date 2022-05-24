@@ -1,18 +1,18 @@
 road_data_cleanup <- c(
   
-  tar_targets(
+  tar_target(
     mun_bound,
     mun_bound_raw %>%
       group_by(city) %>%
       summarise()
   ),
   
-  tar_targets(
+  tar_target(
     road_raw_s,
     road_raw[,c("NAME", "TYPE", "DIR", "NGD_UID", "geometry")]
   ),
   
-  tar_targets(
+  tar_target(
     road_raw_r,
     road_raw_s %>%
       rename(street = NAME) %>%
@@ -22,12 +22,12 @@ road_data_cleanup <- c(
       st_transform(crs = 3347) # does this work?
   ),
   
-  tar_targets(
+  tar_target(
     mun_road_i,
     road_raw_r[mun_bound,]
   ),
   
-  tar_targets(
+  tar_target(
     mun_road,
     st_join(mun_road_i, mun_bound)
   )
