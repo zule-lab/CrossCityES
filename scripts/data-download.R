@@ -29,7 +29,7 @@ data_download <- c(
   
   tar_target(
     tor_hood_raw,
-    download_shp("https://ckan0.cf.opendata.inter.prod-toronto.ca/download_resource/a083c865-6d60-4d1d-b6c6-b0c8a85f9c15?format=shp&projection=4326",
+    download_shp("https://ckan0.cf.opendata.inter.prod-toronto.ca/dataset/4def3f65-2a65-4a4f-83c4-b2a4aed72d46/resource/5ad22d36-b1be-4e33-86b7-64bcaff2b4ad/download/Neighbourhoods%20-%204326.zip",
                  "large/neighbourhoods/tor_hood_raw.zip")
   ), 
   
