@@ -7,7 +7,7 @@ neighbourhood_data_cleanup <- c(
       rename("hood" = "NAME") %>% 
       rename("geometry" = "the_geom") %>%
       mutate(city = c("Calgary")) %>%
-      st_as_sf(cal_hood, wkt = "geometry", crs = 4326)
+      st_as_sf(wkt = "geometry", crs = 4326)
   ),
   
   tar_target(
