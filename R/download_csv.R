@@ -4,6 +4,6 @@ download_csv <- function(url, dest){
   
   df <- read_csv(dest)
   
-  View(df)
+  return(df)
   
 }

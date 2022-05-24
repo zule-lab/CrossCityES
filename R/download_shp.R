@@ -6,6 +6,6 @@ download_shp <- function(url, dest){
   
   shp <- st_read(file.path("/vsizip", dest))
   
-  View(shp)
+  return(shp)
   
 }
