@@ -74,7 +74,7 @@ data_download <- c(
   
   tar_target(
     tor_park_raw, 
-    download_shp("https://ckan0.cf.opendata.inter.prod-toronto.ca/download_resource/198b6d28-c7f1-4770-8ad4-69534b9cdd82",
+    download_shp("https://ckan0.cf.opendata.inter.prod-toronto.ca/dataset/2aac8903-23ff-4072-ab72-b76cac44ad89/resource/9f53c253-a47e-497f-8a07-528f7d7aad90/download/parks-wgs84.zip",
                "large/parks/tor_park_raw.zip")
   ),
   
@@ -176,7 +176,7 @@ data_download <- c(
       download.file(build_url[i], build_dest[i], mode="wb")
     }
   ),
-
+  
   
   # Supplementary Files -----------------------------------------------------
   
