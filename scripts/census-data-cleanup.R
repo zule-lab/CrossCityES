@@ -71,7 +71,7 @@ census_data_cleanup <- c(
   tar_target(
     census_DA_num, 
     census_DA_na %>% 
-      mutate(dsa, as.factor()) %>%
+      mutate(dsa = as.factor(dsa)) %>%
       mutate(across(c(2:19), ~as.numeric(.))) %>%
       drop_na()
   ),
