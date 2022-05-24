@@ -35,6 +35,7 @@ source(file.path('scripts', 'data-download.R'))
 source(file.path('scripts', 'neighbourhood-data-cleanup.R'))
 source(file.path('scripts', 'road-data-cleanup.R'))
 source(file.path('scripts', 'census-data-cleanup.R'))
+source(file.path('scripts', 'building-data-cleanup.R'))
 
 
 # Targets: all ------------------------------------------------------------
