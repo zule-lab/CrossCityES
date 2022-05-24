@@ -3,9 +3,9 @@ neighbourhood_data_cleanup <- c(
   tar_target(
     cal_hood_i,
     cal_hood_raw %>% 
-      select(c("NAME", "the_geom")) %>% 
+      select(c("NAME", "MULTIPOLYGON")) %>% 
       rename("hood" = "NAME") %>% 
-      rename("geometry" = "the_geom") %>%
+      rename("geometry" = "MULTIPOLYGON") %>%
       mutate(city = c("Calgary")) %>%
       st_as_sf(wkt = "geometry", crs = 4326)
   ),
