@@ -32,6 +32,7 @@ options(timeout=600)
 source(file.path('scripts', 'data-download.R'))
 source(file.path('scripts', 'neighbourhood-data-cleanup.R'))
 source(file.path('scripts', 'road-data-cleanup.R'))
+source(file.path('scripts', 'census-data-cleanup.R'))
 
 # Targets: all ------------------------------------------------------------
 # Automatically grab all the "data" lists above
