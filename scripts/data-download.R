@@ -170,9 +170,9 @@ data_download <- c(
   tar_target(
     build_raw,
     for (i in 1:length(mun_list)){
-      build_url <- paste0("https://usbuildingdata.blob.core.windows.net/canadian-buildings-v2/", municipality, ".zip")
-      build_dest <- paste0("large/national/", municipality, "_building_density.zip")
-      build_output <- paste0("large/national/", municipality, "_building_density")
+      build_url <- paste0("https://usbuildingdata.blob.core.windows.net/canadian-buildings-v2/", mun_list, ".zip")
+      build_dest <- paste0("large/national/", mun_list, "_building_density.zip")
+      build_output <- paste0("large/national/", mun_list, "_building_density")
       download.file(build_url[i], build_dest[i], mode="wb")
     }
   ),
