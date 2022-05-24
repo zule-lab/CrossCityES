@@ -24,15 +24,18 @@ tor_tree_spcode_path <- file.path('input', 'tor_tree_spcode.csv') # Toronto tree
 
 ott_tree_spcode_path <- file.path('input', 'ott_tree_spcode.csv') # Ottawa tree species codes (obtained by emailing City of Ottawa)
 
+
 # Variables ---------------------------------------------------------------
 getOption('timeout')
 options(timeout=600)
+
 
 # Scripts -----------------------------------------------------------------
 source(file.path('scripts', 'data-download.R'))
 source(file.path('scripts', 'neighbourhood-data-cleanup.R'))
 source(file.path('scripts', 'road-data-cleanup.R'))
 source(file.path('scripts', 'census-data-cleanup.R'))
+
 
 # Targets: all ------------------------------------------------------------
 # Automatically grab all the "data" lists above
