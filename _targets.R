@@ -37,7 +37,7 @@ source(file.path('scripts', 'road-data-cleanup.R'))
 source(file.path('scripts', 'census-data-cleanup.R'))
 source(file.path('scripts', 'building-data-cleanup.R'))
 source(file.path('scripts', 'census-data-neighbourhood.R'))
-
+source(file.path('scripts', 'building-data-neighbourhood.R'))
 
 # Targets: all ------------------------------------------------------------
 # Automatically grab all the "data" lists above
