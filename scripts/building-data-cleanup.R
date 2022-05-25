@@ -72,7 +72,7 @@ building_data_cleanup <- c(
       st_as_sf() %>%
       st_transform(crs = 3347) %>%
       st_join(., mun_bound) %>% 
-      rename(city = bound, x = geometry)
+      rename(city = CMANAME)
   ),
   
   tar_target(
