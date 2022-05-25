@@ -26,7 +26,7 @@ building_data_neighbourhood <- c(
   
   tar_target(
     can_build_dens,
-    can_build_u %>%
+    can_build_km %>%
       group_by(hood_id) %>%
       mutate(city = city.x,
              centroids=n(), 
