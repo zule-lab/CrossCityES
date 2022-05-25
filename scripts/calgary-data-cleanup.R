@@ -10,21 +10,22 @@ calgary_data_cleanup <- c(
   ),
   
   tar_target(
-    cal_tree_sp,
-    assign_sp_cal(cal_tree_raw)
+    cal_tree_s,
+    cal_tree_raw %>%
+      select(c("GENUS", "SPECIES", "CULTIVAR", "DBH_CM", "WAM_ID", "POINT")) %>%
+      rename("genus" = "GENUS",
+             "species" = "SPECIES",
+             "cultivar" = "CULTIVAR",
+             "dbh" = "DBH_CM",
+             "id" = "WAM_ID",
+             "geometry" = "POINT") %>% 
+      drop_na(geometry) %>%
+      st_as_sf(wkt = "geometry", crs = 4326)
   ),
   
   tar_target(
-    cal_tree_s,
-    cal_tree_sp %>%
-      select(c("GENUS", "SPECIES", "CULTIVAR", "DBH_CM", "WAM_ID", "latitude", "longitude")) %>%
-      rename("genus" = "GENUS") %>% 
-      rename("species" = "SPECIES") %>%
-      rename("cultivar" = "CULTIVAR") %>%
-      rename("dbh" = "DBH_CM") %>%
-      rename("id" = "WAM_ID") %>%
-      drop_na(c(latitude,longitude)) %>%
-      st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
+    cal_tree_sp,
+    assign_sp_cal(cal_tree_s)
   ),
   
   tar_target(
