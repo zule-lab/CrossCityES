@@ -14,7 +14,7 @@ halifax_data_cleanup <- c(
       select(c("X", "Y", "TREEID", "SP_SCIEN", "DBH")) %>%
       rename("id" = "TREEID") %>%
       rename("dbh" = "DBH") %>% 
-      drop_na(hal_tree, c(X,Y)) %>%
+      drop_na(c(X,Y)) %>%
       st_as_sf(coords = c("X", "Y"), crs = 4326)
     
   ),
