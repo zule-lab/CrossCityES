@@ -8,6 +8,7 @@ conflict_prefer_all("dplyr", c("plyr", "stats"))
 library(downloader)
 library(readr)
 library(bit64)
+conflict_prefer("match", "base", "bit64")
 
 library(sf)
 library(geojsonio)
@@ -20,3 +21,4 @@ library(plyr)
 library(data.table)
 
 library(units)
+library(anytime)
