@@ -13,7 +13,7 @@ temperature_data_cleanup <- c(
   ),
   
   tar_file_read(
-    temp_hood_raw,
+    temp_street_raw,
     file.path("large/temperature", "MeanTempStreets.csv"),
     read.csv(!!.x)
   ),
