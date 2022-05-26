@@ -41,6 +41,8 @@ source(file.path('scripts', 'ottawa-data-cleanup.R'))
 source(file.path('scripts', 'toronto-data-cleanup.R'))
 source(file.path('scripts', 'vancouver-data-cleanup.R'))
 source(file.path('scripts', 'winnipeg-data-cleanup.R'))
+source(file.path('scripts', 'temperature-data-cleanup.R'))
+
 
 # Targets: all ------------------------------------------------------------
 # Automatically grab all the "data" lists above
