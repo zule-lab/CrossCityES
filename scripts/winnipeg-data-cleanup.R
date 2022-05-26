@@ -12,7 +12,7 @@ winnipeg_data_cleanup <- c(
     win_tree_raw %>%
       select(c("the_geom","tree_id","botanical","dbh","park","street")) %>%
       rename("id" = "tree_id") %>%
-      mutate(the_geom = the_geom,8,nchar(win_tree$the_geom)-1) %>%
+      mutate(the_geom = the_geom,8,nchar(the_geom)-1) %>%
       separate(col = the_geom, into = c("lat", "long"), sep = "\\ ") %>%
       drop_na(c(lat,long)) %>%
       st_as_sf(coords = c("long", "lat"), crs = 4326, na.fail = FALSE, remove = FALSE)

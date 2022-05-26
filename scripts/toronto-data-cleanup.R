@@ -15,7 +15,7 @@ toronto_data_cleanup <- c(
              "street" = "STREETNAME",
              "dbh" = "DBH_TRUNK") %>%
       mutate(street = str_to_title(street),
-             geometry = substr(geometry,38,nchar(tor_tree$geometry)-2)) %>%
+             geometry = substr(geometry,38,nchar(geometry)-2)) %>%
       separate(col = geometry, into = c("long", "lat"), sep = "\\, ") %>%
       drop_na(c(lat,long)) %>%
       st_as_sf(coords = c("long", "lat"), crs = 4326, na.fail = FALSE, remove = FALSE)
