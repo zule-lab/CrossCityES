@@ -37,6 +37,8 @@ source(file.path('scripts', 'building-data-neighbourhood.R'))
 source(file.path('scripts', 'calgary-data-cleanup.R'))
 source(file.path('scripts', 'halifax-data-cleanup.R'))
 source(file.path('scripts', 'montreal-data-cleanup.R'))
+source(file.path('scripts', 'ottawa-data-cleanup.R'))
+source(file.path('scripts', 'toronto-data-cleanup.R'))
 
 
 # Targets: all ------------------------------------------------------------
