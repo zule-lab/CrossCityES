@@ -2,6 +2,9 @@ library(targets)
 library(tarchetypes)
 library(qs)
 
+library(conflicted)
+conflict_prefer_all("dplyr", c("plyr", "stats"))
+
 library(downloader)
 library(readr)
 library(bit64)
@@ -12,6 +15,7 @@ library(geojsonio)
 library(dplyr)
 library(tidyr)
 library(stringr)
+library(plyr)
 
 library(data.table)
 
