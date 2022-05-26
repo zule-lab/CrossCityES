@@ -7,9 +7,15 @@ vancouver_data_cleanup <- c(
       rename("park" = "park_name")
   ),
   
+  tar_file_read(
+    van_tree_raw_c,
+    file.path("large/trees", "van_tree_raw.csv"),
+    read.csv(!!.x, sep = ";")# uses ; as separator
+  ),
+  
   tar_target(
     van_tree_s,
-    van_tree_raw %>%
+    van_tree_raw_c %>%
       select(c("TREE_ID","GENUS_NAME","SPECIES_NAME","CULTIVAR_NAME","ON_STREET","DIAMETER","Geom")) %>%
       rename("id" = "TREE_ID",
              "genus" = "GENUS_NAME",
