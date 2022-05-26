@@ -24,7 +24,7 @@ ottawa_data_cleanup <- c(
   ),
   
   tar_target(
-    mon_tree,
+    ott_tree,
     tree_cleaning("Ottawa", ott_tree_sp, ott_park, ott_hood, mun_bound, mun_road)
   )
   

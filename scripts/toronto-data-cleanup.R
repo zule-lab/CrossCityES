@@ -27,7 +27,7 @@ toronto_data_cleanup <- c(
   ),
   
   tar_target(
-    mon_tree,
+    tor_tree,
     tree_cleaning("Toronto", tor_tree_sp, tor_park, tor_hood, mun_bound, mun_road)
   )
   
