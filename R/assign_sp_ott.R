@@ -22,5 +22,9 @@ assign_sp_ott <- function(ott_tree, ott_tree_spcode){
     mutate(cultivar = na_if(cultivar, ""))
   ott_tree <- rbind(ott_treecul, ott_treesp)
   
+  ott_tree <- ott_tree %>% 
+    drop_na(c(lat, long)) %>%
+    st_as_sf(coords = c("long", "lat"), crs = 4326)
+  
   return(ott_tree)
 }

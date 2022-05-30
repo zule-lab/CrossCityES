@@ -28,6 +28,8 @@ assign_sp_mon <- function(mon_tree){
   mon_tree$dbh <- as.numeric(mon_tree$dbh)
   mon_tree$dbh <- mon_tree$dbh/10
   
+  mon_tree <- st_as_sf(mon_tree, coords = c("Longitude", "Latitude"), crs = 4326)
+  
   return(mon_tree)
   
 }

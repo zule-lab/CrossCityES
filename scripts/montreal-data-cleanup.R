@@ -20,8 +20,7 @@ montreal_data_cleanup <- c(
              "park" = "NOM_PARC",
              "street" = "Rue") %>%
       mutate(id = seq.int(nrow(.))) %>%
-      drop_na(c(Latitude, Longitude)) %>%
-      st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326, na.fail = FALSE, remove = FALSE)
+      drop_na(c(Latitude, Longitude))
   ),
   
   tar_target(
