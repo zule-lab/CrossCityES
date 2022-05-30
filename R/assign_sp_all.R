@@ -74,4 +74,6 @@ assign_sp_all <- function(all){
   # Unknown sp.
   all$fullname[all$fullname %in% c("NA sp.", "See notes", "Various sp.")] <- "Unknown sp."
   
+  return(all)
+  
 }
