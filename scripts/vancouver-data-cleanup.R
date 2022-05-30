@@ -24,7 +24,7 @@ vancouver_data_cleanup <- c(
              "street" = "ON_STREET",
              "dbh" = "DIAMETER") %>%
       mutate(street = str_to_title(street),
-             Geom = substr(Geom,35,nchar(Geom)-2)) %>%
+             Geom = sub(".*\\[([^][]+)].*", "\\1", Geom)) %>%
       separate(col = Geom, into = c("long", "lat"), sep = "\\, ") %>%
       drop_na(c(lat,long)) %>%
       st_as_sf(coords = c("long", "lat"), crs = 4326, na.fail = FALSE, remove = FALSE)
