@@ -7,5 +7,7 @@ assign_sp_van <- function(van_tree){
   van_tree$cultivar[van_tree$cultivar == ""] <- NA
   # converting dbh from inches to cm
   van_tree$dbh <- van_tree$dbh*2.54
+  
+  return(van_tree)
 
   }

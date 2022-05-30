@@ -16,4 +16,6 @@ assign_sp_win <- function(win_tree){
   # identifying whether trees are street trees or park trees
   win_tree$park <- ifelse(win_tree$park == "Not In Park","no","yes")
   
+  return(win_tree)
+  
 }
