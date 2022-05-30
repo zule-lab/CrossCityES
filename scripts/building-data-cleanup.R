@@ -77,12 +77,19 @@ building_data_cleanup <- c(
   
   tar_target(
     ott_build,
-    ont_build %>% filter(city %in% "Ottawa")
+    ont_build %>% 
+      filter(city %in% "Ottawa - Gatineau (Ontario part / partie de l'Ontario)") %>%
+      select(c(geometry, city)) %>%
+      rename(x = geometry) %>% 
+      mutate(city = replace(city, city == "Ottawa - Gatineau (Ontario part / partie de l'Ontario)", "Ottawa"))
   ),
-
+  
   tar_target(
     tor_build,
-    ont_build %>% filter(city %in% "Toronto")
+    ont_build %>% 
+      filter(city %in% "Toronto") %>%
+      select(c(geometry, city)) %>%
+      rename(x = geometry)
   ),
   
   tar_target(
