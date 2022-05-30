@@ -32,7 +32,7 @@ vancouver_data_cleanup <- c(
   
   tar_target(
     van_tree_sp,
-    assign_sp_van(van_tree_s, tor_tree_spcode)
+    assign_sp_van(van_tree_s)
   ),
   
   tar_target(
