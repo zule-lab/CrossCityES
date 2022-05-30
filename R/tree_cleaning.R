@@ -39,7 +39,7 @@ tree_cleaning <- function(city, trees, parks, hoods, boundaries, roads){
   
   
   # filtering for street trees 
-  trees <- dplyr::mutate(trees, park = replace_na(park, "no"))
+  trees <- dplyr::mutate(trees, park = replace_na(as.character(park), "no"))
   trees <- dplyr::mutate(trees, park = ifelse(park == "no", "no", "yes"))
   trees <- trees %>% dplyr::filter(park == "no")
   
