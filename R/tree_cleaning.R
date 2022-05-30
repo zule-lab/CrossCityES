@@ -5,10 +5,10 @@ tree_cleaning <- function(city, trees, parks, hoods, boundaries, roads){
   trees <- st_transform(trees, crs = 3347)
   
   # cleaning roads
-  city_bound <- subset(boundaries, bound == city)
+  city_bound <- subset(boundaries, CMANAME == city)
   city_road <- roads[city_bound,]
   city_road <- dplyr::select(city_road, c("street", "streetid", "geometry"))
-  city_road <- city_road %>% dplyr::mutate(index = 1:n())
+  city_road <- city_road %>% dplyr::mutate(index = row_number())
   saveRDS(city_road, paste0("large/national/", city, "RoadsCleaned.rds"))
   
   # check for duplicates
