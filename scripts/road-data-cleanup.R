@@ -4,7 +4,8 @@ road_data_cleanup <- c(
     mun_bound,
     mun_bound_raw %>%
       group_by(CMANAME) %>%
-      summarise()
+      summarise() %>%
+      mutate(CMANAME = replace(CMANAME, CMANAME == "Ottawa - Gatineau (Ontario part / partie de l'Ontario)", "Ottawa"))
   ),
   
   tar_target(
