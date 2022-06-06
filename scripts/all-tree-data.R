@@ -69,9 +69,10 @@ all_tree_data <- c(
       summarise(n = n()) %>%
       mutate(freq_hood = (n / sum(n))*100) %>%
       filter(freq_hood > 1) %>%
-      summarize(nspecies = n_distinct(fullname)) %>%
+      mutate(nspecies = n_distinct(fullname)) %>%
+      ungroup() %>%
       group_by(city, hood) %>% 
-      summarize(s = sum(freq_hood))
+      mutate(s = sum(freq_hood))
   ),
   
   tar_target(
