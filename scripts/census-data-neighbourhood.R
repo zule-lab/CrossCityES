@@ -2,7 +2,7 @@ census_data_neighbourhood <- c(
   
   tar_target(
     hood_cen_i,
-    st_intersection(can_hood, census)
+    st_intersection(can_hood, st_as_sf(census))
   ),
   
   tar_target(
@@ -25,6 +25,7 @@ census_data_neighbourhood <- c(
              weight = sum(weight),
              area = sum(area),
              dsa = list(dsa),
+             geometry = st_union(geometry),
              totpop = sum(as.numeric(totpop)),
              popdens = mean(as.numeric(popdens)),
              sidehop = mean(as.numeric(sidehop)),
