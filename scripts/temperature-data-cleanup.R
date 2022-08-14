@@ -2,19 +2,19 @@ temperature_data_cleanup <- c(
   
   tar_file_read(
     temp_city_raw,
-    file.path("large/temperature", "MeanTempCity.csv"),
+    file.path("large/temperature", "LST_cities.csv"),
     read.csv(!!.x)
   ),
   
   tar_file_read(
     temp_hood_raw,
-    file.path("large/temperature", "MeanTempNeighbourhood.csv"),
+    file.path("large/temperature", "LST_neighbourhoods.csv"),
     read.csv(!!.x)
   ),
   
   tar_file_read(
     temp_street_raw,
-    file.path("large/temperature", "MeanTempStreets.csv"),
+    file.path("large/temperature", "LST_streets.csv"),
     read.csv(!!.x)
   ),
   
