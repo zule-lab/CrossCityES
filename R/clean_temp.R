@@ -1,7 +1,5 @@
 clean_temp <- function(df){
-  # packages 
-  p <- c("anytime")
-  lapply(p, library, character.only = T)
+
   # need to extract dates from the system.index column 
   df$date <- sapply(strsplit(df$system.index, "_"), function(x) x[3])
   df$date <- anydate(df$date)
