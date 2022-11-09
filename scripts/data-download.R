@@ -177,6 +177,21 @@ data_download <- c(
     }
   ),
   
+
+  # Impervious --------------------------------------------------------------
+  
+  tar_target(
+    cal_imp_raw,
+    download_csv("https://data.calgary.ca/api/views/i9mt-qafb/rows.csv?accessType=DOWNLOAD",
+                 "large/impervious/cal_imp_raw.csv")
+  ),
+  
+  #tar_target(
+  #  tor_imp_raw, 
+  #  download_shp("https://ckan0.cf.opendata.inter.prod-toronto.ca/dataset/61642048-56bb-4050-b7c3-f569fcf94527/resource/2d953cba-6739-484c-abbc-20d780e9b7c6/download/2018%20Tree%20Canopy%20Study.zip",
+  #               "large/impervious/tor_imp_raw.zip")
+  #),
+
   
   # Supplementary Files -----------------------------------------------------
   
