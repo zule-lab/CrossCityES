@@ -70,5 +70,55 @@ pollution_data_cleanup <- c(
     UV_hood_raw,
     file.path("large/pollution", "UV_neighbourhood.csv"),
     fread(!!.x)
+  ),
+
+  tar_target(
+    CO_city,
+    clean_air(CO_city_raw)
+  ),
+
+  tar_target(
+    CO_hood,
+    clean_air(CO_hood_raw)
+  ),
+
+  tar_target(
+    NO2_city,
+    clean_air(NO2_city_raw)
+  ),
+  
+  tar_target(
+    NO2_hood,
+    clean_air(NO2_hood_raw)
+  ),
+
+  tar_target(
+    O3_city,
+    clean_air(O3_city_raw)
+  ),
+  
+  tar_target(
+    O3_hood,
+    clean_air(O3_hood_raw)
+  ),
+
+  tar_target(
+    SO2_city,
+    clean_air(SO2_city_raw)
+  ),
+  
+  tar_target(
+    SO2_hood,
+    clean_air(SO2_hood_raw)
+  ),
+
+  tar_target(
+    UV_city,
+    clean_air(UV_city_raw)
+  ),
+  
+  tar_target(
+    UV_hood,
+    clean_air(UV_hood_raw)
   )
 )
