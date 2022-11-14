@@ -3,8 +3,10 @@ var reducer = ee.Reducer.mean()
 .combine({reducer2: ee.Reducer.median(), outputPrefix: null, sharedInputs: true})
 .combine({reducer2: ee.Reducer.max(), outputPrefix: null, sharedInputs: true})
 .combine({reducer2: ee.Reducer.min(), outputPrefix: null, sharedInputs: true})
-.combine({reducer2: ee.Reducer.stdDev(), outputPrefix: null, sharedInputs: true});  
-  
+.combine({reducer2: ee.Reducer.stdDev(), outputPrefix: null, sharedInputs: true})
+.combine({reducer2: ee.Reducer.count(), outputPrefix: null, sharedInputs: true});  
+
+/*  don't want to map over every image - going to calculate metrics on mean summer temperature
 var sample = function(images, reducer, region, scale) {
   return images
     .map(function(img) {
@@ -15,9 +17,10 @@ var sample = function(images, reducer, region, scale) {
       });
     }).flatten();
 };
+*/
 
 var filter = function(images) {
-  var start_date = '2021-05-01';
+  var start_date = '2021-06-01';
   var end_date = '2021-08-31';
   return images.filter(ee.Filter.date(start_date, end_date));
 };
@@ -32,50 +35,97 @@ var NO2_raw = ee.ImageCollection('COPERNICUS/S5P/OFFL/L3_NO2');
 var CO_raw = ee.ImageCollection('COPERNICUS/S5P/OFFL/L3_CO');
 
 // Filter -------------
-UV_raw = filter(UV_raw);
-SO2_raw = filter(SO2_raw);
-O3_raw = filter(O3_raw);
-O3_trop_raw = filter(O3_trop_raw);
-NO2_raw = filter(NO2_raw);
-CO_raw = filter(CO_raw);
+var UV_raw = filter(UV_raw);
+var SO2_raw = filter(SO2_raw);
+var O3_raw = filter(O3_raw);
+var O3_trop_raw = filter(O3_trop_raw);
+var NO2_raw = filter(NO2_raw);
+var CO_raw = filter(CO_raw);
+
+print(UV_raw)
+// Mean ----------------
+var UV_mean = UV_raw.select('absorbing_aerosol_index').mean();
+var SO2_mean = SO2_raw.select('SO2_column_number_density').mean();
+var O3_mean = O3_raw.select('O3_column_number_density').mean();
+var O3_trop_mean = O3_trop_raw.select('ozone_tropospheric_vertical_column').mean();
+var NO2_mean = NO2_raw.select('NO2_column_number_density').mean();
+var CO_mean = CO_raw.select('CO_column_number_density').mean();
+
 
 // Reduce Cities -------------
-var UV_city = sample(UV_raw, reducer, cities, 1e3);
-UV_city = UV_city.filter(ee.Filter.neq('absorbing_aerosol_index_mean', null))
+var UV_city = UV_mean.reduceRegions({
+  'reducer': reducer,
+  'scale': 1113.2,
+  'collection': cities});
+UV_city = UV_city.filter(ee.Filter.neq('mean', null))
 
-var SO2_city = sample(SO2_raw, reducer, cities, 1e3);
-SO2_city = SO2_city.filter(ee.Filter.neq('SO2_column_number_density_mean', null))
+var SO2_city = SO2_mean.reduceRegions({
+  'reducer': reducer,
+  'scale': 1113.2,
+  'collection': cities});
+SO2_city = SO2_city.filter(ee.Filter.neq('mean', null))
 
-var O3_city = sample(O3_raw, reducer, cities, 1e3);
-O3_city = O3_city.filter(ee.Filter.neq('O3_column_number_density_mean', null))
+var O3_city = O3_mean.reduceRegions({
+  'reducer': reducer,
+  'scale': 1113.2,
+  'collection': cities});
+O3_city = O3_city.filter(ee.Filter.neq('mean', null))
 
-var O3_trop_city = sample(O3_trop_raw, reducer, cities, 1e3);
-O3_trop_city = O3_trop_city.filter(ee.Filter.neq('ozone_tropospheric_vertical_column_mean', null))
+var O3_trop_city = O3_trop_mean.reduceRegions({
+  'reducer': reducer,
+  'scale': 1113.2,
+  'collection': cities});
+O3_trop_city = O3_trop_city.filter(ee.Filter.neq('mean', null))
 
-var NO2_city = sample(NO2_raw, reducer, cities, 1e3);
-NO2_city = NO2_city.filter(ee.Filter.neq('NO2_column_number_density_mean', null))
+var NO2_city = NO2_mean.reduceRegions({
+  'reducer': reducer,
+  'scale': 1113.2,
+  'collection': cities});
+NO2_city = NO2_city.filter(ee.Filter.neq('mean', null))
 
-var CO_city = sample(CO_raw, reducer, cities, 1e3);
-CO_city = CO_city.filter(ee.Filter.neq('CO_column_number_density_mean', null))
+var CO_city = CO_mean.reduceRegions({
+  'reducer': reducer,
+  'scale': 1113.2,
+  'collection': cities});
+CO_city = CO_city.filter(ee.Filter.neq('mean', null))
 
 // Reduce Neighbourhoods ------
-var UV_hood = sample(UV_raw, reducer, hoods, 1e3);
-UV_hood = UV_hood.filter(ee.Filter.neq('absorbing_aerosol_index_mean', null))
+var UV_hood = UV_mean.reduceRegions({
+  'reducer': reducer,
+  'scale': 1113.2,
+  'collection': hoods});
+UV_hood = UV_hood.filter(ee.Filter.neq('mean', null))
 
-var SO2_hood = sample(SO2_raw, reducer, hoods, 1e3);
-SO2_hood = SO2_hood.filter(ee.Filter.neq('SO2_column_number_density_mean', null))
+var SO2_hood = SO2_mean.reduceRegions({
+  'reducer': reducer,
+  'scale': 1113.2,
+  'collection': hoods});
+SO2_hood = SO2_hood.filter(ee.Filter.neq('mean', null))
 
-var O3_hood = sample(O3_raw, reducer, hoods, 1e3);
-O3_hood = O3_hood.filter(ee.Filter.neq('O3_column_number_density_mean', null))
+var O3_hood = O3_mean.reduceRegions({
+  'reducer': reducer,
+  'scale': 1113.2,
+  'collection': hoods});
+O3_hood = O3_hood.filter(ee.Filter.neq('mean', null))
 
-var O3_trop_hood = sample(O3_trop_raw, reducer, hoods, 1e3);
-O3_trop_hood = O3_trop_hood.filter(ee.Filter.neq('ozone_tropospheric_vertical_column_mean', null))
+var O3_trop_hood = O3_trop_mean.reduceRegions({
+  'reducer': reducer,
+  'scale': 1113.2,
+  'collection': hoods});
+O3_trop_hood = O3_trop_hood.filter(ee.Filter.neq('mean', null))
 
-var NO2_hood = sample(NO2_raw, reducer, hoods, 1e3);
-NO2_hood = NO2_hood.filter(ee.Filter.neq('NO2_column_number_density_mean', null))
+var NO2_hood = NO2_mean.reduceRegions({
+  'reducer': reducer,
+  'scale': 1113.2,
+  'collection': hoods});
+NO2_hood = NO2_hood.filter(ee.Filter.neq('mean', null))
 
-var CO_hood = sample(CO_raw, reducer, hoods, 1e3);
-CO_hood = CO_hood.filter(ee.Filter.neq('CO_column_number_density_mean', null))
+var CO_hood = CO_mean.reduceRegions({
+  'reducer': reducer,
+  'scale': 1113.2,
+  'collection': hoods});
+CO_hood = CO_hood.filter(ee.Filter.neq('mean', null))
+
 
 // Export ----------------
 // city scale
