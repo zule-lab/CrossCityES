@@ -44,6 +44,7 @@ source(file.path('scripts', 'winnipeg-data-cleanup.R'))
 source(file.path('scripts', 'all-tree-data.R'))
 source(file.path('scripts', 'temperature-data-cleanup.R'))
 source(file.path('scripts', 'pollution-data-cleanup.R'))
+source(file.path('scripts', 'dsm-data-cleanup.R'))
 
 
 # Targets: all ------------------------------------------------------------
