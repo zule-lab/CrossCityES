@@ -15,7 +15,7 @@ var roi = cities;
 Map.centerObject(cities, 11);
 
 // Dates over which to create a median composite.
-var start = ee.Date('2021-05-01');
+var start = ee.Date('2021-06-01');
 var end = ee.Date('2021-08-30');
 
 // S2 L1C for Cloud Displacement Index (CDI) bands.
@@ -100,6 +100,7 @@ var masked_NDVI = masked.map(addNDVI);
 var masked_NDVI_NDBI = masked_NDVI.map(addNDBI);
 
 var indices = masked_NDVI_NDBI.select(['NDVI', 'NDBI'])
+var indicesMean = indices.select(['NDVI', 'NDBI']).mean()
 
 
 // Reducing to Regions ------------------------------------------------------------------------------------
@@ -108,55 +109,43 @@ var reducer = ee.Reducer.mean()
 .combine({reducer2: ee.Reducer.max(), outputPrefix: null, sharedInputs: true})
 .combine({reducer2: ee.Reducer.min(), outputPrefix: null, sharedInputs: true})
 .combine({reducer2: ee.Reducer.stdDev(), outputPrefix: null, sharedInputs: true})
-;  
+.combine({reducer2: ee.Reducer.count(), outputPrefix: null, sharedInputs: true});  
 
 
-var sample = function(images, reducer, region, scale) {
-  return images
-    .map(function(img) {
-      return img.reduceRegions({
-      collection: region,
-      reducer: reducer,
-      scale : scale
-      });
-    }).flatten();
-};
+var NDVI_NDBI_city = indicesMean.reduceRegions({
+  'reducer': reducer,
+  'scale': 10, 
+  'collection': cities});
 
-var NDVI_NDBI_city = sample(indices, reducer, cities, 1e3);
-var NDVI_NDBI_hood = sample(indices, reducer, hoods, 1e3);
-var NDVI_NDBI_roads = sample(indices, reducer, roads, 1e3);
+var NDVI_NDBI_hood = indicesMean.reduceRegions({
+  'reducer': reducer,
+  'scale': 10, 
+  'collection': hoods});
 
-print(NDVI_NDBI_city.limit(1))
+var NDVI_NDBI_roads = indicesMean.reduceRegions({
+  'reducer': reducer,
+  'scale': 10, 
+  'collection': roads});
 
-/*
-Suggestion 1: Map over your cities: make a wrapped function for the overall process, then cities.map(wrapper_function) and export each independently?
-Suggestion 2: Try for a single city to make sure things are good
-*/ 
 
 
 // Export --------------------------------------------------------------------------------------------------
 // city scale
-Export.image.toDrive({
-  image: NDVI_NDBI_city,
-  description: 'cities',
-  folder: 'Data/SENTINEL_Indices',
-  scale: 10
+Export.table.toDrive({
+  collection: NDVI_NDBI_city,
+  description: 'cities'
 })
 
 // neighbourhood scale
-Export.image.toDrive({
-  image: NDVI_NDBI_hood,
-  description: 'neighbourhoods',
-  folder: 'Data/SENTINEL_Indices',
-  scale: 10
+Export.table.toDrive({
+  collection: NDVI_NDBI_hood,
+  description: 'neighbourhoods'
 })
 
 // street scale
-Export.image.toDrive({
-  image: NDVI_NDBI_roads,
-  description: 'streets',
-  folder: 'Data/SENTINEL_Indices',
-  scale: 10
+Export.table.toDrive({
+  collection: NDVI_NDBI_roads,
+  description: 'streets'
 })
 
 
