@@ -13,6 +13,7 @@ conflict_prefer(":", "base", "bit64")
 
 library(sf)
 library(geojsonio)
+library(stars)
 
 library(dplyr)
 library(tidyr)
