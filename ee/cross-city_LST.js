@@ -43,8 +43,9 @@ var LSTc = LST.select('LST').map(function(image) {
 // 1. Mean
 // Get mean of each pixel for the summer
 var LSTcMean = LSTc.select('LST').mean()
+var LSTcCount = LSTc.select('LST').count()
 
-print(LSTcMean)
+print(LSTcCount)
 
 // 1. City Scale 
 // extract mean LST value at each image in the image collection for each city 
@@ -52,7 +53,8 @@ var reducer = ee.Reducer.mean()
 .combine({reducer2: ee.Reducer.median(), outputPrefix: null, sharedInputs: true})
 .combine({reducer2: ee.Reducer.max(), outputPrefix: null, sharedInputs: true})
 .combine({reducer2: ee.Reducer.min(), outputPrefix: null, sharedInputs: true})
-.combine({reducer2: ee.Reducer.stdDev(), outputPrefix: null, sharedInputs: true});  
+.combine({reducer2: ee.Reducer.stdDev(), outputPrefix: null, sharedInputs: true})
+.combine({reducer2: ee.Reducer.count(), outputPrefix: null, sharedInputs: true});  
   
 
 var CityLST = LSTcMean.reduceRegions({
