@@ -1,0 +1,63 @@
+building_data_neighbourhood <- c(
+  
+  tar_target(
+    can_build_m,
+    can_build %>%
+      mutate(build_area = st_area(x),
+             centroid = st_centroid(x)) %>%
+      st_drop_geometry()
+  ),
+  
+  tar_target(
+    can_build_cen,
+    calc_cen(can_build_m)
+  ),
+  
+  tar_target(
+    can_build_hood,
+    st_join(can_build_cen, can_hood) %>%
+      filter(!is.na(hood))
+  ),
+  
+  tar_target(
+    can_build_road,
+    st_join(can_build_cen, mun_road, join = st_nearest_feature)
+  ),
+  
+  tar_target(
+    can_build_hood_km,
+    convert_area(can_build_hood)
+  ),
+  
+  tar_target(
+    can_build_road,
+    can_build_road %>%
+      mutate(road_length = st_length()) # convert to km?
+  ),
+  
+  tar_target(
+    can_build_hood_dens,
+    can_build_hood_km %>%
+      group_by(hood_id) %>%
+      mutate(city = city.x,
+             centroids=n(), 
+             build_area = sum(build_area),
+             centroid_den = as.numeric(centroids/hood_area),
+             area_den = as.numeric(build_area/hood_area)) %>%
+      distinct(hood, .keep_all = TRUE) %>%
+      select(city, hood, hood_id, hood_area, centroids, build_area, centroid_den, area_den)
+  ),
+  
+  tar_target(
+    can_build_road_dens,
+    can_build_road %>%
+      group_by(streetid) %>%
+      mutate(city = bound,
+             centroids=n(), 
+             road_length = sum(road_length),
+             centroid_den = as.numeric(centroids/road_length),
+             area_den = as.numeric(build_area/road_length)) %>%
+      distinct(streetid, .keep_all = TRUE) %>%
+      select(bound, street, streetdir, streetid, streettype, centroids, build_area, centroid_den, area_den)
+  )
+)
