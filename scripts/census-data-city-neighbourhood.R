@@ -5,6 +5,12 @@ census_data_neighbourhood <- c(
     st_intersection(can_hood, st_as_sf(census))
   ),
   
+#  tar_target(
+#    city_cen,
+#    census_raw %>%
+#      filter()
+#  ),
+  
   tar_target(
     # spatially weighted join
     hood_cen_swj,
