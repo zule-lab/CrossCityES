@@ -32,7 +32,7 @@ source(file.path('scripts', 'neighbourhood-data-cleanup.R'))
 source(file.path('scripts', 'road-data-cleanup.R'))
 source(file.path('scripts', 'census-data-cleanup.R'))
 source(file.path('scripts', 'building-data-cleanup.R'))
-source(file.path('scripts', 'census-data-neighbourhood.R'))
+source(file.path('scripts', 'census-data-city-neighbourhood.R'))
 source(file.path('scripts', 'building-data-neighbourhood-road.R'))
 source(file.path('scripts', 'calgary-data-cleanup.R'))
 source(file.path('scripts', 'halifax-data-cleanup.R'))
@@ -45,6 +45,7 @@ source(file.path('scripts', 'all-tree-data.R'))
 source(file.path('scripts', 'temperature-data-cleanup.R'))
 source(file.path('scripts', 'pollution-data-cleanup.R'))
 source(file.path('scripts', 'dsm-data-cleanup.R'))
+source(file.path('scripts', 'height-data-neighbourhood-road.R'))
 
 
 # Targets: all ------------------------------------------------------------
