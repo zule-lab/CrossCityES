@@ -10,6 +10,7 @@ library(readr)
 library(bit64)
 conflict_prefer("match", "base", "bit64")
 conflict_prefer(":", "base", "bit64")
+conflict_prefer("%in%", "base")
 
 library(sf)
 library(geojsonio)
