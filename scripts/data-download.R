@@ -140,26 +140,31 @@ data_download <- c(
 
   tar_target(
     mun_bound_raw,
-    download_shp("https://www12.statcan.gc.ca/census-recensement/2011/geo/bound-limit/files-fichiers/2016/lcma000b16a_e.zip",
+    download_shp("https://www12.statcan.gc.ca/census-recensement/2021/geo/sip-pis/boundary-limites/files-fichiers/lcma000b21a_e.zip",
                  "large/national/can_bound_raw.zip")
   ),
   
   tar_target(
     road_raw,
-    download_shp("https://www12.statcan.gc.ca/census-recensement/2011/geo/RNF-FRR/files-fichiers/lrnf000r20a_e.zip",
+    download_shp("https://www12.statcan.gc.ca/census-recensement/2021/geo/sip-pis/RNF-FRR/files-fichiers/lrnf000r21a_e.zip",
                  "large/national/can_road_raw.zip")
   ),
   
   tar_target(
     DA_raw,
-    download_shp("https://www12.statcan.gc.ca/census-recensement/2011/geo/bound-limit/files-fichiers/2016/lda_000b16a_e.zip",
+    download_shp("https://www12.statcan.gc.ca/census-recensement/2021/geo/sip-pis/boundary-limites/files-fichiers/lda_000b21a_e.zip",
                  "large/national/dsa_bound_raw.zip")
   ),
   
   tar_target(
-    census_raw,
-    download_csv("https://www12.statcan.gc.ca/census-recensement/2016/dp-pd/prof/details/download-telecharger/comp/GetFile.cfm?Lang=E&FILETYPE=CSV&GEONO=044",
-                 "large/national/can_cen_raw.zip")
+    census_da_raw,
+    download_csv("https://www12.statcan.gc.ca/census-recensement/2021/dp-pd/prof/details/download-telecharger/comp/GetFile.cfm?Lang=E&FILETYPE=CSV&GEONO=006",
+                 "large/national/cen_da_raw.zip")
+  ),
+  
+  tar_target(
+    census_cma_raw,
+    download_csv("https://www12.statcan.gc.ca/census-recensement/2021/dp-pd/prof/details/download-telecharger/comp/GetFile.cfm?Lang=E&FILETYPE=CSV&GEONO=002", "large/national/cen_cma_raw.zip")
   ),
   
   tar_target(
