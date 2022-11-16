@@ -17,16 +17,18 @@ road_data_cleanup <- c(
   
   tar_target(
     road_raw_s,
-    road_raw[,c("NAME", "TYPE", "DIR", "NGD_UID", "geometry")]
+    road_raw[,c("NAME", "TYPE", "DIR", "NGD_UID", "RANK", "CLASS", "geometry")]
   ),
   
   tar_target(
     road_raw_r,
     road_raw_s %>%
-      rename(street = NAME) %>%
-      rename(streettype = TYPE) %>%
-      rename(streetdir = DIR) %>%
-      rename(streetid = NGD_UID) %>%
+      rename(street = NAME,
+             streettype = TYPE,
+             streetdir = DIR,
+             streetid = NGD_UID,
+             rank = RANK,
+             class = CLASS) %>%
       st_transform(crs = 3347)
   ),
   
