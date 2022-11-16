@@ -92,12 +92,11 @@ building_data_neighbourhood <- c(
     can_build_road_dens,
     can_build_road_km %>%
       group_by(streetid) %>%
-      mutate(city = bound,
-             centroids=n(), 
+      mutate(centroids=n(), 
              road_length = sum(road_length),
              centroid_den = as.numeric(centroids/road_length),
              area_den = as.numeric(build_area/road_length)) %>%
       distinct(streetid, .keep_all = TRUE) %>%
-      select(bound, street, streetdir, streetid, streettype, centroids, build_area, centroid_den, area_den)
+      select(city, street, streettype, streetdir, streetid, centroids, build_area, road_length, centroid_den, area_den)
   )
 )
