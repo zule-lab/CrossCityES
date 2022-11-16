@@ -3,9 +3,8 @@ census_data_cleanup <- c(
   tar_target(
     DA_s,
     DA_raw %>%
-      select(c("DAUID","PRNAME","geometry")) %>%
+      select(c("DAUID", "geometry")) %>%
       rename(dsa = "DAUID") %>%
-      rename(province = "PRNAME") %>%
       st_transform(crs = 3347)
   ),
   
