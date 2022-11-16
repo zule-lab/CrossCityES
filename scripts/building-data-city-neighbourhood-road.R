@@ -58,7 +58,7 @@ building_data_neighbourhood <- c(
   
   tar_target(
     can_build_road_km,
-    convert_area_road %>%
+    can_build_road %>%
       mutate(build_area = set_units(build_area, km^2), 
              road_length = set_units(road_length, km))
   ),
