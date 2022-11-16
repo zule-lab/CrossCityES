@@ -17,7 +17,7 @@ census_data_cleanup <- c(
     census_da_f,
     census_da_raw %>%
       select(c("ALT_GEO_CODE","CHARACTERISTIC_ID","C1_COUNT_TOTAL")) %>%
-      rename(city = "GEO_NAME",
+      rename(da = "ALT_GEO_CODE",
              sofac = "CHARACTERISTIC_ID",
              sonum = "C1_COUNT_TOTAL") %>%
       filter(sofac %in% c(1, 6:7, 42:49, 115, 331, 1522, 1389, 1670)) # missing education right now
