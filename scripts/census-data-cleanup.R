@@ -15,7 +15,7 @@ census_data_cleanup <- c(
   
   tar_target(
     census_da_f,
-    census_raw %>%
+    census_da_raw %>%
       select(c("ALT_GEO_CODE","CHARACTERISTIC_ID","C1_COUNT_TOTAL")) %>%
       rename(city = "GEO_NAME",
              sofac = "CHARACTERISTIC_ID",
