@@ -44,17 +44,23 @@ building_data_neighbourhood <- c(
   
   tar_target(
     can_build_city_km,
-    convert_area(can_build_city$build_area, can_build_city$city_area)
+    can_build_city %>%
+      mutate(build_area = set_units(build_area, km^2),
+             city_area = set_units(city_area, km^2))
   ),
   
   tar_target(
     can_build_hood_km,
-    convert_area(can_build_hood$build_area, can_build_hood$hood_area)
+    can_build_hood %>%
+      mutate(build_area = set_units(build_area, km^2),
+             hood_area = set_units(hood_area, km^2))
   ),
   
   tar_target(
     can_build_road_km,
-    convert_area(can_build_road$build_area, can_build_road$road_length)
+    convert_area_road %>%
+      mutate(build_area = set_units(build_area, km^2), 
+             road_length = set_units(road_length, km))
   ),
 
   tar_target(
@@ -84,7 +90,7 @@ building_data_neighbourhood <- c(
   
   tar_target(
     can_build_road_dens,
-    can_build_road %>%
+    can_build_road_km %>%
       group_by(streetid) %>%
       mutate(city = bound,
              centroids=n(), 
