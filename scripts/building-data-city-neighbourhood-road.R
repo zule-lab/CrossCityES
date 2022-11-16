@@ -3,8 +3,8 @@ building_data_neighbourhood <- c(
   tar_target(
     can_build_m,
     can_build %>%
-      mutate(build_area = st_area(.),
-             centroid = st_centroid(.)) %>%
+      mutate(build_area = st_area(x),
+             centroid = st_centroid(x)) %>%
       st_drop_geometry()
   ),
   
