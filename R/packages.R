@@ -17,6 +17,7 @@ library(geojsonio)
 library(stars)
 
 library(dplyr)
+conflict_prefer("first", "dplyr", "data.table")
 library(tidyr)
 library(stringr)
 library(plyr)
