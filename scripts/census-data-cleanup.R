@@ -140,21 +140,21 @@ census_data_cleanup <- c(
   
   tar_target(
     census_da_na,
-    census_da_sf %>% mutate(across(c(2:18), ~na_if(., "x")),
-                            across(c(2:18), ~na_if(., "F")))
+    census_da_sf %>% mutate(across(c(2:17), ~na_if(., "x")),
+                            across(c(2:17), ~na_if(., "F")))
   ),
   
   tar_target(
     census_cma_na,
-    census_cma_sf %>% mutate(across(c(2:18), ~na_if(., "x")),
-                            across(c(2:18), ~na_if(., "F")))
+    census_cma_sf %>% mutate(across(c(2:17), ~na_if(., "x")),
+                            across(c(2:17), ~na_if(., "F")))
   ),
   
   tar_target(
     census_da_num, 
     census_da_na %>% 
-      mutate(dsa = as.factor(dsa)) %>%
-      mutate(across(c(2:18), ~as.numeric(.))) %>%
+      mutate(da = as.factor(da)) %>%
+      mutate(across(c(2:17), ~as.numeric(.))) %>%
       drop_na()
   ),
   
@@ -162,7 +162,7 @@ census_data_cleanup <- c(
     census_cma_num, 
     census_cma_na %>% 
       mutate(city = as.factor(city)) %>%
-      mutate(across(c(2:18), ~as.numeric(.))) %>%
+      mutate(across(c(2:17), ~as.numeric(.))) %>%
       drop_na()
   ),
   
