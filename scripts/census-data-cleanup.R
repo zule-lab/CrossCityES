@@ -4,7 +4,7 @@ census_data_cleanup <- c(
     da_s,
     DA_raw %>%
       select(c("DAUID", "geometry")) %>%
-      rename(dsa = "DAUID") %>%
+      rename(da = "DAUID") %>%
       st_transform(crs = 3347)
   ),
   
@@ -118,7 +118,7 @@ census_data_cleanup <- c(
   
   tar_target(
     census_da_m,
-    merge(census_da_r, da_bound, by = "dsa")
+    merge(census_da_r, da_bound, by = "da")
   ),
   
   tar_target(
