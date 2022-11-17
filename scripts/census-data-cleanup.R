@@ -26,13 +26,13 @@ census_data_cleanup <- c(
   tar_target(
     census_cma_f,
     census_cma_raw %>%
-      filter("GEO_NAME" == "Vancouver" |
-               "GEO_NAME" == "Calgary" | 
-               "GEO_NAME" == "Winnipeg" | 
-               "GEO_NAME" == "Toronto" |
-               "GEO_NAME" == "Ottawa - Gatineau (Ontario part)" |
-               "GEO_NAME" == "Montréal" | 
-               "GEO_NAME" == "Halifax") %>% 
+      filter(GEO_NAME == "Vancouver" |
+               GEO_NAME == "Calgary" | 
+               GEO_NAME == "Winnipeg" | 
+               GEO_NAME == "Toronto" |
+               GEO_NAME == "Ottawa - Gatineau (Ontario part)" |
+               GEO_NAME == "Montréal" | 
+               GEO_NAME == "Halifax") %>% 
       mutate(GEO_NAME = replace(GEO_NAME, GEO_NAME == "Ottawa - Gatineau (Ontario part / partie de l'Ontario)", "Ottawa")) %>%
       select("GEO_NAME", "CHARACTERISTIC_ID", "C1_COUNT_TOTAL") %>% 
       rename(city = "GEO_NAME",
