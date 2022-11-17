@@ -1,9 +1,9 @@
-calculate_percent <- function(can_cen_dsa) {
+calculate_percent <- function(can_cen) {
 
-can_cen_dsa_p <- can_cen_dsa[, c(paste0(names(can_cen_dsa[,5:13]), "p")) := lapply(.SD, function(x) x / sum(.SD)), by=1:nrow(can_cen_dsa), .SDcols = c(5:13)]
+can_cen_p <- can_cen[, c(paste0(names(can_cen[,5:12]), "p")) := lapply(.SD, function(x) x / sum(.SD)), by=1:nrow(can_cen), .SDcols = c(5:12)]
 
 # population percentages 
-can_cen_dsa_pp <- can_cen_dsa_p[ , c(paste0(names(can_cen_dsa_p[,16:19]), "p")) := lapply(.SD, function(x) x/totpop), .SDcols = 16:19]
+can_cen_pp <- can_cen_p[ , c(paste0(names(can_cen_p[,15:17]), "p")) := lapply(.SD, function(x) x/totpop), .SDcols = 15:17]
 
 return(can_cen_dsa_pp)
 

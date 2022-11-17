@@ -175,13 +175,17 @@ census_data_cleanup <- c(
   tar_target(
     census_cma_dt, 
     setDT(census_cma_num)
-  )
+  ),
   
-#  tar_target(
-#    census,
-#    calculate_percent(census_dt)
-#  )
-#  
-#  ## ADD FINAL STEP
+  tar_target(
+    census_da,
+    calculate_percent(census_da_dt)
+  ),
+  
+  tar_target(
+    census_cma,
+    calculate_percent(census_cma_dt)
+  )
+
   
 )
