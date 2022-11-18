@@ -31,11 +31,17 @@ tree_cleaning <- function(city, trees, parks, hoods, boundaries, roads){
   
   # joining streets
   if ("street" %in% colnames(trees) == "FALSE") {
-    trees <-dplyr::mutate(trees, streetid = st_nearest_feature(trees, city_road)) # st_nearest_feature returns the index value not the street name
-    trees <- dplyr::mutate(trees, index = match(as.character(trees$streetid), as.character(city_road$index))) # return unique streetid based on index values
-    trees <- dplyr::mutate(trees, street = city_road$street[match(trees$index, city_road$index)]) # add column with street name
+    trees <-dplyr::mutate(trees, streetid = st_nearest_feature(trees, city_road), # st_nearest_feature returns the index value not the street name
+                          index = match(as.character(trees$streetid), as.character(city_road$index)), # return unique streetid based on index values
+                          street = city_road$street[match(trees$index, city_road$index)]) # add column with street name
   }
-  else { NULL }
+  else { 
+    trees <- trees %>%
+      dplyr::rename(munstreetname = street) %>%
+      dplyr::mutate(streetid = st_nearest_feature(trees, city_road),
+             index = match(as.character(trees$streetid), as.character(city_road$index)),
+             street = city_road$street[match(trees$index, city_road$index)])
+    }
   
   
   # filtering for street trees 
