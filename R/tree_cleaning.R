@@ -58,19 +58,9 @@ tree_cleaning <- function(city, trees, parks, hoods, boundaries, roads){
   # filtering for trees in city boundaries
   trees <- trees[city_bound,]
   
-  # reordering columns
-  
-  if ("munstreetname" %in% colnames(trees) == "FALSE") {
-    trees <- trees[,c("city", "id", "genus", "species", "cultivar", "geometry", "hood", "park", "streetid", "dbh")]# Check and make output
-  }
-  
-  else { 
-    trees <- trees[,c("city", "id", "genus", "species", "cultivar", "geometry", "hood", "park", "streetid", "munstreetname", "dbh")]
-  }
-  
-  
-  # saving
-  
+
+  # reordering & saving
+  trees <- trees[,c("city", "id", "genus", "species", "cultivar", "geometry", "hood", "park", "streetid", "dbh")]# Check and make output
   saveRDS(trees,  paste0("large/trees/", city, "TreesCleaned.rds"))
   
   return(trees)
