@@ -46,6 +46,7 @@ source(file.path('scripts', 'temperature-data-cleanup.R'))
 source(file.path('scripts', 'pollution-data-cleanup.R'))
 source(file.path('scripts', 'dsm-data-cleanup.R'))
 source(file.path('scripts', 'height-data-city-neighbourhood-road.R'))
+source(file.path('scripts', 'roadclass-data-city-neighbourhood.R'))
 
 
 # Targets: all ------------------------------------------------------------
