@@ -15,11 +15,12 @@ roadclass_data_city_neighbourhood <- c(
     city_road_prop,
       inner_join(mun_road, st_set_geometry(mun_bound_area, NULL), by = "CMANAME") %>%
       group_by(CMANAME) %>%
-      mutate(CityArea = set_units(city_area, km^2)) %>%
+      mutate(CityArea = set_units(city_area, km^2),
+             RoadLength = st_length(geometry)) %>%
       summarize(PropHighway = sum(rank == "1" | rank == "2" | rank == "3")/n(),
                 PropMajRoads = sum(rank == "4")/n(),
                 PropStreets = sum(rank == "5")/n(),
-                RoadLength = sum(st_length(geometry)),
+                RoadLength = sum(set_units(RoadLength, km)),
                 CityArea = first(CityArea),
                 RoadDens = RoadLength/CityArea)
   ),
@@ -28,11 +29,12 @@ roadclass_data_city_neighbourhood <- c(
     hood_road_prop,
     st_intersection(mun_road, can_hood) %>% 
       group_by(city, hood_id) %>%
-      mutate(HoodArea = set_units(hood_area, km^2)) %>%
+      mutate(HoodArea = set_units(hood_area, km^2),
+             RoadLength = st_length(geometry)) %>%
       summarize(PropHighway = sum(rank == "1" | rank == "2" | rank == "3")/n(),
                 PropMajRoads = sum(rank == "4")/n(),
                 PropStreets = sum(rank == "5")/n(),
-                RoadLength = sum(st_length(geometry)),
+                RoadLength = sum(set_units(RoadLength), km),
                 HoodArea = first(HoodArea),
                 RoadDens = RoadLength/HoodArea)
   )
