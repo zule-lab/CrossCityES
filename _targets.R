@@ -47,6 +47,10 @@ source(file.path('scripts', 'census-data-city-neighbourhood.R'))
 source(file.path('scripts', 'building-data-city-neighbourhood-road.R'))
 source(file.path('scripts', 'height-data-city-neighbourhood-road.R'))
 source(file.path('scripts', 'roadclass-data-city-neighbourhood.R'))
+source(file.path('scripts', 'functional-city-neighbourhood-road.R'))
+source(file.path('scripts', 'richness-city-neighbourhood-road.R'))
+source(file.path('scripts', 'treedensity-city-neighbourhood-road.R'))
+source(file.path('scripts', 'treesize-city-neighbourhood-road.R'))
 
 
 # Targets: all ------------------------------------------------------------
