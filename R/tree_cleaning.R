@@ -53,7 +53,7 @@ tree_cleaning <- function(city, trees, parks, hoods, boundaries, roads){
   trees <- trees[city_bound,]
   
   # reordering columns & saving
-  trees <- trees[,c("city","id","genus", "species", "cultivar", "geometry","hood","park", "street", "dbh")]# Check and make output
+  trees <- trees[,c("city", "id", "genus", "species", "cultivar", "geometry", "hood", "park", "streetid", "dbh")]# Check and make output
   saveRDS(trees,  paste0("large/trees/", city, "TreesCleaned.rds"))
   
   return(trees)
