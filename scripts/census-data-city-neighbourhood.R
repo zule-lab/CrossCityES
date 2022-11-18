@@ -14,8 +14,8 @@ census_data_neighbourhood <- c(
     # spatially weighted join
     hood_cen_swj,
     hood_cen_i %>%
-      select(c("city","hood","hood_id","dsa","totpop","popdens", "area", "sidehop","aptfivp","oadwelp","semhoup","rowhoup","aptdupp","aptbuip","otsihop","mvdwelp",
-               "medinc", "lowinc", "recimmp", "aborigp", "visminp", "edubacp")) %>%
+      select(c("city","hood","hood_id","da","totpop","popdens", "area", "sidehop","aptfivp","semhoup","rowhoup","aptdupp","aptbuip","otsihop","mvdwelp",
+               "medinc", "lowinc", "recimmp", "aborigp", "visminp")) %>%
       group_by(hood) %>% 
       mutate(area = st_area(geometry)) %>% 
       mutate(weight = as.numeric(area / sum(area))) %>%
@@ -29,13 +29,12 @@ census_data_neighbourhood <- c(
       mutate(DSAcount = n(),
              weight = sum(weight),
              area = sum(area),
-             dsa = list(dsa),
+             da = list(da),
              geometry = st_union(geometry),
              totpop = sum(as.numeric(totpop)),
              popdens = mean(as.numeric(popdens)),
              sidehop = mean(as.numeric(sidehop)),
              aptfivp = mean(as.numeric(aptfivp)),
-             oadwelp = mean(as.numeric(oadwelp)),
              semhoup = mean(as.numeric(semhoup)),
              rowhoup = mean(as.numeric(rowhoup)),
              aptdupp = mean(as.numeric(aptdupp)),
@@ -46,8 +45,8 @@ census_data_neighbourhood <- c(
              lowinc = mean(as.numeric(lowinc)),
              recimmp = mean(as.numeric(recimmp)),
              aborigp = mean(as.numeric(aborigp)),
-             visminp = mean(as.numeric(visminp)),
-             edubacp = mean(as.numeric(edubacp))
+             visminp = mean(as.numeric(visminp)) #,
+             #edubacp = mean(as.numeric(edubacp))
       ) %>%
       distinct(hood, .keep_all = TRUE)
   )
