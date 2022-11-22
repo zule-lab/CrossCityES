@@ -23,17 +23,17 @@ richness_data_city_neighbourhood_road <- c(
      group_map(~ pivot_wider(data = .x, names_from = 'fullname', values_from = 'n', values_fill = 0, values_fn = first) %>%
                  mutate_if(is.numeric, ~1 * (. != 0))) %>% 
      setNames(unique(all_tree$hood_id))
-  ),
-  
-  tar_target(
-    city_inext, 
-    iNEXT(city_matrix, datatype = "incidence_raw", q = 0)
-  ),
-  
-  tar_target(
-    hood_inext,
-    iNEXT(hood_matrix, datatype = "incidence_raw", q = 0)
   )
+  
+#  tar_target(
+#    city_inext, 
+#    iNEXT(city_matrix, datatype = "incidence_raw", q = 0)
+#  ),
+#  
+#  tar_target(
+#    hood_inext,
+#    iNEXT(hood_matrix, datatype = "incidence_raw", q = 0)
+#  )
   
   
 
