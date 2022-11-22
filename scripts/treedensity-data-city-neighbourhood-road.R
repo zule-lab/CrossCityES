@@ -36,6 +36,7 @@ treedensity_data_city_neighbourhood_road <- c(
     all_tree %>% 
       group_by(city, hood_id, streetid) %>%
       summarize(nTrees = n()) %>%
+      mutate(streetid = as.character(streetid)) %>%
       inner_join(., as.data.frame(treesize_road), by = "streetid") %>% 
       inner_join(., as.data.frame(can_build_road_dens), by = "streetid") %>%
       summarize(city = city,

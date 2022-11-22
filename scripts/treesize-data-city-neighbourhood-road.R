@@ -16,7 +16,8 @@ treesize_data_city_neighbourhood_road <- c(
                 sd_ba = sd(basal_area),
                 mean_dbh = mean(dbh_in),
                 sd_dbh = mean(dbh_in)) %>%
-      mutate(mean_ba = set_units(mean_ba, "ft2"),
+      mutate(streetid = as.character(streetid),
+             mean_ba = set_units(mean_ba, "ft2"),
              sd_ba = set_units(sd_ba, "ft2"),
              mean_dbh = set_units(mean_dbh, "in"),
              sd_dbh = set_units(sd_dbh, "in"))
@@ -31,7 +32,8 @@ treesize_data_city_neighbourhood_road <- c(
                 sd_ba = sd(basal_area),
                 mean_dbh = mean(dbh_in),
                 sd_dbh = sd(dbh_in)) %>%
-      mutate(mean_ba = set_units(mean_ba, "ft2"),
+      mutate(streetid = as.character(streetid),
+             mean_ba = set_units(mean_ba, "ft2"),
              sd_ba = set_units(sd_ba, "ft2"),
              mean_dbh = set_units(mean_dbh, "in"),
              sd_dbh = set_units(sd_dbh, "in"))
@@ -47,7 +49,8 @@ treesize_data_city_neighbourhood_road <- c(
                 sd_ba = sd(basal_area),
                 mean_dbh = mean(dbh_in),
                 sd_dbh = sd(dbh_in)) %>%
-      mutate(mean_ba = set_units(mean_ba, "ft2"),
+      mutate(streetid = as.character(streetid),
+             mean_ba = set_units(mean_ba, "ft2"),
              sd_ba = set_units(sd_ba, "ft2"),
              mean_dbh = set_units(mean_dbh, "in"),
              sd_dbh = set_units(sd_dbh, "in"))
