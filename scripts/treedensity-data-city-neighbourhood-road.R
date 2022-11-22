@@ -4,9 +4,13 @@ treedensity_data_city_neighbourhood_road <- c(
     treedensity_city, 
     all_tree %>% 
       group_by(city) %>%
-      summarize(nTrees = n(),
-                mean_ba = treesize_city$mean_ba,
-                cityarea = can_build_city_dens$city_area,
+      summarize(nTrees = n()) %>%
+      inner_join(., as.data.frame(treesize_city), by = "city") %>% 
+      inner_join(., as.data.frame(can_build_city_dens), by = "city") %>%
+      summarize(city = city,
+                nTrees = nTrees,
+                mean_ba = mean_ba,
+                cityarea = city_area,
                 stemdens = nTrees/cityarea,
                 basaldens = mean_ba/cityarea)
   ),
@@ -15,9 +19,14 @@ treedensity_data_city_neighbourhood_road <- c(
     treedensity_hood, 
     all_tree %>% 
       group_by(city, hood_id) %>%
-      summarize(nTrees = n(),
-                mean_ba = treesize_hood$mean_ba,
-                hoodarea = can_build_hood_dens$hood_area,
+      summarize(nTrees = n()) %>%
+      inner_join(., as.data.frame(treesize_hood), by = "hood_id") %>% 
+      inner_join(., as.data.frame(can_build_hood_dens), by = "hood_id") %>%
+      summarize(city = city,
+                hood_id = hood_id,
+                nTrees = nTrees,
+                mean_ba = mean_ba,
+                hoodarea = hood_area,
                 stemdens = nTrees/hoodarea,
                 basaldens = mean_ba/hoodarea)
   ),
@@ -26,9 +35,15 @@ treedensity_data_city_neighbourhood_road <- c(
     treedensity_road, 
     all_tree %>% 
       group_by(city, hood_id, streetid) %>%
-      summarize(nTrees = n(),
-                mean_ba = treesize_road$mean_ba,
-                roadlength = can_build_road_dens$road_length,
+      summarize(nTrees = n()) %>%
+      inner_join(., as.data.frame(treesize_road), by = "streetid") %>% 
+      inner_join(., as.data.frame(can_build_road_dens), by = "streetid") %>%
+      summarize(city = city,
+                hood_id = hood_id,
+                streetid = streetid,
+                nTrees = nTrees,
+                mean_ba = mean_ba,
+                roadlength = road_length,
                 stemdens = nTrees/roadlength,
                 basaldens = mean_ba/roadlength)
   )
