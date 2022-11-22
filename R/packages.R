@@ -21,6 +21,7 @@ conflict_prefer("first", "dplyr", "data.table")
 library(tidyr)
 library(stringr)
 library(plyr)
+library(tibble)
 
 library(data.table)
 
