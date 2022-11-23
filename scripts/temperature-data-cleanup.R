@@ -20,17 +20,17 @@ temperature_data_cleanup <- c(
   
   tar_target(
     temp_city,
-    clean_temp(temp_city_raw)
+    clean_sat(temp_city_raw)
   ),
   
   tar_target(
     temp_hood,
-    clean_temp(temp_hood_raw)
+    clean_sat(temp_hood_raw)
   ),
   
   tar_target(
     temp_street,
-    clean_temp(temp_street_raw)
+    clean_sat(temp_street_raw)
   )
   
 )

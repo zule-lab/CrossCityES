@@ -74,51 +74,51 @@ pollution_data_cleanup <- c(
 
   tar_target(
     CO_city,
-    clean_air(CO_city_raw)
+    clean_sat(CO_city_raw)
   ),
 
   tar_target(
     CO_hood,
-    clean_air(CO_hood_raw)
+    clean_sat(CO_hood_raw)
   ),
 
   tar_target(
     NO2_city,
-    clean_air(NO2_city_raw)
+    clean_sat(NO2_city_raw)
   ),
   
   tar_target(
     NO2_hood,
-    clean_air(NO2_hood_raw)
+    clean_sat(NO2_hood_raw)
   ),
 
   tar_target(
     O3_city,
-    clean_air(O3_city_raw)
+    clean_sat(O3_city_raw)
   ),
   
   tar_target(
     O3_hood,
-    clean_air(O3_hood_raw)
+    clean_sat(O3_hood_raw)
   ),
 
   tar_target(
     SO2_city,
-    clean_air(SO2_city_raw)
+    clean_sat(SO2_city_raw)
   ),
   
   tar_target(
     SO2_hood,
-    clean_air(SO2_hood_raw)
+    clean_sat(SO2_hood_raw)
   ),
 
   tar_target(
     UV_city,
-    clean_air(UV_city_raw)
+    clean_sat(UV_city_raw)
   ),
   
   tar_target(
     UV_hood,
-    clean_air(UV_hood_raw)
+    clean_sat(UV_hood_raw)
   )
 )
