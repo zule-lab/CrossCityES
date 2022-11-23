@@ -26,15 +26,16 @@ census_data_cleanup <- c(
   tar_target(
     census_cma_f,
     census_cma_raw %>%
+      mutate(GEO_NAME = str_conv(GEO_NAME, "ISO-8859-1")) %>%
       filter(GEO_NAME == "Vancouver" |
                GEO_NAME == "Calgary" | 
                GEO_NAME == "Winnipeg" | 
                GEO_NAME == "Toronto" |
                GEO_NAME == "Ottawa - Gatineau (Ontario part)" |
-               GEO_NAME == "Montr\xe9al" | 
+               GEO_NAME == "Montréal" | 
                GEO_NAME == "Halifax") %>% 
       mutate(GEO_NAME = replace(GEO_NAME, GEO_NAME == "Ottawa - Gatineau (Ontario part)", "Ottawa"),
-             GEO_NAME = replace(GEO_NAME, GEO_NAME == "Montr\xe9al", "Montréal")) %>%
+             GEO_NAME = replace(GEO_NAME, GEO_NAME == "Montréal", "Montréal")) %>%
       select("GEO_NAME", "CHARACTERISTIC_ID", "C1_COUNT_TOTAL") %>% 
       rename(city = "GEO_NAME",
              sofac = "CHARACTERISTIC_ID",
