@@ -34,7 +34,7 @@ treedensity_data_city_neighbourhood_road <- c(
   ),
   
   tar_target(
-    treedensity_road, 
+    treedensity_road, # SOMETHING WEIRD IS HAPPENING
     all_tree %>% 
       group_by(city, hood_id, streetid) %>%
       summarize(nTrees = n()) %>%
