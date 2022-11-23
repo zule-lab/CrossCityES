@@ -17,7 +17,7 @@ roadclass_data_city_neighbourhood <- c(
       group_by(CMANAME) %>%
       mutate(CityArea = set_units(city_area, km^2),
              RoadLength = set_units(st_length(geometry), km)) %>%
-      summarize(city = CMANAME, 
+      summarize(city = first(CMANAME), 
                 PropHighway = sum(rank == "1" | rank == "2" | rank == "3")/n(),
                 PropMajRoads = sum(rank == "4")/n(),
                 PropStreets = sum(rank == "5")/n(),
