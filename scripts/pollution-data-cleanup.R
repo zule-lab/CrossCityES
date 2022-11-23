@@ -120,5 +120,17 @@ pollution_data_cleanup <- c(
   tar_target(
     UV_hood,
     clean_sat(UV_hood_raw, "UV")
+  ),
+
+  tar_target(
+    pollution_city,
+    cbind(CO_city, NO2_city[,-'city'], O3_city[,-'city'], SO2_city[,-'city'], UV_city[,-'city'])
+  ),
+
+  tar_target(
+    pollution_hood,
+    cbind(CO_hood, NO2_hood[,-c('city', 'hood', 'hood_area', 'hood_id')], O3_hood[,-c('city', 'hood', 'hood_area', 'hood_id')], SO2_hood[,-c('city', 'hood', 'hood_area', 'hood_id')], UV_hood[,-c('city', 'hood', 'hood_area', 'hood_id')])
   )
+
+
 )
