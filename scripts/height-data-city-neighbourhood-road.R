@@ -2,7 +2,7 @@ height_data_neighbourhood_road <- c(
   
   tar_target(
     van_city_height, 
-    height_city(van_build_height, 'vancouver.tif')
+    height_city(van_build_height, 'vancouver.tif', "Vancouver")
   ),
   
   tar_target(
@@ -17,7 +17,7 @@ height_data_neighbourhood_road <- c(
   
   tar_target(
     cal_city_height, 
-    height_city(cal_build_height, 'calgarywest.tif')
+    height_city(cal_build_height, 'calgarywest.tif', "Calgary")
   ),
   
   tar_target(
@@ -32,7 +32,7 @@ height_data_neighbourhood_road <- c(
   
   tar_target(
     win_city_height, 
-    height_city(win_build_height, 'winnipegne.tif')
+    height_city(win_build_height, 'winnipegne.tif', "Winnipeg")
   ),
   
   tar_target(
@@ -47,7 +47,7 @@ height_data_neighbourhood_road <- c(
   
   tar_target(
     tor_city_height,
-    height_city(tor_build_height, 'torontone.tif')
+    height_city(tor_build_height, 'torontone.tif', "Toronto")
   ),
   
   tar_target(
@@ -62,7 +62,7 @@ height_data_neighbourhood_road <- c(
   
   tar_target(
     ott_city_height,
-    height_city(ott_build_height, 'ottawane.tif')
+    height_city(ott_build_height, 'ottawane.tif', "Ottawa")
   ),
   
   tar_target(
@@ -77,7 +77,7 @@ height_data_neighbourhood_road <- c(
   
   tar_target(
     mon_city_height,
-    height_city(mon_build_height, 'cotesaintluc.tif')
+    height_city(mon_build_height, 'cotesaintluc.tif', "Montreal")
   ),
 
   tar_target(
@@ -92,7 +92,7 @@ height_data_neighbourhood_road <- c(
   
   tar_target(
     hal_city_height, 
-    height_city(hal_build_height, 'halifax.tif')
+    height_city(hal_build_height, 'halifax.tif', "Halifax")
   ),
   
   tar_target(
