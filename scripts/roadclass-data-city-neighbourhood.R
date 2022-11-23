@@ -17,12 +17,13 @@ roadclass_data_city_neighbourhood <- c(
       group_by(CMANAME) %>%
       mutate(CityArea = set_units(city_area, km^2),
              RoadLength = set_units(st_length(geometry), km)) %>%
-      summarize(PropHighway = sum(rank == "1" | rank == "2" | rank == "3")/n(),
+      summarize(city = CMANAME, 
+                PropHighway = sum(rank == "1" | rank == "2" | rank == "3")/n(),
                 PropMajRoads = sum(rank == "4")/n(),
                 PropStreets = sum(rank == "5")/n(),
                 RoadLength = sum(RoadLength),
                 CityArea = first(CityArea),
-                RoadDens = RoadLength/CityArea)
+                RoadDens = RoadLength/CityArea) 
   ),
   
   tar_target(
