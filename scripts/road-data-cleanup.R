@@ -5,13 +5,14 @@ road_data_cleanup <- c(
     mun_bound_raw %>%
       group_by(CMANAME) %>%
       summarise() %>%
-      mutate(CMANAME = replace(CMANAME, CMANAME == "Ottawa - Gatineau (Ontario part / partie de l'Ontario)", "Ottawa")) %>%
+      mutate(CMANAME = replace(CMANAME, CMANAME == "Ottawa - Gatineau (Ontario part / partie de l'Ontario)", "Ottawa"),
+             CMANAME = replace(CMANAME, CMANAME == "Montréal", "Montreal")) %>%
       filter(CMANAME == "Vancouver" |
                CMANAME == "Calgary" |
                CMANAME == "Winnipeg" | 
                CMANAME == "Toronto" |
                CMANAME == "Ottawa" |
-               CMANAME == "Montréal" |
+               CMANAME == "Montreal" |
                CMANAME == "Halifax")
   ),
   
