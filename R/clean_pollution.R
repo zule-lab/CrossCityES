@@ -1,4 +1,4 @@
-clean_sat <- function(df, label){
+clean_pollution <- function(df, label){
 
   # remove system:index and geo columns because they are not in useable format
   df <- df %>% select(-c('system:index', '.geo')) %>% 
