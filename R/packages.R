@@ -30,5 +30,7 @@ library(anytime)
 
 library(ggplot2)
 library(MetBrewer)
+library(FactoMineR)
+library(factoextra)
 
 library(iNEXT)
