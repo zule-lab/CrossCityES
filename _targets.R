@@ -52,6 +52,7 @@ source(file.path('scripts', 'functional-data-city-neighbourhood-road.R'))
 source(file.path('scripts', 'richness-data-city-neighbourhood-road.R'))
 source(file.path('scripts', 'treedensity-data-city-neighbourhood-road.R'))
 source(file.path('scripts', 'treesize-data-city-neighbourhood-road.R'))
+source(file.path('scripts', 'full-data-sets.R'))
 source(file.path('scripts', 'raw-data-viz.R'))
 
 
