@@ -95,7 +95,7 @@ full_data_sets <- c(
   tar_target(
     neighbourhood_census_vars, 
     neighbourhood_data %>% 
-      select(c(city, hood, hood_id, da, weight, wmean, DSAcount, totpop, popdens, area, sidehop, semhoup, rowhoup, aptdupp, aptbuip, aptfivp, otsihop, mvdwelp, medinc, lowinc,
+      select(c(city, hood, hood_id, weight, wmean, DSAcount, totpop, popdens, area, sidehop, semhoup, rowhoup, aptdupp, aptbuip, aptfivp, otsihop, mvdwelp, medinc, lowinc,
                aborigp, recimmp, visminp))
   )
   
