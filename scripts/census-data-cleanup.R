@@ -35,7 +35,7 @@ census_data_cleanup <- c(
                GEO_NAME == "Montréal" | 
                GEO_NAME == "Halifax") %>% 
       mutate(GEO_NAME = replace(GEO_NAME, GEO_NAME == "Ottawa - Gatineau (Ontario part)", "Ottawa"),
-             GEO_NAME = replace(GEO_NAME, GEO_NAME == "Montréal", "Montréal")) %>%
+             GEO_NAME = replace(GEO_NAME, GEO_NAME == "Montréal", "Montreal")) %>%
       select("GEO_NAME", "CHARACTERISTIC_ID", "C1_COUNT_TOTAL") %>% 
       rename(city = "GEO_NAME",
              sofac = "CHARACTERISTIC_ID",
