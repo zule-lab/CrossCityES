@@ -30,7 +30,7 @@ montreal_data_cleanup <- c(
   
   tar_target(
     mon_tree,
-    tree_cleaning("Montréal", mon_tree_sp, mon_park, mon_hood, mun_bound, mun_road)
+    tree_cleaning("Montreal", mon_tree_sp, mon_park, mon_hood, mun_bound, mun_road)
   )
 
 )
