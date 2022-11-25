@@ -1,6 +1,7 @@
 library(targets)
 library(tarchetypes)
 library(qs)
+library(quarto)
 
 library(conflicted)
 conflict_prefer_all("dplyr", c("plyr", "stats"))
