@@ -28,9 +28,10 @@ library(data.table)
 library(units)
 library(anytime)
 
-library(ggplot2)
-library(MetBrewer)
 library(FactoMineR)
 library(factoextra)
+library(ggplot2)
+library(MetBrewer)
+
 
 library(iNEXT)
