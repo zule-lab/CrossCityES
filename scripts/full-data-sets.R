@@ -60,7 +60,7 @@ full_data_sets <- c(
     city_data %>%
       select(c(city, centroid_den, area_den, NDBI_max, NDBI_mean, NDBI_median, NDBI_min, NDBI_stdDev,
                NDVI_max, NDVI_mean, NDVI_median, NDVI_min, NDVI_stdDev, mean_buildhgt, median_buildhgt, sd_buildhgt,
-               PropMajRoads, PropStreets, RoadDens))
+               PropHighway, PropMajRoads, PropStreets, RoadDens))
   ),
   
   tar_target(
@@ -89,7 +89,7 @@ full_data_sets <- c(
     neighbourhood_data %>%
       select(c(city, hood, hood_id, centroid_den, area_den, NDBI_max, NDBI_mean, NDBI_median, NDBI_min, NDBI_stdDev,
                NDVI_max, NDVI_mean, NDVI_median, NDVI_min, NDVI_stdDev, mean_buildhgt, median_buildhgt, sd_buildhgt,
-               PropMajRoads, PropStreets, RoadDens))
+               PropHighway, PropMajRoads, PropStreets, RoadDens))
   ),
   
   tar_target(
