@@ -21,26 +21,6 @@ raw_data_viz <- c(
   ),
   
   tar_target(
-    city_response_pca,
-    city_pca(city_response_vars)
-  ),
-  
-  tar_target(
-    city_tree_pca, 
-    city_pca(city_tree_vars)
-  ),
-  
-  tar_target(
-    city_build_pca, 
-    city_pca(city_build_vars)
-  ),
-  
-  tar_target(
-    city_census_pca, 
-    city_pca(city_census_vars)
-  ),
-  
-  tar_target(
     neighbourhood_response_facet, 
     neighbourhood_plot(neighbourhood_response_vars)
   ),
