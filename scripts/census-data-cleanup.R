@@ -14,8 +14,13 @@ census_data_cleanup <- c(
   ),
   
   tar_target(
+    census_da_raw_full,
+    combine_files("large/national/cen_da_raw.zip", 5, "large/national/cen_da_raw")
+  ),
+  
+  tar_target(
     census_da_f,
-    census_da_raw %>%
+    census_da_raw_full %>%
       select(c("ALT_GEO_CODE","CHARACTERISTIC_ID","C1_COUNT_TOTAL")) %>%
       rename(da = "ALT_GEO_CODE",
              sofac = "CHARACTERISTIC_ID",
