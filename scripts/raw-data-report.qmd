@@ -1,0 +1,197 @@
+---
+title: "Raw Data Report"
+format: html
+---
+
+```{r}
+#| echo: false
+
+
+library(targets)
+```
+
+## (Not really all that) Quick & Dirty
+
+-   These are the raw data results for *most* of the variables for chapter 1 data
+-   NOTES: still missing tree diversity measures
+-   still missing street scale data (something weird happening there)
+
+## Points of Discussion
+
+-   Comparable street segments
+-   Tree size skewness measurements
+-   Tree species richness + iNEXT
+-   CMA vs weighted census tracts
+-   Montreal DBHs aka what is happening here
+-   DSM correction (I think I need to correct for sea level)
+
+## Workflow
+
+```{r}
+#| echo: false
+
+
+tar_visnetwork(outdated = F)
+```
+
+## Tree Stuff
+
+Number of trees per city:
+
+```{r}
+#| echo: false
+tar_load(tree_count_city)
+tree_count_city
+```
+
+Number of tree **species** per city:
+
+```{r}
+#| echo: false
+tar_load(sp_count_city)
+sp_count_city
+```
+
+Tree size distribution per city:
+
+```{r}
+#| echo: false
+tar_load(skewness_vis_city)
+skewness_vis_city
+```
+
+## City Scale (CMA level)
+
+### Response Variables
+
+-   Response variables are proxies for ES
+    -   Land Surface Temperature
+    -   Air Pollution measures for 6 pollutants
+
+```{r}
+#| echo: false
+tar_load(city_response_facet)
+city_response_facet
+```
+
+### Independent Variables - Trees
+
+-   currently missing diversity measures but have included tree size and tree density
+
+```{r}
+#| echo: false
+tar_load(city_tree_facet)
+city_tree_facet
+```
+
+### Independent Variables - Built Infrastructure
+
+-   includes building density, building height, road density, proportion of road types, NDVI, and NDBI
+
+```{r}
+#| echo: false
+tar_load(city_build_facet)
+city_build_facet
+```
+
+### Independent Variables - Census
+
+-   includes data from 2021 census on:
+    -   totpop = Population 2021
+
+    -   popdens = Pop density per sq km
+
+    -   area = Land area sq km
+
+    -   sidho = Single-detached house
+
+    -   semho = Semi-detached house
+
+    -   rowhou = Row house
+
+    -   aptdup = Apartment or flat in a duplex
+
+    -   aptbui = Apartment in a building that has fewer than five storeys
+
+    -   aptfiv = Apartment in a building that has five or more storeys otsiho = Other single-attached house
+
+    -   mvdwel = Movable dwelling (9)
+
+    -   medinc = Median after-tax income in 2015 among recipients
+
+    -   lowinc = Prevalence of low income based on the Low-income measure, after tax (LIM-AT) (%)
+
+    -   recimm = Total - Immigrant status and period of immigration for the population in private households - 25% sample data (63) -\> Immigrants -\> 2011-2016 (recent immigrants)
+
+    -   aborig = Total - Aboriginal identity for the population in private households - 25% sample data (104) -\> Aboriginal identity (105)
+
+    -   vismin = Total - Visible minority for the population in private households - 25% sample data (121) -\> Total visible minority population (122)
+
+```{r}
+#| echo: false
+tar_load(city_census_facet)
+city_census_facet
+```
+
+
+## Neighbourhood Scale
+
+### Response Variables
+
+```{r}
+#| echo: false
+tar_load(neighbourhood_response_facet)
+neighbourhood_response_facet
+```
+
+```{r}
+#| echo: false
+tar_load(neighbourhood_response_pca)
+neighbourhood_response_pca
+```
+
+### Independent Variables - Trees
+
+```{r}
+#| echo: false
+tar_load(neighbourhood_response_facet)
+neighbourhood_response_facet
+```
+
+```{r}
+#| echo: false
+tar_load(neighbourhood_tree_pca)
+neighbourhood_tree_pca
+```
+
+### Independent Variables - Built Infrastructure
+
+```{r}
+#| echo: false
+tar_load(neighbourhood_response_facet)
+neighbourhood_response_facet
+```
+
+```{r}
+#| echo: false
+tar_load(neighbourhood_built_pca)
+neighbourhood_built_pca
+```
+
+### Independent Variables - Census
+
+```{r}
+#| echo: false
+tar_load(neighbourhood_response_facet)
+neighbourhood_response_facet
+```
+
+```{r}
+#| echo: false
+tar_load(neighbourhood_census_pca)
+neighbourhood_census_pca
+```
+
+## Street Scale
+
+To come...
