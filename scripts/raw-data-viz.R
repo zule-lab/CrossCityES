@@ -60,9 +60,9 @@ raw_data_viz <- c(
     neighbourhood_pca(neighbourhood_census_vars, -c(1:3))
   ),
   
-  tar_quarto(
+  tar_render(
     raw_data_report,
-    "scripts/raw-data-report.qmd"
+    "raw-data-report.qmd"
   )
   
     
