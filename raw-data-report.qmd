@@ -198,7 +198,7 @@ tar_read(neighbourhood_response_pca)
 #| message: false
 #| fig-width: 15
 #| fig-height: 15
-tar_read(neighbourhood_response_facet)
+tar_read(neighbourhood_tree_facet)
 ```
 
 ```{r}
@@ -218,7 +218,7 @@ tar_read(neighbourhood_tree_pca)
 #| message: false
 #| fig-width: 15
 #| fig-height: 15
-tar_read(neighbourhood_response_facet)
+tar_read(neighbourhood_build_facet)
 ```
 
 ```{r}
@@ -238,7 +238,7 @@ tar_read(neighbourhood_build_pca)
 #| message: false
 #| fig-width: 15
 #| fig-height: 15
-tar_read(neighbourhood_response_facet)
+tar_read(neighbourhood_census_facet)
 ```
 
 ```{r}
