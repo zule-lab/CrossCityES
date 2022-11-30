@@ -182,6 +182,348 @@ data_download <- c(
     }
   ),
   
+  tar_target(
+    van_1_dsm,
+    download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/BC/Lower_Mainland_2016/utm10/dsm_1m_utm10_w_0_145.tif", "large/dem/van_1_dsm.tif")
+  ),
+  
+  tar_target(
+    van_1_dtm,
+    download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/BC/Lower_Mainland_2016/utm10/dtm_1m_utm10_w_0_145.tif", "large/dem/van_1_dtm.tif")
+  ),
+  
+  tar_target(
+    van_2_dsm,
+    download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/BC/Lower_Mainland_2016/utm10/dsm_1m_utm10_w_1_145.tif", "large/dem/van_2_dsm.tif")
+  ),
+  
+  tar_target(
+    van_2_dtm,
+    download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/BC/Lower_Mainland_2016/utm10/dtm_1m_utm10_w_1_145.tif", "large/dem/van_2_dtm.tif")
+  ),
+  
+  tar_target(
+    cal_1_dsm,
+    download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/NRCAN/Calgary_West_utm11_2020/utm11/dsm_1m_utm11_e_19_167.tif", "large/dem/cal_1_dsm.tif")
+  ),
+  
+  tar_target(
+    cal_1_dtm,
+    download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/NRCAN/Calgary_West_utm11_2020/utm11/dtm_1m_utm11_e_19_167.tif", "large/dem/cal_1_dtm.tif")
+ ),
+ 
+ tar_target(
+   cal_2_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/NRCAN/Calgary_West_utm11_2020/utm11/dsm_1m_utm11_e_20_167.tif", "large/dem/cal_2_dsm.tif")
+ ),
+ 
+ tar_target(
+   cal_2_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/NRCAN/Calgary_West_utm11_2020/utm11/dtm_1m_utm11_e_20_167.tif", "large/dem/cal_2_dtm.tif")
+ ),
+ 
+ tar_target(
+   cal_3_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/NRCAN/Calgary_West_utm11_2020/utm11/dsm_1m_utm11_e_21_167.tif", "large/dem/cal_3_dsm.tif")
+ ),
+ 
+ tar_target(
+   cal_3_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/NRCAN/Calgary_West_utm11_2020/utm11/dtm_1m_utm11_e_21_167.tif", "large/dem/cal_3_dtm.tif")
+ ),
+ 
+ tar_target(
+   cal_4_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/NRCAN/Calgary_West_utm11_2020/utm11/dsm_1m_utm11_e_19_166.tif", "large/dem/cal_4_dsm.tif")
+ ),
+ 
+ tar_target(
+   cal_4_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/NRCAN/Calgary_West_utm11_2020/utm11/dtm_1m_utm11_e_19_166.tif", "large/dem/cal_4_dtm.tif")
+ ),
+ 
+ tar_target(
+   cal_5_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/NRCAN/Calgary_West_utm11_2020/utm11/dtm_1m_utm11_e_19_166.tif", "large/dem/cal_5_dsm.tif")
+ ),
+ 
+ tar_target(
+   cal_5_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/NRCAN/Calgary_West_utm11_2020/utm11/dtm_1m_utm11_e_20_166.tif", "large/dem/cal_5_dtm.tif")
+ ),
+ 
+ tar_target(
+   cal_6_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/NRCAN/Calgary_West_utm11_2020/utm11/dsm_1m_utm11_e_21_166.tif", "large/dem/cal_6_dsm.tif")
+ ),
+ 
+ tar_target(
+   cal_6_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/NRCAN/Calgary_West_utm11_2020/utm11/dtm_1m_utm11_e_21_166.tif", "large/dem/cal_6_dtm.tif")
+ ),
+ 
+ tar_target(
+   cal_7_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/NRCAN/Calgary_West_utm11_2020/utm11/dsm_1m_utm11_e_19_165.tif", "large/dem/cal_7_dsm.tif")
+ ),
+ 
+ tar_target(
+   cal_7_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/NRCAN/Calgary_West_utm11_2020/utm11/dtm_1m_utm11_e_19_165.tif", "large/dem/cal_7_dtm.tif")
+ ),
+ 
+ tar_target(
+   cal_8_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/NRCAN/Calgary_West_utm11_2020/utm11/dsm_1m_utm11_e_20_165.tif", "large/dem/cal_8_dsm.tif")
+ ),
+ 
+ tar_target(
+   cal_8_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/NRCAN/Calgary_West_utm11_2020/utm11/dtm_1m_utm11_e_20_165.tif", "large/dem/cal_8_dtm.tif")
+ ),
+ 
+ tar_target(
+   cal_9_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/NRCAN/Calgary_West_utm11_2020/utm11/dsm_1m_utm11_e_21_165.tif", "large/dem/cal_9_dsm.tif")
+ ),
+ 
+ tar_target(
+   cal_9_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/NRCAN/Calgary_West_utm11_2020/utm11/dtm_1m_utm11_e_21_165.tif", "large/dem/cal_9_dtm.tif")
+ ),
+ 
+ tar_target(
+   cal_10_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/NRCAN/Calgary_West_utm11_2020/utm11/dsm_1m_utm11_e_20_164.tif", "large/dem/cal_10_dsm.tif")
+ ),
+ 
+ tar_target(
+   cal_10_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/NRCAN/Calgary_West_utm11_2020/utm11/dtm_1m_utm11_e_20_164.tif", "large/dem/cal_10_dtm.tif")
+ ),
+ 
+ tar_target(
+   cal_11_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/NRCAN/Calgary_West_utm11_2020/utm11/dsm_1m_utm11_e_21_164.tif", "large/dem/cal_11_dsm.tif")
+ ),
+ 
+ tar_target(
+   cal_11_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/NRCAN/Calgary_West_utm11_2020/utm11/dtm_1m_utm11_e_21_164.tif", "large/dem/cal_11_dtm.tif")
+ ),
+ 
+ tar_target(
+   cal_12_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/NRCAN/Calgary_West_utm11_2020/utm11/dsm_1m_utm11_e_20_163.tif", "large/dem/cal_12_dsm.tif")
+ ),
+ 
+ tar_target(
+   cal_12_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/NRCAN/Calgary_West_utm11_2020/utm11/dtm_1m_utm11_e_20_163.tif", "large/dem/cal_12_dtm.tif")
+ ),
+ 
+ tar_target(
+   cal_13_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/NRCAN/Calgary_West_utm11_2020/utm11/dsm_1m_utm11_e_21_163.tif", "large/dem/cal_13_dsm.tif ")
+ ),
+ 
+ tar_target(
+   cal_13_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/NRCAN/Calgary_West_utm11_2020/utm11/dtm_1m_utm11_e_21_163.tif", "large/dem/cal_13_dtm.tif")
+ ),
+ 
+ tar_target(
+   win_1_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/MB/Red_River_2020/utm14/dsm_1m_utm14_e_12_153.tif", "large/dem/win_1_dsm.tif")
+ ),
+ 
+ tar_target(
+   win_1_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/MB/Red_River_2020/utm14/dtm_1m_utm14_e_12_153.tif", "large/dem/win_1_dtm.tif")
+ ),
+ 
+ tar_target(
+   win_2_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/MB/Red_River_2020/utm14/dsm_1m_utm14_e_13_153.tif", "large/dem/win_2_dsm.tif")
+ ),
+ 
+ tar_target(
+   win_2_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/MB/Red_River_2020/utm14/dsm_1m_utm14_e_13_153.tif", "large/dem/win_2_dtm.tif")
+ ),
+ 
+ tar_target(
+   win_3_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/MB/Red_River_2020/utm14/dsm_1m_utm14_e_14_153.tif", "large/dem/win_3_dsm.tif")
+ ),
+ 
+ tar_target(
+   win_3_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/MB/Red_River_2020/utm14/dtm_1m_utm14_e_14_153.tif", "large/dem/win_3_dtm.tif")
+ ),
+ 
+ tar_target(
+   win_4_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/MB/Red_River_2020/utm14/dsm_1m_utm14_e_12_152.tif", "large/dem/win_4_dsm.tif")
+ ),
+ 
+ tar_target(
+   win_4_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/MB/Red_River_2020/utm14/dtm_1m_utm14_e_12_152.tif", "large/dem/win_4_dtm.tif")
+ ),
+ 
+ tar_target(
+   win_5_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/MB/Red_River_2020/utm14/dsm_1m_utm14_e_13_152.tif", "large/dem/win_5_dsm.tif")
+ ),
+ 
+ tar_target(
+   win_5_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/MB/Red_River_2020/utm14/dtm_1m_utm14_e_13_152.tif", "large/dem/win_5_dtm.tif")
+ ),
+ 
+ tar_target(
+   win_6_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/MB/Red_River_2020/utm14/dsm_1m_utm14_e_14_152.tif", "large/dem/win_6_dsm.tif")
+ ),
+ 
+ tar_target(
+   win_6_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/MB/Red_River_2020/utm14/dtm_1m_utm14_e_14_152.tif", "large/dem/win_6_dtm.tif")
+ ),
+ 
+ tar_target(
+   win_7_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/MB/Red_River_2020/utm14/dsm_1m_utm14_e_13_151.tif", "large/dem/win_7_dsm.tif")
+ ),
+ 
+ tar_target(
+   win_7_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/MB/Red_River_2020/utm14/dtm_1m_utm14_e_13_151.tif", "large/dem/win_7_dtm.tif")
+ ),
+ 
+ tar_target(
+   tor_1_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/NRCAN/York_2019/utm17/dsm_1m_utm17_e_11_82.tif", "large/dem/tor_1_dsm.tif")
+ ),
+ 
+ tar_target(
+   tor_1_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/NRCAN/York_2019/utm17/dtm_1m_utm17_e_11_82.tif", "large/dem/tor_1_dtm.tif")
+ ),
+ 
+ tar_target(
+   tor_2_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/NRCAN/York_2019/utm17/dsm_1m_utm17_e_11_83.tif", "large/dem/tor_2_dsm.tif")
+ ),
+ 
+ tar_target(
+   tor_2_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/NRCAN/York_2019/utm17/dtm_1m_utm17_e_11_83.tif", "large/dem/tor_2_dtm.tif")
+ ),
+ 
+ tar_target(
+   tor_3_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/NRCAN/York_2019/utm17/dsm_1m_utm17_e_11_84.tif", "large/dem/tor_3_dsm.tif")
+ ),
+ 
+ tar_target(
+   tor_3_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/NRCAN/York_2019/utm17/dtm_1m_utm17_e_11_84.tif", "large/dem/tor_3_dtm.tif")
+ ),
+ 
+ tar_target(
+   tor_4_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/NRCAN/York_2019/utm17/dsm_1m_utm17_e_12_82.tif", "large/dem/tor_4_dsm.tif")
+ ),
+ 
+ tar_target(
+   tor_4_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/NRCAN/York_2019/utm17/dtm_1m_utm17_e_12_82.tif", "large/dem/tor_4_dtm.tif")
+ ),
+ 
+ tar_target(
+   tor_5_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/NRCAN/York_2019/utm17/dsm_1m_utm17_e_12_83.tif", "large/dem/tor_5_dsm.tif")
+ ),
+ 
+ tar_target(
+   tor_5_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/NRCAN/York_2019/utm17/dtm_1m_utm17_e_12_83.tif", "large/dem/tor_5_dtm.tif")
+ ),
+ 
+ tar_target(
+   tor_6_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/NRCAN/York_2019/utm17/dsm_1m_utm17_e_12_84.tif", "large/dem/tor_6_dsm.tif")
+ ),
+ 
+ tar_target(
+   tor_6_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/NRCAN/York_2019/utm17/dtm_1m_utm17_e_12_84.tif", "large/dem/tor_6_dtm.tif")
+ ),
+ 
+ tar_target(
+   tor_7_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/NRCAN/York_2019/utm17/dsm_1m_utm17_e_13_85.tif", "large/dem/tor_7_dsm.tif")
+ ),
+ 
+ tar_target(
+   tor_7_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/NRCAN/York_2019/utm17/dtm_1m_utm17_e_13_85.tif", "large/dem/tor_7_dtm.tif")
+ ),
+ 
+ tar_target(
+   tor_8_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/NRCAN/York_2019/utm17/dsm_1m_utm17_e_13_84.tif", "large/dem/tor_8_dsm.tif")
+ ),
+ 
+ tar_target(
+   tor_8_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/NRCAN/York_2019/utm17/dtm_1m_utm17_e_13_84.tif", "large/dem/tor_8_dtm.tif")
+ ),
+ 
+ tar_target(
+   tor_9_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/NRCAN/York_2019/utm17/dsm_1m_utm17_e_13_83.tif", "large/dem/tor_9_dsm.tif")
+ ),
+ 
+ tar_target(
+   tor_9_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/NRCAN/York_2019/utm17/dtm_1m_utm17_e_13_83.tif", "large/dem/tor_9_dtm.tif")
+ ),
+ 
+ tar_target(
+   tor_10_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/NRCAN/York_2019/utm17/dsm_1m_utm17_e_14_84.tif", "large/dem/tor_10_dsm.tif")
+ ),
+ 
+ tar_target(
+   tor_10_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/NRCAN/York_2019/utm17/dtm_1m_utm17_e_14_84.tif", "large/dem/tor_10_dtm.tif")
+ ),
+ 
+ tar_target(
+   tor_11_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/NRCAN/York_2019/utm17/dsm_1m_utm17_e_14_85.tif", "large/dem/tor_11_dsm.tif")
+ ),
+ 
+ tar_target(
+   tor_11_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/NRCAN/York_2019/utm17/dtm_1m_utm17_e_14_85.tif", "large/dem/tor_11_dtm.tif")
+ ),
+ 
+ tar_target(
+   tor_12_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/NRCAN/York_2019/utm17/dsm_1m_utm17_e_15_85.tif", "large/dem/tor_12_dsm.tif")
+ ),
+ 
+ tar_target(
+   tor_12_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/NRCAN/York_2019/utm17/dtm_1m_utm17_e_15_85.tif", "large/dem/tor_12_dtm.tif")
+ ),
+ 
+  
+
 
   
   # Supplementary Files -----------------------------------------------------
