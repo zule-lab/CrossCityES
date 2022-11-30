@@ -24,9 +24,7 @@ assign_sp_mon <- function(mon_tree){
   del <- plyr::colwise(function(x) str_replace_all(x, "'", ""))
   mon_tree <- del(mon_tree)
   
-  # Converting dbh from mm to cm
   mon_tree$dbh <- as.numeric(mon_tree$dbh)
-  mon_tree$dbh <- mon_tree$dbh/10
   
   mon_tree <- st_as_sf(mon_tree, coords = c("Longitude", "Latitude"), crs = 4326)
   
