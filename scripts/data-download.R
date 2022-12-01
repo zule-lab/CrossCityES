@@ -182,6 +182,10 @@ data_download <- c(
     }
   ),
   
+
+  # Digital Elevation Models ------------------------------------------------
+
+  
   tar_target(
     van_1_dsm,
     download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/BC/Lower_Mainland_2016/utm10/dsm_1m_utm10_w_0_145.tif", "large/dem/van_1_dsm.tif")
@@ -522,9 +526,367 @@ data_download <- c(
    download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/NRCAN/York_2019/utm17/dtm_1m_utm17_e_15_85.tif", "large/dem/tor_12_dtm.tif")
  ),
  
+ tar_target(
+   ott_1_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dsm_1m_utm18_w_9_103.tif", "large/dem/ott_1_dsm.tif")
+ ),
+ 
+ tar_target(
+   ott_1_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dtm_1m_utm18_w_9_103.tif", "large/dem/ott_1_dtm.tif")
+ ),
+ 
+ tar_target(
+   ott_2_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/QC/600020_35_Outaouais_Gatineau_MTM9_2020/utm18/dsm_1m_utm18_w_8_103.tif", "large/dem/ott_2_dsm.tif")
+ ),
+ 
+ tar_target(
+   ott_2_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/QC/600020_35_Outaouais_Gatineau_MTM9_2020/utm18/dtm_1m_utm18_w_8_103.tif", "large/dem/ott_2_dtm.tif")
+ ),
+ 
+ tar_target(
+   ott_3_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dsm_1m_utm18_w_8_102.tif", "large/dem/ott_3_dsm.tif")
+ ),
+ 
+ tar_target(
+   ott_3_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dtm_1m_utm18_w_8_102.tif", "large/dem/ott_3_dtm.tif")
+ ),
+ 
+ tar_target(
+   ott_4_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dsm_1m_utm18_w_7_103.tif", "large/dem/ott_4_dsm.tif")
+ ),
+ 
+ tar_target(
+   ott_4_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dtm_1m_utm18_w_7_103.tif", "large/dem/ott_4_dtm.tif")
+ ),
+ 
+ tar_target(
+   ott_5_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dsm_1m_utm18_w_7_102.tif", "large/dem/ott_5_dsm.tif")
+ ),
+ 
+ tar_target(
+   ott_5_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dtm_1m_utm18_w_7_102.tif", "large/dem/ott_5_dtm.tif")
+ ),
+ 
+ tar_target(
+   ott_6_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dsm_1m_utm18_w_7_101.tif", "large/dem/ott_6_dsm..tif")
+ ),
+ 
+ tar_target(
+   ott_6_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dtm_1m_utm18_w_7_101.tif", "large/dem/ott_6_dtm.tif")
+ ),
+ 
+ tar_target(
+   ott_7_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dsm_1m_utm18_w_6_100.tif", "large/dem/ott_7_dsm.tif")
+ ),
+ 
+ tar_target(
+   ott_7_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dtm_1m_utm18_w_6_100.tif", "large/dem/ott_7_dtm.tif")
+ ),
+ 
+ tar_target(
+   ott_8_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dsm_1m_utm18_w_6_101.tif", "large/dem/ott_8_dsm.tif")
+ ),
+ 
+ tar_target(
+   ott_8_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dtm_1m_utm18_w_6_101.tif", "large/dem/ott_8_dtm.tif")
+ ),
+ 
+ tar_target(
+   ott_9_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dsm_1m_utm18_w_6_102.tif", "large/dem/ott_9_dsm.tif")
+ ),
+ 
+ tar_target(
+   ott_9_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dtm_1m_utm18_w_6_102.tif", "large/dem/ott_9_dtm.tif")
+ ),
+ 
+ tar_target(
+   ott_10_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dsm_1m_utm18_w_5_99.tif", "large/dem/ott_10_dsm.tif")
+ ),
+ 
+ tar_target(
+   ott_10_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dtm_1m_utm18_w_5_99.tif", "large/dem/ott_10_dtm.tif")
+ ),
+ 
+ tar_target(
+   ott_11_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dsm_1m_utm18_w_5_100.tif", "large/dem/ott_11_dsm.tif")
+ ),
+ 
+ tar_target(
+   ott_11_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dtm_1m_utm18_w_5_100.tif", "large/dem/ott_11_dtm.tif")
+ ),
+ 
+ tar_target(
+   ott_12_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dsm_1m_utm18_w_5_101.tif", "large/dem/ott_12_dsm.tif")
+ ),
+ 
+ tar_target(
+   ott_12_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dtm_1m_utm18_w_5_101.tif", "large/dem/ott_12_dtm.tif")
+ ),
+ 
+ tar_target(
+   ott_13_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dsm_1m_utm18_w_5_102.tif", "large/dem/ott_13_dsm.tif")
+ ),
+ 
+ tar_target(
+   ott_13_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dtm_1m_utm18_w_5_102.tif", "large/dem/ott_13_dtm.tif")
+ ),
+ 
+ tar_target(
+   ott_14_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dsm_1m_utm18_w_5_103.tif", "large/dem/ott_14_dsm.tif")
+ ),
+ 
+ tar_target(
+   ott_14_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dtm_1m_utm18_w_5_103.tif", "large/dem/ott_14_dtm.tif")
+ ),
+ 
+ tar_target(
+   ott_15_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dsm_1m_utm18_w_4_103.tif", "large/dem/ott_15_dsm.tif")
+ ),
+ 
+ tar_target(
+   ott_15_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dtm_1m_utm18_w_4_103.tif", "large/dem/ott_15_dtm.tif")
+ ),
+ 
+ tar_target(
+   ott_16_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dsm_1m_utm18_w_4_102.tif", "large/dem/ott_16_dsm.tif")
+ ),
+ 
+ tar_target(
+   ott_16_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dtm_1m_utm18_w_4_102.tif", "large/dem/ott_16_dtm.tif")
+ ),
+ 
+ tar_target(
+   ott_17_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dsm_1m_utm18_w_4_101.tif", "large/dem/ott_17_dsm.tif")
+ ),
+ 
+ tar_target(
+   ott_17_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dtm_1m_utm18_w_4_101.tif", "large/dem/ott_17_dtm.tif")
+ ),
+ 
+ tar_target(
+   ott_18_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dsm_1m_utm18_w_4_100.tif", "large/dem/ott_18_dsm.tif")
+ ),
+ 
+ tar_target(
+   ott_18_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dtm_1m_utm18_w_4_100.tif", "large/dem/ott_18_dtm.tif")
+ ),
+ 
+ tar_target(
+   ott_19_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dsm_1m_utm18_w_3_100.tif", "large/dem/ott_19_dsm.tif")
+ ),
+ 
+ tar_target(
+   ott_19_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dtm_1m_utm18_w_3_100.tif", "large/dem/ott_19_dtm.tif")
+ ),
+ 
+ tar_target(
+   ott_20_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dsm_1m_utm18_w_3_101.tif", "large/dem/ott_20_dsm.tif")
+ ),
+ 
+ tar_target(
+   ott_20_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dtm_1m_utm18_w_3_101.tif", "large/dem/ott_20_dtm.tif")
+ ),
+ 
+ tar_target(
+   ott_21_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dsm_1m_utm18_w_3_102.tif", "large/dem/ott_21_dsm.tif")
+ ),
+ 
+ tar_target(
+   ott_21_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dtm_1m_utm18_w_3_102.tif", "large/dem/ott_21_dtm.tif")
+ ),
+ 
+ tar_target(
+   ott_22_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dsm_1m_utm18_w_2_102.tif", "large/dem/ott_22_dsm.tif")
+ ),
+ 
+ tar_target(
+   ott_22_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dtm_1m_utm18_w_2_102.tif", "large/dem/ott_22_dtm.tif")
+ ),
+ 
+ tar_target(
+   ott_23_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dsm_1m_utm18_w_3_103.tif", "large/dem/ott_23_dsm.tif")
+ ),
+ 
+ tar_target(
+   ott_23_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dtm_1m_utm18_w_3_103.tif", "large/dem/ott_23_dtm.tif")
+ ),
+ 
+ tar_target(
+   ott_24_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dsm_1m_utm18_w_4_103.tif", "large/dem/ott_24_dsm.tif")
+ ),
+ 
+ tar_target(
+   ott_24_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dtm_1m_utm18_w_4_103.tif", "large/dem/ott_24_dtm.tif")
+ ),
+ 
+ tar_target(
+   ott_25_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dsm_1m_utm18_w_4_102.tif", "large/dem/ott_25_dsm.tif")
+ ),
+ 
+ tar_target(
+   ott_25_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/VILLE_OTTAWA/Ottawa_Gatineau_2020/utm18/dtm_1m_utm18_w_4_102.tif", "large/dem/ott_25_dtm.tif")
+ ),
+ 
+ tar_target(
+   mon_1_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/QC/Fleuve_St_Laurent_2018/utm18/dsm_1m_utm18_e_8_103.tif", "large/dem/mon_1_dsm.tif")
+ ),
+ 
+ tar_target(
+   mon_1_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/QC/Fleuve_St_Laurent_2018/utm18/dtm_1m_utm18_e_8_103.tif", "large/dem/mon_1_dtm.tif")
+ ),
+ 
+ tar_target(
+   mon_2_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/QC/Fleuve_St_Laurent_2018/utm18/dsm_1m_utm18_e_9_103.tif", "large/dem/mon_2_dsm.tif")
+ ),
+ 
+ tar_target(
+   mon_2_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/QC/Fleuve_St_Laurent_2018/utm18/dtm_1m_utm18_e_9_103.tif", "large/dem/mon_2_dtm.tif")
+ ),
+ 
+ tar_target(
+   mon_3_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/QC/Fleuve_St_Laurent_2018/utm18/dsm_1m_utm18_e_10_103.tif", "large/dem/mon_3_dsm.tif")
+ ),
+ 
+ tar_target(
+   mon_3_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/QC/Fleuve_St_Laurent_2018/utm18/dtm_1m_utm18_e_10_103.tif", "large/dem/mon_3_dtm.tif")
+ ),
+ 
+ tar_target(
+   mon_4_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/QC/Fleuve_St_Laurent_2018/utm18/dsm_1m_utm18_e_11_103.tif", "large/dem/mon_4_dsm.tif")
+ ),
+ 
+ tar_target(
+   mon_4_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/QC/Fleuve_St_Laurent_2018/utm18/dtm_1m_utm18_e_11_103.tif", "large/dem/mon_4_dtm.tif")
+ ),
+ 
+ tar_target(
+   mon_5_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/QC/600017-31_Partie_NO/utm18/dsm_1m_utm18_e_10_104.tif", "large/dem/mon_5_dsm.tif")
+ ),
+ 
+ tar_target(
+   mon_5_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/QC/600017-31_Partie_NO/utm18/dtm_1m_utm18_e_10_104.tif", "large/dem/mon_5_dtm.tif")
+ ),
+ 
+ tar_target(
+   mon_6_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/QC/Fleuve_St_Laurent_2018/utm18/dsm_1m_utm18_e_11_104.tif", "large/dem/mon_6_dsm.tif")
+ ),
+ 
+ tar_target(
+   mon_6_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/QC/Fleuve_St_Laurent_2018/utm18/dtm_1m_utm18_e_11_104.tif", "large/dem/mon_6_dtm.tif")
+ ),
+ 
+ tar_target(
+   mon_7_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/QC/600017-31_Partie_NO/utm18/dsm_1m_utm18_e_10_105.tif", "large/dem/mon_7_dsm.tif")
+ ),
+ 
+ tar_target(
+   mon_7_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/QC/600017-31_Partie_NO/utm18/dtm_1m_utm18_e_10_105.tif", "large/dem/mon_7_dtm.tif")
+ ),
+ 
+ tar_target(
+   mon_8_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/QC/Fleuve_St_Laurent_2018/utm18/dsm_1m_utm18_e_11_105.tif", "large/dem/mon_8_dsm.tif")
+ ),
+ 
+ tar_target(
+   mon_8_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/QC/Fleuve_St_Laurent_2018/utm18/dtm_1m_utm18_e_11_105.tif", "large/dem/mon_8_dtm.tif")
+ ),
+ 
+ tar_target(
+   hal_1_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/NS/NSDNR_2019_3/utm20/dsm_1m_utm20_w_4_94.tif", "large/dem/hal_1_dsm.tif")
+ ),
+ 
+ tar_target(
+   hal_1_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/NS/NSDNR_2019_3/utm20/dtm_1m_utm20_w_4_94.tif", "large/dem/hal_1_dtm.tif")
+ ),
+ 
+ tar_target(
+   hal_2_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/NS/NSDNR_2019_3/utm20/dsm_1m_utm20_w_5_94.tif", "large/dem/hal_2_dsm.tif")
+ ),
+ 
+ tar_target(
+   hal_2_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/NS/NSDNR_2019_3/utm20/dtm_1m_utm20_w_5_94.tif", "large/dem/hal_2_dtm.tif")
+ ),
+ 
+ tar_target(
+   hal_3_dsm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/NS/NSDNR_2019_3/utm20/dsm_1m_utm20_w_4_95.tif", "large/dem/hal_3_dsm.tif")
+ ),
+ 
+ tar_target(
+   hal_3_dtm,
+   download_tif("https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/NS/NSDNR_2019_3/utm20/dtm_1m_utm20_w_4_95.tif", "large/dem/hal_3_dtm.tif")
+ ),
+ 
   
-
-
   
   # Supplementary Files -----------------------------------------------------
   
