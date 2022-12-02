@@ -10,10 +10,11 @@ treedensity_data_city_neighbourhood_road <- c(
       inner_join(., as.data.frame(can_build_city_dens), by = "city") %>%
       summarize(city = city,
                 nTrees = nTrees,
-                mean_ba = mean_ba,
-                cityarea = city_area,
-                stemdens = nTrees/cityarea,
-                basaldens = mean_ba/cityarea)
+                mean_ba = mean_ba, # sq ft
+                cityarea = city_area, # km2
+                stemdens = nTrees/cityarea, # trees/km2
+                stemdens_acre = stemdens/247.105, # conversion from num trees/km2 to num trees/acre
+                basaldens = mean_ba*stemdens_acre) # sq ft/acre
   ),
   
   tar_target(
@@ -30,7 +31,8 @@ treedensity_data_city_neighbourhood_road <- c(
                 mean_ba = mean_ba,
                 hoodarea = hood_area,
                 stemdens = nTrees/hoodarea,
-                basaldens = mean_ba/hoodarea)
+                stemdens_acre = stemdens/247.105,
+                basaldens = mean_ba*stemdens_acre)
   ),
   
   tar_target(
@@ -48,7 +50,8 @@ treedensity_data_city_neighbourhood_road <- c(
                 mean_ba = mean_ba,
                 roadlength = road_length,
                 stemdens = nTrees/roadlength,
-                basaldens = mean_ba/roadlength)
+                stemdens_acre = stemdens/247.105,
+                basaldens = mean_ba*stemdens_acre)
   )
   
   

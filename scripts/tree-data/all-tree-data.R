@@ -13,6 +13,7 @@ all_tree_data <- c(
              genus = as.factor(genus),
              city = as.factor(city),
              fullname = as.factor(paste0(genus, " ", species))) %>%
+      filter(dbh < 500) %>%
       group_by(city) %>%
       mutate(nspecies = n_distinct(fullname))
   ), 
