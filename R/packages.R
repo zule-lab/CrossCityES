@@ -36,3 +36,5 @@ library(MetBrewer)
 
 
 library(iNEXT)
+
+library(xfun)
