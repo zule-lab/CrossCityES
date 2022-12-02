@@ -25,7 +25,7 @@ data_download <- c(
   tar_eval(
     tar_target(
       file_name_sym,
-      download_csv(dl_link, dl_path)
+      download_shp(dl_link, dl_path)
     ),
     values = values[values$file_ext %in% c('zip', 'shp'),]
   ),
