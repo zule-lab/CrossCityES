@@ -1,50 +1,20 @@
+values_trib <- tribble(
+  ~dl_path, ~dl_link,
+  'large/neighbourhoods/cal_hood_raw.csv', 'https://data.calgary.ca/api/views/surr-xmvs/rows.csv?accessType=DOWNLOAD',
+  'large/neighbourhoods/hal_hood_raw.zip', 'https://opendata.arcgis.com/api/v3/datasets/b4088a068b794436bdb4e5c31df76fe2_0/downloads/data?format=shp&spatialRefId=4326',
+  'large/neighbourhoods/mon_hood_raw.zip', 'https://data.montreal.ca/dataset/00bd85eb-23aa-4669-8f1b-ba9a000e3dd8/resource/62f7ce10-36ce-4bbd-b419-8f0a10d3b280/download/limadmin-shp.zip',
+  'large/neighbourhoods/ott_hood_raw.zip', 'https://opendata.arcgis.com/api/v3/datasets/32fe76b71c5e424fab19fec1f180ec18_0/downloads/data?format=shp&spatialRefId=4326',
+  'large/neighbourhoods/tor_hood_raw.zip', 'https://ckan0.cf.opendata.inter.prod-toronto.ca/dataset/4def3f65-2a65-4a4f-83c4-b2a4aed72d46/resource/5ad22d36-b1be-4e33-86b7-64bcaff2b4ad/download/Neighbourhoods%20-%204326.zip',
+  'large/neighbourhoods/van_hood_raw.zip', 'https://opendata.vancouver.ca/explore/dataset/local-area-boundary/download/?format=shp&timezone=Asia/Shanghai&lang=enn',
+  'large/neighbourhoods/win_hood_raw.zip', 'https://data.winnipeg.ca/api/geospatial/fen6-iygi?method=export&format=Shapefile'
+)
+values <- as.list(values_trib)
+values$file_name <- basename(sans_ext(values$dl_path))
+values$file_name_sym <- lapply(values$file_name, as.symbol)
+values$file_ext <- lapply(values$dl_path, file_ext)
+
+
 data_download <- c(
-  
-
-  # Neighbourhoods ----------------------------------------------------------
-  
-  tar_target(
-    cal_hood_raw, 
-    download_csv("https://data.calgary.ca/api/views/surr-xmvs/rows.csv?accessType=DOWNLOAD", 
-                 "large/neighbourhoods/cal_hood_raw.csv")
-  ),
-  
-  tar_target(
-    hal_hood_raw, 
-    download_shp("https://opendata.arcgis.com/api/v3/datasets/b4088a068b794436bdb4e5c31df76fe2_0/downloads/data?format=shp&spatialRefId=4326",
-                 "large/neighbourhoods/hal_hood_raw.zip")  
-  ),
-  
-  tar_target(
-    mon_hood_raw, 
-    download_shp("https://data.montreal.ca/dataset/00bd85eb-23aa-4669-8f1b-ba9a000e3dd8/resource/62f7ce10-36ce-4bbd-b419-8f0a10d3b280/download/limadmin-shp.zip",
-                 "large/neighbourhoods/mon_hood_raw.zip")
-  ),
-  
-  tar_target(
-    ott_hood_raw, 
-    download_shp("https://opendata.arcgis.com/api/v3/datasets/32fe76b71c5e424fab19fec1f180ec18_0/downloads/data?format=shp&spatialRefId=4326",
-                 "large/neighbourhoods/ott_hood_raw.zip")
-  ),
-  
-  tar_target(
-    tor_hood_raw,
-    download_shp("https://ckan0.cf.opendata.inter.prod-toronto.ca/dataset/4def3f65-2a65-4a4f-83c4-b2a4aed72d46/resource/5ad22d36-b1be-4e33-86b7-64bcaff2b4ad/download/Neighbourhoods%20-%204326.zip",
-                 "large/neighbourhoods/tor_hood_raw.zip")
-  ), 
-  
-  tar_target(
-    van_hood_raw, 
-    download_shp("https://opendata.vancouver.ca/explore/dataset/local-area-boundary/download/?format=shp&timezone=Asia/Shanghai&lang=enn",
-                 "large/neighbourhoods/van_hood_raw.zip")
-  ),
-  
-  tar_target(
-    win_hood_raw,
-    download_shp("https://data.winnipeg.ca/api/geospatial/fen6-iygi?method=export&format=Shapefile",
-                 "large/neighbourhoods/win_hood_raw.zip")
-  ),
-
 
   # Parks -------------------------------------------------------------------
   
