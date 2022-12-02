@@ -15,7 +15,20 @@ values$file_ext <- lapply(values$dl_path, file_ext)
 
 
 data_download <- c(
-
+  tar_eval(
+    tar_target(
+      file_name_sym,
+      download_csv(dl_link, dl_path)
+    ),
+    values = values[values$file_ext == 'csv',]
+  ),
+  tar_eval(
+    tar_target(
+      file_name_sym,
+      download_csv(dl_link, dl_path)
+    ),
+    values = values[values$file_ext %in% c('zip', 'shp'),]
+  ),
   # Parks -------------------------------------------------------------------
   
   tar_target(
