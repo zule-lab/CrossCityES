@@ -4,7 +4,8 @@
 
 
 # Source ------------------------------------------------------------------
-lapply(dir('R', '*.R', full.names = TRUE), source)
+library(targets)
+tar_source('R')
 
 
 
