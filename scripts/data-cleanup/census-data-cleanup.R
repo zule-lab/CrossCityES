@@ -1,4 +1,4 @@
-census_data_cleanup <- c(
+targets_census_cleanup <- c(
   
   tar_target(
     da_s,

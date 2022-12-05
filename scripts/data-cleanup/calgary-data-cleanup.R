@@ -1,4 +1,4 @@
-calgary_data_cleanup <- c(
+targets_calgary_cleanup <- c(
   
   tar_target(
     cal_park,

@@ -1,4 +1,4 @@
-toronto_data_cleanup <- c(
+targets_toronto_cleanup <- c(
   
   tar_target(
     tor_park,

@@ -1,4 +1,4 @@
-richness_data_city_neighbourhood_road <- c(
+targets_tree_richness <- c(
   
   tar_target(
     city_matrix, 

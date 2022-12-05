@@ -1,4 +1,4 @@
-vancouver_data_cleanup <- c(
+targets_vancouver_cleanup <- c(
   
   tar_target(
     van_park,

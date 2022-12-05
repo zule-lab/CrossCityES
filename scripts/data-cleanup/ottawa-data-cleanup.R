@@ -1,4 +1,4 @@
-ottawa_data_cleanup <- c(
+targets_ottawa_cleanup <- c(
   
   tar_target(
     ott_park,

@@ -1,4 +1,4 @@
-ndvi_ndbi_data_cleanup <- c(
+targets_ndvi_ndbi_cleanup <- c(
   
     tar_file_read(
       ndi_city_raw,

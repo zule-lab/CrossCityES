@@ -1,4 +1,4 @@
-halifax_data_cleanup <- c(
+targets_halifax_cleanup <- c(
   
   tar_target(
     hal_park,

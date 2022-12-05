@@ -45,4 +45,4 @@ tar_source('scripts')
 
 # Targets: all ------------------------------------------------------------
 # Automatically grab all the "data" lists above
-lapply(grep('data', ls(), value = TRUE), get)
+lapply(grep('targets', ls(), value = TRUE), get)

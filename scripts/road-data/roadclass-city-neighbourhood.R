@@ -1,4 +1,4 @@
-roadclass_data_city_neighbourhood <- c(
+targets_roadclass_city_neighbourhood <- c(
   
   # proportion of highways (ranks 1-3), major streets (rank 4), local streets (rank 5)
   # road density (road length / neighbourhood area)

@@ -1,4 +1,4 @@
-winnipeg_data_cleanup <- c(
+targets_winnipeg_cleanup <- c(
   
   tar_target(
     win_park,
