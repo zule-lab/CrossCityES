@@ -4,8 +4,8 @@ download_tif <- function(url, dest){
   
   download.file(url, dest, mode = "wb")
   
-  shp <- read_stars(file.path(dest), proxy = TRUE)
+  star <- read_stars(file.path(dest), proxy = TRUE)
   
-  return(shp)
+  return(star)
   
 }
