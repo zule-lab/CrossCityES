@@ -42,9 +42,7 @@ values_trib <- tribble(
   
   
   # census ------------------------------------------------------------------
-  'large/national/cen_da_raw.zip', 'https://www12.statcan.gc.ca/census-recensement/2021/dp-pd/prof/details/download-telecharger/comp/GetFile.cfm?Lang=E&FILETYPE=CSV&GEONO=006',
-  'large/national/cen_cma_raw.zip', 'https://www12.statcan.gc.ca/census-recensement/2021/dp-pd/prof/details/download-telecharger/comp/GetFile.cfm?Lang=E&FILETYPE=CSV&GEONO=002',
-  
+  'large/national/cen_da_raw.zip', 'https://www12.statcan.gc.ca/census-recensement/2021/dp-pd/prof/details/download-telecharger/comp/GetFile.cfm?Lang=E&FILETYPE=CSV&GEONO=006CI',
   
   # dems --------------------------------------------------------------------
   'large/dem/van_1_dsm.tif', 'https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/BC/Lower_Mainland_2016/utm10/dsm_1m_utm10_w_0_145.tif',
