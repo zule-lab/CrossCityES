@@ -1,5 +1,5 @@
 # === Targets -------------------------------------------------------------
-# Framework by Alec L. Robitaille
+# Framework by Alec L. Robitaille & Isabella Richmond
 
 
 
@@ -19,6 +19,9 @@ tar_option_set(format = 'qs')
 getOption('timeout')
 options(timeout=600)
 
+
+# Data --------------------------------------------------------------------
+tar_source('input/link-values.R')
 
 
 # Scripts -----------------------------------------------------------------
