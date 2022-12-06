@@ -7,7 +7,7 @@ targets_data_download <- c(
       file_name_sym,
       download_csv(dl_link, dl_path)
     ),
-    values = link_values[link_values$file_ext == 'csv',]
+    values = values_trib[values_trib$file_ext == 'csv',]
   ),
   
 
@@ -17,7 +17,7 @@ targets_data_download <- c(
       file_name_sym,
       download_shp(dl_link, dl_path)
     ),
-    values = link_values[link_values$file_ext %in% c('zip', 'shp'),]
+    values = values_trib[values_trib$file_ext %in% c('zip', 'shp'),]
   ),
   
 
@@ -27,7 +27,7 @@ targets_data_download <- c(
       file_name_sym,
       download_tif(dl_link, dl_path)
     ),
-    values = link_values[link_values$file_ext == 'tif',]
+    values = values_trib[values_trib$file_ext == 'tif',]
   ),
 
 

@@ -196,8 +196,7 @@ values_trib <- tribble(
   
 )
 
-link_values <- as.list(values_trib)
-link_values$file_name <- basename(sans_ext(link_values$dl_path))
-link_values$file_name_sym <- lapply(link_values$file_name, as.symbol)
-link_values$file_ext <- lapply(link_values$dl_path, file_ext)
+values_trib$file_name <- basename(sans_ext(values_trib$dl_path))
+values_trib$file_name_sym <- lapply(values_trib$file_name, as.symbol)
+values_trib$file_ext <- lapply(values_trib$dl_path, file_ext)
 
