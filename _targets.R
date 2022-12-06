@@ -15,6 +15,12 @@ tar_option_set(format = 'qs')
 
 
 
+# Renv --------------------------------------------------------------------
+activate()
+snapshot()
+restore()
+
+
 # Variables ---------------------------------------------------------------
 getOption('timeout')
 options(timeout=600)
@@ -30,7 +36,7 @@ tar_source('scripts')
 
 
 # Targets: all ------------------------------------------------------------
-# Automatically grab all the "data" lists above
+# Automatically grab all the "targets" lists above
 
 #lapply(grep('targets', ls(), value = TRUE), get)
 
