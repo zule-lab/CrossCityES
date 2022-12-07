@@ -29,8 +29,7 @@ targets_road_cleanup <- c(
                assetId = sprintf("%s/%s", ee_get_assethome(), 'mun_road_gcs'),
                bucket = 'rgee_dev',
                monitoring = FALSE,
-               via = 'gcs_to_asset'
-      )
+               via = 'gcs_to_asset')
   )
 
 )
