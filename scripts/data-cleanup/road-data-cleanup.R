@@ -22,7 +22,8 @@ targets_road_cleanup <- c(
   ),
   
   tar_target(
-  mun_bound_ee, 
+  mun_bound_ee,
+  mun_bound %>%
     sf_as_ee(x = .,
              overwrite = TRUE,
              assetId = sprintf("%s/%s", ee_get_assethome(), 'mun_city'),
