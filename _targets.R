@@ -23,8 +23,8 @@ restore()
 
 
 # rgee --------------------------------------------------------------------
-ee_check()
-ee_Initialize()
+#ee_check()
+#ee_Initialize()
 
 
 
@@ -49,3 +49,4 @@ tar_source('scripts')
 
 #lapply(grep('targets', ls(), value = TRUE), get)
 
+c(targets_data_download, targets_neighbourhood_cleanup)
