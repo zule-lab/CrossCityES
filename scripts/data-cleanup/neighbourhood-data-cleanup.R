@@ -2,8 +2,8 @@ targets_neighbourhood_cleanup <- c(
   
   tar_eval(
     tar_target(
-      lapply(paste0('clean_', substr(values$file_name, 1, 8)), as.symbol),
-      cleaned_neighbourhoods(tar_load(values$file_name))
+      as.symbol(paste0('clean_', substr(file_name, 1, 8))),
+      cleaned_neighbourhoods(tar_load(file_name))
     ),
     values = filter(values_trib, grepl('hood_raw', file_name))
   )
