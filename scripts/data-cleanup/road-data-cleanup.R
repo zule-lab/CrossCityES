@@ -22,6 +22,15 @@ targets_road_cleanup <- c(
   ),
 
   tar_target(
+    mun_road_ee,
+    mun_road %>%
+      sf_as_ee(x = .,
+               overwrite = TRUE,
+               assetId = sprintf("%s/%s", ee_get_assethome(), 'mun_road_gcs'),
+               bucket = 'rgee_dev',
+               monitoring = FALSE,
+               via = 'gcs_to_asset'
+      )
   )
 
 )
