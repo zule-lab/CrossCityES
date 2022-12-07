@@ -47,6 +47,7 @@ targets_all_tree_data <- c(
     command = bind_rows(!!!.x)
   ),
   
+  # NEED TO FIX THIS PART AND CHECK FOR CULTIVARS
   tar_target(
     all_tree_e,
     all_tree_raw %>%
