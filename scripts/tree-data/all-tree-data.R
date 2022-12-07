@@ -1,8 +1,50 @@
 targets_all_tree_data <- c(
   
   tar_target(
-    all_tree_raw,
-    rbind(cal_tree, hal_tree, mon_tree, ott_tree, tor_tree, van_tree, win_tree)
+    van_tree,
+    tree_cleaning(van_tree_raw, van_park_raw, clean_van_hood, mun_bound, mun_road)
+  ),
+  
+  tar_target(
+    cal_tree,
+    tree_cleaning(cal_tree_raw, cal_park_raw, clean_cal_hood, mun_bound, mun_road)
+  ),
+  
+  tar_target(
+    win_tree,
+    tree_cleaning(win_tree_raw, win_park_raw, clean_win_hood, mun_bound, mun_road)
+  ),
+  
+  tar_target(
+    tor_tree,
+    tree_cleaning(tor_tree_raw, tor_park_raw, clean_tor_hood, mun_bound, mun_road)
+  ),
+  
+  tar_target(
+    ott_tree,
+    tree_cleaning(ott_tree_raw, ott_park_raw, clean_ott_hood, mun_bound, mun_road)
+  ),
+  
+  tar_target(
+    mon_tree,
+    tree_cleaning(mon_tree_raw, mon_park_raw, clean_mon_hood, mun_bound, mun_road)
+  ),
+  
+  tar_target(
+    hal_tree,
+    tree_cleaning(hal_tree_raw, hal_park_raw, clean_hal_hood, mun_bound, mun_road)
+  ),
+  
+  tar_combine(
+    name = all_tree_raw,
+    van_tree,
+    cal_tree,
+    win_tree,
+    tor_tree,
+    ott_tree,
+    mon_tree,
+    hal_tree,
+    command = bind_rows(!!!.x)
   ),
   
   tar_target(
