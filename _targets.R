@@ -21,13 +21,22 @@ snapshot()
 restore()
 
 
+
+# rgee --------------------------------------------------------------------
+ee_check()
+ee_Initialize()
+
+
+
 # Variables ---------------------------------------------------------------
 getOption('timeout')
 options(timeout=600)
 
 
+
 # Data --------------------------------------------------------------------
 tar_source('input/link-values.R')
+
 
 
 # Scripts -----------------------------------------------------------------
@@ -40,4 +49,3 @@ tar_source('scripts')
 
 #lapply(grep('targets', ls(), value = TRUE), get)
 
-targets_data_download

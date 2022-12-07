@@ -39,3 +39,5 @@ library(MetBrewer)
 library(iNEXT)
 
 library(xfun)
+
+library(rgee)
