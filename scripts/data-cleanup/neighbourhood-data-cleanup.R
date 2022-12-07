@@ -60,10 +60,10 @@ targets_neighbourhood_cleanup <- c(
   
   tar_eval(
     tar_target(
-      name,
-      hood_cleaned(tar, substr(name, 1, 3))),
-    values = list(name = lapply(c('van_hood', 'cal_hood', 'win_hood', 'tor_hood', 'ott_hood', 'mon_hood', 'hal_hood'), as.symbol),
-                  file = list(van_hood_i, cal_hood_i, win_hood_i, tor_hood_i, ott_hood_i, mon_hood_i, hal_hood_i))
+      names,
+      hood_cleaned(tars, substr(names, 1, 3))),
+    values = list(names = lapply(c('van_hood', 'cal_hood', 'win_hood', 'tor_hood', 'ott_hood', 'mon_hood', 'hal_hood'), as.symbol),
+                  tars = list(van_hood_i, cal_hood_i, win_hood_i, tor_hood_i, ott_hood_i, mon_hood_i, hal_hood_i))
   ),
   
   tar_target(
@@ -73,7 +73,7 @@ targets_neighbourhood_cleanup <- c(
   
   tar_target(
     can_hood_ee,
-    can_hood %>% 
+    can_hood %>%
       sf_as_ee(x = .,
              overwrite = TRUE,
              assetId = sprintf("%s/%s", ee_get_assethome(), 'mun_road'),
