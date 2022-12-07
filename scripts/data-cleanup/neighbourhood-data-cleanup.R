@@ -20,7 +20,6 @@ targets_neighbourhood_cleanup <- c(
     hal_hood_raw %>% 
       select(c("GSA_NAME", "geometry")) %>% 
       rename("hood" = "GSA_NAME") %>% 
-      filter(hood == "HALIFAX") %>% # Halifax peninsula is considered to be one neighbourhood as per correspondence with city officials
       mutate(city = c("Halifax")) 
   ),
   
