@@ -9,7 +9,7 @@ values_hood <- tribble(
   'large/neighbourhoods/ott_hood_raw.zip', 'https://opendata.arcgis.com/api/v3/datasets/32fe76b71c5e424fab19fec1f180ec18_0/downloads/data?format=shp&spatialRefId=4326',
   'large/neighbourhoods/mon_hood_raw.zip', 'https://data.montreal.ca/dataset/00bd85eb-23aa-4669-8f1b-ba9a000e3dd8/resource/62f7ce10-36ce-4bbd-b419-8f0a10d3b280/download/limadmin-shp.zip',
   'large/neighbourhoods/hal_hood_raw.zip', 'https://opendata.arcgis.com/api/v3/datasets/b4088a068b794436bdb4e5c31df76fe2_0/downloads/data?format=shp&spatialRefId=4326'
-) |>
+) %>% 
   mutate(
     file_name = basename(sans_ext(dl_path)),
     file_name_sym = lapply(file_name, as.symbol),
@@ -36,7 +36,12 @@ values_parks <- tribble(
   'large/parks/ott_park_raw.zip', 'https://opendata.arcgis.com/api/v3/datasets/cfb079e407494c33b038e86c7e05288e_24/downloads/data?format=shp&spatialRefId=4326',
   'large/parks/mon_park_raw.zip', 'https://data.montreal.ca/dataset/2e9e4d2f-173a-4c3d-a5e3-565d79baa27d/resource/c57baaf4-0fa8-4aa4-9358-61eb7457b650/download/shapefile.zip',
   'large/parks/hal_park_raw.zip', 'https://opendata.arcgis.com/api/v3/datasets/3df29a3d088a42d890f11d027ea1c0be_0/downloads/data?format=shp&spatialRefId=4326',
-)
+) %>% 
+  mutate(
+    file_name = basename(sans_ext(dl_path)),
+    file_name_sym = lapply(file_name, as.symbol),
+    file_ext = file_ext(dl_path)
+  )
 
 
 
@@ -51,7 +56,14 @@ values_trees <- tribble(
   'large/trees/ott_tree_raw.csv', 'https://opendata.arcgis.com/api/v3/datasets/13092822f69143b695bdb916357d421b_0/downloads/data?format=csv&spatialRefId=4326',
   'large/trees/mon_tree_raw.csv', 'https://data.montreal.ca/dataset/b89fd27d-4b49-461b-8e54-fa2b34a628c4/resource/64e28fe6-ef37-437a-972d-d1d3f1f7d891/download/arbres-publics.csv',
   'large/trees/hal_tree_raw.csv', 'https://opendata.arcgis.com/api/v3/datasets/33a4e9b6c7e9439abcd2b20ac50c5a4d_0/downloads/data?format=csv&spatialRefId=4326'
-)
+) %>% 
+  mutate(
+    file_name = basename(sans_ext(dl_path)),
+    file_name_sym = lapply(file_name, as.symbol),
+    file_ext = file_ext(dl_path),
+    cleaned_name = gsub('raw', 'clean', file_name),
+    cleaned_name_sym = lapply(cleaned_name, as.symbol)
+  )
 
 
 
@@ -62,7 +74,12 @@ values_bounds <- tribble(
   'large/national/can_bound_raw.zip', 'https://www12.statcan.gc.ca/census-recensement/2021/geo/sip-pis/boundary-limites/files-fichiers/lcma000b21a_e.zip',
   'large/national/can_road_raw.zip', 'https://www12.statcan.gc.ca/census-recensement/2021/geo/sip-pis/RNF-FRR/files-fichiers/lrnf000r21a_e.zip',
   'large/national/dsa_bound_raw.zip', 'https://www12.statcan.gc.ca/census-recensement/2021/geo/sip-pis/boundary-limites/files-fichiers/lda_000b21a_e.zip'
-)
+) %>% 
+  mutate(
+    file_name = basename(sans_ext(dl_path)),
+    file_name_sym = lapply(file_name, as.symbol),
+    file_ext = file_ext(dl_path)
+  )
 
 
 
@@ -72,7 +89,12 @@ values_census <- tribble(
   ~dl_path, ~dl_link,
   
   'large/national/cen_da_raw.zip', 'https://www12.statcan.gc.ca/census-recensement/2021/dp-pd/prof/details/download-telecharger/comp/GetFile.cfm?Lang=E&FILETYPE=CSV&GEONO=006CI',
-)
+) %>% 
+  mutate(
+    file_name = basename(sans_ext(dl_path)),
+    file_name_sym = lapply(file_name, as.symbol),
+    file_ext = file_ext(dl_path)
+  )
 
 
 
@@ -227,15 +249,24 @@ values_dems <- tribble(
   'large/dem/hal_2_dtm.tif', 'https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/NS/NSDNR_2019_3/utm20/dtm_1m_utm20_w_5_94.tif',
   'large/dem/hal_3_dsm.tif', 'https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/NS/NSDNR_2019_3/utm20/dsm_1m_utm20_w_4_95.tif',
   'large/dem/hal_3_dtm.tif', 'https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/NS/NSDNR_2019_3/utm20/dtm_1m_utm20_w_4_95.tif'
-)
+) %>% 
+  mutate(
+    file_name = basename(sans_ext(dl_path)),
+    file_name_sym = lapply(file_name, as.symbol),
+    file_ext = file_ext(dl_path),
+    cleaned_name = gsub('raw', 'clean', file_name),
+    cleaned_name_sym = lapply(cleaned_name, as.symbol)
+  )
 
 
 
 
 # Symbols -----------------------------------------------------------------
 symbol_values <- list(
-  hood_cleaned_
-  # TODO: fill in all symbols for raw and cleaned data (grab from above)
-  #      matching cities as a row
+  hood_names_raw <- values_hood$file_name_sym,
+  park_names_raw <- values_parks$file_name_sym,
+  tree_names_raw <- values_trees$file_name_sym,
+  hood_names_clean <- values_hood$cleaned_name_sym,
+  tree_names_clean <- values_trees$cleaned_name_sym
 )
 
