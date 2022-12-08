@@ -47,7 +47,14 @@ values_trees <- tribble(
   'large/trees/mon_tree_raw.csv', 'https://data.montreal.ca/dataset/b89fd27d-4b49-461b-8e54-fa2b34a628c4/resource/64e28fe6-ef37-437a-972d-d1d3f1f7d891/download/arbres-publics.csv',
   'large/trees/hal_tree_raw.csv', 'https://opendata.arcgis.com/api/v3/datasets/33a4e9b6c7e9439abcd2b20ac50c5a4d_0/downloads/data?format=csv&spatialRefId=4326',
   
+)
+
+values_bounds <- tribble(
   
+  # columns
+  ~dl_path, ~dl_link,
+
+
   # StatsCan boundaries -----------------------------------------------------
   'large/national/can_bound_raw.zip', 'https://www12.statcan.gc.ca/census-recensement/2021/geo/sip-pis/boundary-limites/files-fichiers/lcma000b21a_e.zip',
   'large/national/can_road_raw.zip', 'https://www12.statcan.gc.ca/census-recensement/2021/geo/sip-pis/RNF-FRR/files-fichiers/lrnf000r21a_e.zip',
