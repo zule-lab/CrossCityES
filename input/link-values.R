@@ -31,6 +31,12 @@ values_parks <- tribble(
   'large/parks/mon_park_raw.zip', 'https://data.montreal.ca/dataset/2e9e4d2f-173a-4c3d-a5e3-565d79baa27d/resource/c57baaf4-0fa8-4aa4-9358-61eb7457b650/download/shapefile.zip',
   'large/parks/hal_park_raw.zip', 'https://opendata.arcgis.com/api/v3/datasets/3df29a3d088a42d890f11d027ea1c0be_0/downloads/data?format=shp&spatialRefId=4326',
   
+)
+
+values_trees <- tribble(
+  
+  # columns
+  ~dl_path, ~dl_link,
   
   # trees -------------------------------------------------------------------
   'large/trees/van_tree_raw.csv', 'https://opendata.vancouver.ca/explore/dataset/street-trees/download/?format=csv&timezone=America/New_York&lang=en&use_labels_for_header=true&csv_separator=%3B',
