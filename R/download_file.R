@@ -3,7 +3,7 @@ download_file <- function(url, dest, extension){
     download_csv(url, dest)
   } else if (extension == 'tif') {
     download_tif(url, dest)
-  } else if (extension == 'shp') {
+  } else if (extension %in% c('shp', 'zip')) {
     download_shp(url, dest)
   }
 }
