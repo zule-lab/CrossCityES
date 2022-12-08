@@ -1,38 +1,67 @@
 targets_data_download <- c(
   
 
-  # Download Links: CSVs ----------------------------------------------------
-  tar_eval(
-    tar_target(
-      file_name_sym,
-      download_csv(dl_link, dl_path)
-    ),
-    values = values_trib[values_trib$file_ext == 'csv',]
-  ),
-  
 
-  # Download Links: SHPs ----------------------------------------------------
+  # Download Links: National ------------------------------------------------
   tar_eval(
     tar_target(
       file_name_sym,
       download_shp(dl_link, dl_path)
     ),
-    values = values_trib[values_trib$file_ext %in% c('zip', 'shp'),]
+    values = values_bounds
   ),
   
 
-  # Download Links: TIFs ----------------------------------------------------
+
+  # Download Links: Census --------------------------------------------------
   tar_eval(
     tar_target(
       file_name_sym,
-      download_tif(dl_link, dl_path)
+      download_shp(dl_link, dl_path)
     ),
-    values = values_trib[values_trib$file_ext == 'tif',]
+    values = values_census
+  ),
+  
+
+  # Download Links: Neighbourhoods ------------------------------------------
+  tar_eval(
+    tar_target(
+      file_name_sym,
+      download_shp(dl_link, dl_path)
+    ),
+    values = values_hood
   ),
 
+  # Download Links: Parks ---------------------------------------------------
+  tar_eval(
+    tar_target(
+      file_name_sym,
+      download_shp(dl_link, dl_path)
+    ),
+    values = values_parks
+  ),
+
+  # Download Links: Trees ---------------------------------------------------
+  tar_eval(
+    tar_target(
+      file_name_sym,
+      download_shp(dl_link, dl_path)
+    ),
+    values = values_trees
+  ),
+
+  # Download Links: DEMs ----------------------------------------------------
+  tar_eval(
+    tar_target(
+      file_name_sym,
+      download_shp(dl_link, dl_path)
+    ),
+    values = values_dems
+  ),
+  
 
   # Microsoft Building Footprints -------------------------------------------
-  # SWITCH TO GEE
+  # TODO: SWITCH TO GEE
   tar_target(
     prov_list,
     c("Alberta", "NovaScotia", "Quebec", "Ontario", "BritishColumbia", "Manitoba")
