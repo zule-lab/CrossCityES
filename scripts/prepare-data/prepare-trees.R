@@ -24,8 +24,8 @@ targets_prepare_trees <- c(
         tree_names_raw,
         park_names_raw,
         hood_names_clean,
-        mun_bound,
-        mun_road)
+        mun_bound_clean, # can you call straight up targets?
+        mun_road_clean)
     ),
     values = symbol_values
   ),
