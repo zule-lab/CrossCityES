@@ -79,49 +79,60 @@ clean_parks <- function(parks_raw){
     parks <- parks_raw %>%
       select(c("park_name", "geometry")) %>%
       rename("park" = "park_name")
+    
+    return(parks)
   }
   
-  if (deparse(substitute(parks_raw)) == 'cal_park_raw'){
+  else if (deparse(substitute(parks_raw)) == 'cal_park_raw'){
     parks <- parks_raw %>%
       select(c("SITE_NAME", "the_geom")) %>%
       rename("park" = "SITE_NAME") %>%
       rename("geometry" = "the_geom") %>%
       st_as_sf(wkt = "geometry", crs = 4326)
+    
+    return(parks)
   }
   
-  if (deparse(substitute(parks_raw)) == 'win_park_raw'){
+  else if (deparse(substitute(parks_raw)) == 'win_park_raw'){
     parks <- parks_raw %>%
       select(c("park_name", "geometry")) %>%
       rename("park" = "park_name")
+    
+    return(parks)
   }
   
-  if (deparse(substitute(parks_raw)) == 'tor_park_raw'){
+  else if (deparse(substitute(parks_raw)) == 'tor_park_raw'){
     
     parks <- parks_raw %>%
       select(c("OBJECTID", "geometry")) %>%
       rename("park" = "OBJECTID")
+    
+    return(parks)
   }
   
-  if (deparse(substitute(parks_raw)) == 'ott_park_raw'){
+  else if (deparse(substitute(parks_raw)) == 'ott_park_raw'){
     parks <- parks_raw %>%
       select(c("NAME", "geometry")) %>%
       rename("park" = "NAME")
+    
+    return(parks)
   }
   
-  if (deparse(substitute(parks_raw)) == 'mon_park_raw'){
+  else if (deparse(substitute(parks_raw)) == 'mon_park_raw'){
     parks <- parks_raw %>%
       select(c("Nom", "geometry")) %>%
       rename("park" = "Nom")
+    
+    return(parks)
   }
   
-  if (deparse(substitute(parks_raw)) == 'hal_park_raw'){
+  else if (deparse(substitute(parks_raw)) == 'hal_park_raw'){
     parks <- parks_raw %>%
       select(c("PARK_NAME", "geometry")) %>%
       rename("park" = "PARK_NAME")
+    
+    return(parks)
   } 
-  
-  
-  return(parks)
   
 }
 
@@ -149,9 +160,11 @@ clean_trees <- function(trees_raw){
       st_as_sf(coords = c("long", "lat"), crs = 4326, na.fail = FALSE, remove = FALSE)
     
     tree <- assign_sp_van(tree_s)
+    
+    return(tree)
   }
   
-  if (deparse(substitute(trees_raw)) == 'cal_tree_raw'){
+  else if (deparse(substitute(trees_raw)) == 'cal_tree_raw'){
     
     tree_s <- trees_raw %>%
       select(c("GENUS", "SPECIES", "CULTIVAR", "DBH_CM", "WAM_ID", "POINT")) %>%
@@ -165,10 +178,11 @@ clean_trees <- function(trees_raw){
       st_as_sf(wkt = "geometry", crs = 4326)
     
     tree <- assign_sp_cal(tree_s)
-  
+    
+    return(tree)
   }
   
-  if (deparse(substitute(trees_raw)) == 'win_tree_raw'){
+  else if (deparse(substitute(trees_raw)) == 'win_tree_raw'){
     tree_s <- trees_raw %>%
       select(c("the_geom","tree_id","botanical","dbh","park","street")) %>%
       rename("id" = "tree_id") %>%
@@ -178,9 +192,11 @@ clean_trees <- function(trees_raw){
       st_as_sf(coords = c("lat", "long"), crs = 4326, na.fail = FALSE, remove = FALSE)
     
     tree <- assign_sp_win(tree_s)
+    
+    return(tree)
   }
   
-  if (deparse(substitute(trees_raw)) == 'tor_tree_raw'){
+  else if (deparse(substitute(trees_raw)) == 'tor_tree_raw'){
     
     tree_s <- trees_raw %>%
       select(c("STRUCTID","DBH_TRUNK","COMMON_NAME", "STREETNAME","geometry")) %>%
@@ -194,9 +210,11 @@ clean_trees <- function(trees_raw){
       st_as_sf(coords = c("long", "lat"), crs = 4326, na.fail = FALSE, remove = FALSE)
     
     tree <- assign_sp_tor(tree_s, tar_load(tor_tree_spcode)) # species codes may be an issue
+    
+    return(tree)
   }
   
-  if (deparse(substitute(trees_raw)) == 'ott_tree_raw'){
+  else if (deparse(substitute(trees_raw)) == 'ott_tree_raw'){
     tree_s <- trees_raw %>%
       select(c("X","Y","OBJECTID","ADDSTR","SPECIES","DBH")) %>%
       rename("long" = "X") %>%
@@ -206,9 +224,11 @@ clean_trees <- function(trees_raw){
       rename("dbh" = "DBH")
     
     tree <- assign_sp_ott(tree_s, tar_load(ott_tree_spcode))
+    
+    return(tree)
   }
   
-  if (deparse(substitute(trees_raw)) == 'mon_tree_raw'){
+  else if (deparse(substitute(trees_raw)) == 'mon_tree_raw'){
     tree_s <- trees_raw %>%
       select(c("Essence_latin","DHP", "Rue", "NOM_PARC","Longitude","Latitude")) %>%
       rename("dbh" = "DHP",
@@ -218,10 +238,12 @@ clean_trees <- function(trees_raw){
       drop_na(c(Latitude, Longitude))
     
     tree <- assign_sp_mon(tree_s)
+    
+    return(tree)
 
   }
   
-  if (deparse(substitute(trees_raw)) == 'hal_tree_raw'){
+  else if (deparse(substitute(trees_raw)) == 'hal_tree_raw'){
     tree_s <- trees_raw %>% 
       filter(ASSETSTAT == "INS") %>%
       select(c("X", "Y", "TREEID", "SP_SCIEN", "DBH")) %>%
@@ -231,8 +253,8 @@ clean_trees <- function(trees_raw){
       st_as_sf(coords = c("X", "Y"), crs = 4326)
     
     tree <- assign_sp_hal(tree_s, tar_load(hal_tree_spcode), tar_load(hal_tree_dbhcode))
+    
+    return(tree)
   } 
-  
-  return(tree)
   
 }
