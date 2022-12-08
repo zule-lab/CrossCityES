@@ -42,12 +42,12 @@ tar_source('input/link-values.R')
 
 # Scripts -----------------------------------------------------------------
 # tar_source('scripts')
-tar_source('scripts/prepare-neighbourhoods/prepare-neighbourhoods.R')
+tar_source('scripts')
 
 
 # Targets: all ------------------------------------------------------------
 # Automatically grab all the "targets" lists above
 
-#lapply(grep('targets', ls(), value = TRUE), get)
+# lapply(grep('targets', ls(), value = TRUE), get)
 
-c(targets_prepare_neighbourhoods)
+c(targets_prepare_boundaries, targets_prepare_census, targets_prepare_dems, targets_prepare_neighbourhoods, targets_prepare_trees)
