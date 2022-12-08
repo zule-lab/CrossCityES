@@ -1,4 +1,4 @@
-# # Neighbourhoods ----------------------------------------------------------
+# Neighbourhoods ----------------------------------------------------------
 values_hood <- tribble(
   ~dl_path, ~dl_link,
 
@@ -15,7 +15,7 @@ values_hood <- tribble(
     file_name_sym = lapply(file_name, as.symbol),
     file_ext = file_ext(dl_path),
     cleaned_name = gsub('raw', 'clean', file_name),
-cleaned_name_sym = lapply(cleaned_name, as.symbol)
+    cleaned_name_sym = lapply(cleaned_name, as.symbol)
   )
 
 
