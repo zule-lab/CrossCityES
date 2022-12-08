@@ -71,16 +71,17 @@ tree_cleaning <- function(trees_raw, parks_raw, hoods, boundaries, roads){
 }
 
 
+
 # parks cleaning ----------------------------------------------------------
 clean_parks <- function(parks_raw){
   if (deparse(substitute(parks_raw)) == 'van_park_raw'){
-    parks <- van_park_raw %>%
+    parks <- parks_raw %>%
       select(c("park_name", "geometry")) %>%
       rename("park" = "park_name")
   }
   
   if (deparse(substitute(parks_raw)) == 'cal_park_raw'){
-    parks <- cal_park_raw %>%
+    parks <- parks_raw %>%
       select(c("SITE_NAME", "the_geom")) %>%
       rename("park" = "SITE_NAME") %>%
       rename("geometry" = "the_geom") %>%
@@ -88,38 +89,40 @@ clean_parks <- function(parks_raw){
   }
   
   if (deparse(substitute(parks_raw)) == 'win_park_raw'){
-    parks <- win_park_raw %>%
+    parks <- parks_raw %>%
       select(c("park_name", "geometry")) %>%
       rename("park" = "park_name")
   }
   
   if (deparse(substitute(parks_raw)) == 'tor_park_raw'){
     
-    parks <- tor_park_raw %>%
+    parks <- parks_raw %>%
       select(c("OBJECTID", "geometry")) %>%
       rename("park" = "OBJECTID")
   }
   
   if (deparse(substitute(parks_raw)) == 'ott_park_raw'){
-    parks <- ott_park_raw %>%
+    parks <- parks_raw %>%
       select(c("NAME", "geometry")) %>%
       rename("park" = "NAME")
   }
   
   if (deparse(substitute(parks_raw)) == 'mon_park_raw'){
-    parks <- mon_park_raw %>%
+    parks <- parks_raw %>%
       select(c("Nom", "geometry")) %>%
       rename("park" = "Nom")
   }
   
   if (deparse(substitute(parks_raw)) == 'hal_park_raw'){
-    parks <- hal_park_raw %>%
+    parks <- parks_raw %>%
       select(c("PARK_NAME", "geometry")) %>%
       rename("park" = "PARK_NAME")
   } 
   
   return(parks)
 }
+
+
 
 # trees cleaning ----------------------------------------------------------
 clean_trees <- function(trees_raw){
