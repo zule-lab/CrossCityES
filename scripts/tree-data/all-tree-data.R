@@ -1,4 +1,17 @@
 targets_all_tree_data <- c(
+  tar_eval(
+    tar_target(
+      tree_clean_sym,
+      tree_cleaning(
+        tree_raw_sym,
+        park_raw_sym,
+        hood_cleaned_sym,
+        mun_bound,
+        mun_road
+      ),
+      values = symbol_values
+    )
+  )
   
   tar_target(
     van_tree,

@@ -5,7 +5,7 @@ library(quarto)
 library(renv)
 
 library(conflicted)
-conflict_prefer_all("dplyr", c("plyr", "stats"))
+conflict_prefer_all("dplyr", c("plyr", "stats"), quiet = TRUE)
 
 library(downloader)
 library(readr)

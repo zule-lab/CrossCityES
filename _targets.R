@@ -36,12 +36,12 @@ options(timeout=600)
 
 # Data --------------------------------------------------------------------
 tar_source('input/link-values.R')
-
+dir.create(file.path('large', 'neighbourhoods'))
 
 
 # Scripts -----------------------------------------------------------------
-tar_source('scripts')
-
+# tar_source('scripts')
+tar_source('scripts/prepare-neighbourhoods/prepare-neighbourhoods.R')
 
 
 # Targets: all ------------------------------------------------------------
@@ -49,4 +49,4 @@ tar_source('scripts')
 
 #lapply(grep('targets', ls(), value = TRUE), get)
 
-c(targets_data_download, targets_neighbourhood_cleanup)
+c(targets_prepare_neighbourhoods)
