@@ -1,4 +1,4 @@
-targets_neighbourhood_cleanup <- c(
+targets_prepare_neighborhoods <- c(
   # Download
   tar_eval(
     tar_target(

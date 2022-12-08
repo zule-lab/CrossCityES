@@ -49,4 +49,4 @@ tar_source('scripts')
 
 #lapply(grep('targets', ls(), value = TRUE), get)
 
-c(targets_data_download, targets_neighbourhood_cleanup)
+c(targets_data_download, targets_prepare_neighborhoods)
