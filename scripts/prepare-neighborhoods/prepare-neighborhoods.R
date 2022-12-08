@@ -11,7 +11,7 @@ targets_prepare_neighborhoods <- c(
   # Clean
   tar_eval(
     tar_target(
-      hood_cleaned_sym,
+      cleaned_sym,
       clean_neighbourhoods(file_name_sym)
     ),
     values = values_hood
