@@ -40,8 +40,8 @@ dir.create(file.path('large', 'neighbourhoods'))
 
 
 # Scripts -----------------------------------------------------------------
-tar_source('scripts')
-
+# tar_source('scripts')
+tar_source('scripts/prepare-neighbourhoods/prepare-neighbourhoods.R')
 
 
 # Targets: all ------------------------------------------------------------
@@ -49,4 +49,4 @@ tar_source('scripts')
 
 #lapply(grep('targets', ls(), value = TRUE), get)
 
-c(targets_data_download, targets_prepare_neighborhoods)
+c(targets_prepare_neighbourhoods)
