@@ -11,7 +11,7 @@ targets_prepare_boundaries <- c(
   
   # Clean
   tar_target(
-    mun_bound,
+    mun_bound_clean,
     mun_bound_raw %>%
       group_by(CMANAME) %>%
       summarise() %>%
@@ -27,9 +27,15 @@ targets_prepare_boundaries <- c(
   ),
   
   tar_target(
-    mun_road,
+    mun_road_clean,
     clean_roads(mun_bound, road_raw)
+  ),
+  
+  tar_target(
+    da_bound_clean,
+    clean_da_bound(dsa_bound_raw, mun_bound_clean) 
   )
+  
   
   # EE
   #  tar_target(

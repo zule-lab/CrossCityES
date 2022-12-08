@@ -1,8 +1,18 @@
 targets_census_cleanup <- c(
   
+  # Download 
+  tar_eval(
+    tar_target(
+      file_name_sym,
+      download_shp(dl_link, dl_path)
+    ),
+    values = values_census
+  ),
+  
+  # Clean
   tar_target(
     da_s,
-    DA_raw %>%
+    dsa_bound_raw %>%
       select(c("DAUID", "geometry")) %>%
       rename(da = "DAUID") %>%
       st_transform(crs = 3347)
@@ -23,26 +33,6 @@ targets_census_cleanup <- c(
     census_da_raw_full %>%
       select(c("ALT_GEO_CODE","CHARACTERISTIC_ID","C1_COUNT_TOTAL")) %>%
       rename(da = "ALT_GEO_CODE",
-             sofac = "CHARACTERISTIC_ID",
-             sonum = "C1_COUNT_TOTAL") %>%
-      filter(sofac %in% c(1, 6:7, 42:49, 115, 331, 1522, 1389, 1670)) # missing education right now
-  ),
-  
-  tar_target(
-    census_cma_f,
-    census_cma_raw %>%
-      mutate(GEO_NAME = str_conv(GEO_NAME, "ISO-8859-1")) %>%
-      filter(GEO_NAME == "Vancouver" |
-               GEO_NAME == "Calgary" | 
-               GEO_NAME == "Winnipeg" | 
-               GEO_NAME == "Toronto" |
-               GEO_NAME == "Ottawa - Gatineau (Ontario part)" |
-               GEO_NAME == "Montréal" | 
-               GEO_NAME == "Halifax") %>% 
-      mutate(GEO_NAME = replace(GEO_NAME, GEO_NAME == "Ottawa - Gatineau (Ontario part)", "Ottawa"),
-             GEO_NAME = replace(GEO_NAME, GEO_NAME == "Montréal", "Montreal")) %>%
-      select("GEO_NAME", "CHARACTERISTIC_ID", "C1_COUNT_TOTAL") %>% 
-      rename(city = "GEO_NAME",
              sofac = "CHARACTERISTIC_ID",
              sonum = "C1_COUNT_TOTAL") %>%
       filter(sofac %in% c(1, 6:7, 42:49, 115, 331, 1522, 1389, 1670)) # missing education right now
@@ -102,37 +92,8 @@ targets_census_cleanup <- c(
   ),
   
   tar_target(
-    census_cma_r,
-    census_cma_w %>%
-      rename(totpop = "1") %>%
-      rename(popdens = "6") %>%
-      rename(area = "7") %>%
-      rename(sideho = "42") %>%
-      rename(semhou = "43") %>%
-      rename(rowhou = "44") %>%
-      rename(aptdup = "45") %>%
-      rename(aptbui = "46") %>%
-      rename(aptfiv = "47") %>%
-      rename(otsiho = "48") %>%
-      rename(mvdwel = "49") %>%
-      rename(medinc = "115") %>%
-      rename(lowinc = "331") %>%
-      rename(recimm = "1522") %>%
-      rename(aborig = "1389") %>%
-      rename(vismin = "1670") 
-      #rename(edubac = "1692")
-  ),
-  
-  tar_target(
     census_da_m,
     merge(census_da_r, da_bound, by = "da")
-  ),
-  
-  tar_target(
-    census_cma_m,
-    mun_bound %>%
-      rename(city = CMANAME) %>%
-      merge(., census_cma_r, by = "city")
   ),
   
   tar_target(
@@ -141,21 +102,11 @@ targets_census_cleanup <- c(
   ),
   
   tar_target(
-    census_cma_sf,
-    st_as_sf(census_cma_m, sf_column_name = c("geometry"), crs = 3347)
-  ),
-  
-  tar_target(
     census_da_na,
     census_da_sf %>% mutate(across(c(2:17), ~na_if(., "x")),
                             across(c(2:17), ~na_if(., "F")))
   ),
-  
-  tar_target(
-    census_cma_na,
-    census_cma_sf %>% mutate(across(c(2:17), ~na_if(., "x")),
-                            across(c(2:17), ~na_if(., "F")))
-  ),
+
   
   tar_target(
     census_da_num, 
@@ -165,13 +116,6 @@ targets_census_cleanup <- c(
       drop_na()
   ),
   
-  tar_target(
-    census_cma_num, 
-    census_cma_na %>% 
-      mutate(city = as.factor(city)) %>%
-      mutate(across(c(2:17), ~as.numeric(.))) %>%
-      drop_na()
-  ),
   
   tar_target(
     census_da_dt, 
@@ -179,19 +123,10 @@ targets_census_cleanup <- c(
   ),
   
   
-  tar_target(
-    census_cma_dt, 
-    setDT(census_cma_num)
-  ),
   
   tar_target(
     census_da,
     calculate_percent(census_da_dt)
-  ),
-  
-  tar_target(
-    census_cma,
-    calculate_percent(census_cma_dt)
   )
 
   
