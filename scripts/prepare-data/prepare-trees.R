@@ -3,7 +3,7 @@ targets_prepare_trees <- c(
   tar_eval(
     tar_target(
       file_name_sym,
-      download_shp(dl_link, dl_path)
+      download_file(dl_link, dl_path, file_ext)
     ),
     values = values_parks
   ),
@@ -31,15 +31,9 @@ targets_prepare_trees <- c(
   ),
   
   # Combine
-  tar_combine(
-    name = all_tree_raw,
-    van_tree_clean,
-    cal_tree_clean,
-    win_tree_clean,
-    tor_tree_clean,
-    ott_tree_clean,
-    mon_tree_clean,
-    hal_tree_clean,
-    command = bind_rows(!!!.x)
+  tar_target(
+    can_trees,
+    rbind(van_tree_clean, cal_tree_clean, win_tree_clean,
+          tor_tree_clean, ott_tree_clean, hal_tree_clean)
   )
 )
