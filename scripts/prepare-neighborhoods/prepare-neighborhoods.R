@@ -17,10 +17,10 @@ targets_neighbourhood_cleanup <- c(
     can_hood_ee,
     can_hood %>%
       sf_as_ee(x = .,
-             overwrite = TRUE,
-             assetId = sprintf("%s/%s", ee_get_assethome(), 'mun_road'),
-             bucket = 'rgee_dev',
-             monitoring = FALSE,
-             via = 'gcs_to_asset')
+               overwrite = TRUE,
+               assetId = sprintf("%s/%s", ee_get_assethome(), 'mun_road'),
+               bucket = 'rgee_dev',
+               monitoring = FALSE,
+               via = 'gcs_to_asset')
   )
 )
