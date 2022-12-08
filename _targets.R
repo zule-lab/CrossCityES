@@ -36,7 +36,7 @@ options(timeout=600)
 
 # Data --------------------------------------------------------------------
 tar_source('input/link-values.R')
-
+dir.create(file.path('large', 'neighbourhoods'))
 
 
 # Scripts -----------------------------------------------------------------
