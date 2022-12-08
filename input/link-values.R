@@ -13,6 +13,14 @@ values_hood <- tribble(
   'large/neighbourhoods/mon_hood_raw.zip', 'https://data.montreal.ca/dataset/00bd85eb-23aa-4669-8f1b-ba9a000e3dd8/resource/62f7ce10-36ce-4bbd-b419-8f0a10d3b280/download/limadmin-shp.zip',
   'large/neighbourhoods/hal_hood_raw.zip', 'https://opendata.arcgis.com/api/v3/datasets/b4088a068b794436bdb4e5c31df76fe2_0/downloads/data?format=shp&spatialRefId=4326',
   
+)
+
+
+
+values_parks <- tribble(
+  
+  # columns
+  ~dl_path, ~dl_link,
   
   # parks -------------------------------------------------------------------
   'large/parks/van_park_raw.zip', 'https://opendata.vancouver.ca/explore/dataset/parks-polygon-representation/download/?format=shp&timezone=Asia/Shanghai&lang=en',
