@@ -262,11 +262,10 @@ values_dems <- tribble(
 
 
 # Symbols -----------------------------------------------------------------
-symbol_values <- list(
-  hood_names_raw <- values_hood$file_name_sym,
-  park_names_raw <- values_parks$file_name_sym,
-  tree_names_raw <- values_trees$file_name_sym,
-  hood_names_clean <- values_hood$cleaned_name_sym,
-  tree_names_clean <- values_trees$cleaned_name_sym
-)
+symbol_values <- tibble(
+  hood_names_raw = values_hood$file_name_sym,
+  parks_names_raw = values_parks$file_name_sym,
+  tree_names_raw = values_trees$file_name_sym,
+  hood_names_clean = values_hood$cleaned_name_sym,
+  tree_names_clean = values_trees$cleaned_name_sym)
 
