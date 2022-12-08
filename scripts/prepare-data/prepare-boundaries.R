@@ -12,7 +12,7 @@ targets_prepare_boundaries <- c(
   # Clean
   tar_target(
     mun_bound_clean,
-    mun_bound_raw %>%
+    can_bound_raw %>%
       group_by(CMANAME) %>%
       summarise() %>%
       mutate(CMANAME = replace(CMANAME, CMANAME == "Ottawa - Gatineau (Ontario part / partie de l'Ontario)", "Ottawa"),
@@ -28,7 +28,7 @@ targets_prepare_boundaries <- c(
   
   tar_target(
     mun_road_clean,
-    clean_roads(mun_bound, road_raw)
+    clean_roads(mun_bound_clean, can_road_raw)
   ),
   
   tar_target(
