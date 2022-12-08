@@ -1,18 +1,29 @@
 targets_neighbourhood_cleanup <- c(
-  
+  # Download
   tar_eval(
     tar_target(
-      as.symbol(paste0('clean_', substr(file_name, 1, 8))),
-      clean_neighbourhoods(tar_load(file_name))
+      file_name_sym,
+      download_file(dl_link, dl_path)
     ),
-    values = filter(values_trib, grepl('hood_raw', file_name))
+    values = values_hood
   ),
   
+  # Clean
+  tar_eval(
+    tar_target(
+      hood_cleaned_sym,
+      clean_neighbourhoods(file_name_sym)
+    ),
+    values = values_hood
+  ),
+  
+  # Combine
   tar_target(
     can_hood,
     rbind(clean_van_hood, clean_cal_hood, clean_win_hood, clean_tor_hood, clean_ott_hood, clean_hal_hood)
   ),
   
+  # EE
   tar_target(
     can_hood_ee,
     can_hood %>%
