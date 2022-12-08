@@ -1,21 +1,24 @@
 # Neighbourhoods ----------------------------------------------------------
 values_hood <- tribble(
   ~dl_path, ~dl_link,
-  
+
   'large/neighbourhoods/van_hood_raw.zip', 'https://opendata.vancouver.ca/explore/dataset/local-area-boundary/download/?format=shp&timezone=Asia/Shanghai&lang=enn',
   'large/neighbourhoods/cal_hood_raw.csv', 'https://data.calgary.ca/api/views/surr-xmvs/rows.csv?accessType=DOWNLOAD',
   'large/neighbourhoods/win_hood_raw.zip', 'https://data.winnipeg.ca/api/geospatial/fen6-iygi?method=export&format=Shapefile',
   'large/neighbourhoods/tor_hood_raw.zip', 'https://ckan0.cf.opendata.inter.prod-toronto.ca/dataset/neighbourhoods/resource/34b409a6-68ef-45f7-9cc8-c85153c1af62/download/Neighbourhoods%20-%204326.zip',
   'large/neighbourhoods/ott_hood_raw.zip', 'https://opendata.arcgis.com/api/v3/datasets/32fe76b71c5e424fab19fec1f180ec18_0/downloads/data?format=shp&spatialRefId=4326',
   'large/neighbourhoods/mon_hood_raw.zip', 'https://data.montreal.ca/dataset/00bd85eb-23aa-4669-8f1b-ba9a000e3dd8/resource/62f7ce10-36ce-4bbd-b419-8f0a10d3b280/download/limadmin-shp.zip',
-  'large/neighbourhoods/hal_hood_raw.zip', 'https://opendata.arcgis.com/api/v3/datasets/b4088a068b794436bdb4e5c31df76fe2_0/downloads/data?format=shp&spatialRefId=4326',
-)
+  'large/neighbourhoods/hal_hood_raw.zip', 'https://opendata.arcgis.com/api/v3/datasets/b4088a068b794436bdb4e5c31df76fe2_0/downloads/data?format=shp&spatialRefId=4326'
+) |>
+  mutate(
+    file_name = basename(sans_ext(dl_path)),
+    file_name_sym = lapply(file_name, as.symbol),
+    file_ext = file_ext(dl_path),
+    cleaned_name = gsub('raw', 'clean', file_name),
+cleaned_name_sym = lapply(cleaned_name, as.symbol)
+  )
 
-values_hood$file_name <- basename(sans_ext(values_hood$dl_path))
-values_hood$file_name_sym <- lapply(values_hood$file_name, as.symbol)
-values_hood$file_ext <- lapply(values_hood$dl_path, file_ext)
-values_hood$cleaned_name <- lapply(values_hood$file_name, function(x) gsub('raw', 'clean', x))
-values_hood$clean_name_sym = lapply(values_hood$cleaned_name, as.symbol)
+
 
 
 
