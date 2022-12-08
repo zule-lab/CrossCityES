@@ -11,7 +11,7 @@ targets_all_tree_data <- c(
       ),
       values = symbol_values
     )
-  )
+  ),
   
   tar_target(
     van_tree,
