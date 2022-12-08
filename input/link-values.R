@@ -228,3 +228,14 @@ values_dems <- tribble(
   'large/dem/hal_3_dsm.tif', 'https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dsm_mns/1m/NS/NSDNR_2019_3/utm20/dsm_1m_utm20_w_4_95.tif',
   'large/dem/hal_3_dtm.tif', 'https://ftp.maps.canada.ca/pub/elevation/dem_mne/highresolution_hauteresolution/dtm_mnt/1m/NS/NSDNR_2019_3/utm20/dtm_1m_utm20_w_4_95.tif'
 )
+
+
+
+
+# Symbols -----------------------------------------------------------------
+symbol_values <- list(
+  hood_cleaned_
+  # TODO: fill in all symbols for raw and cleaned data (grab from above)
+  #      matching cities as a row
+)
+
