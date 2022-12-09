@@ -1,5 +1,7 @@
 targets_prepare_census <- c(
   
+  # TODO: change download link when 2021 csv files are released 
+  
   # Download 
   tar_eval(
     tar_target(
