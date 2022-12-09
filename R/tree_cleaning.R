@@ -249,12 +249,14 @@ clean_trees <- function(trees_raw){
       select(c("X", "Y", "TREEID", "SP_SCIEN", "DBH")) %>%
       rename("id" = "TREEID") %>%
       rename("dbh" = "DBH") %>% 
-      drop_na(c(X,Y)) %>%
-      st_as_sf(coords = c("X", "Y"), crs = 4326)
+      drop_na(c(X,Y))
     
-    tree <- assign_sp_hal(tree_s, tar_load(hal_tree_spcode), tar_load(hal_tree_dbhcode))
+    tree_sp <- assign_sp_hal(tree_s, tar_read(hal_tree_spcode), tar_read(hal_tree_dbhcode))
+    
+    tree <- tree_sp %>% st_as_sf(coords = c("X", "Y"), crs = 4326)
     
     return(tree)
   } 
   
 }
+
