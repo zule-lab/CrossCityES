@@ -22,7 +22,7 @@ targets_prepare_trees <- c(
       tree_names_clean,
       tree_cleaning(
         tree_names_raw,
-        park_names_raw,
+        parks_names_raw,
         hood_names_clean,
         mun_bound_clean, # can you call straight up targets?
         mun_road_clean)
