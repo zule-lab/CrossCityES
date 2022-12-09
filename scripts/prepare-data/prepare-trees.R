@@ -17,14 +17,14 @@ targets_prepare_trees <- c(
   ),
   
   # Clean
-  tar_eval(
+  tar_sub(
     tar_target(
       tree_names_clean,
       tree_cleaning(
         tree_names_raw,
         parks_names_raw,
         hood_names_clean,
-        mun_bound_clean, # can you call straight up targets?
+        mun_bound_clean, 
         mun_road_clean)
     ),
     values = symbol_values
