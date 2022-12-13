@@ -17,7 +17,7 @@ targets_prepare_trees <- c(
   ),
   
   # Clean
-  tar_sub(
+  tar_eval(
     tar_target(
       tree_names_clean,
       tree_cleaning(

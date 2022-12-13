@@ -80,7 +80,7 @@ clean_parks <- function(parks_raw){
       select(c("park_name", "geometry")) %>%
       rename("park" = "park_name")
     
-    return(parks)
+    parks
   }
   
   else if (deparse(substitute(parks_raw)) == 'cal_park_raw'){
@@ -90,7 +90,7 @@ clean_parks <- function(parks_raw){
       rename("geometry" = "the_geom") %>%
       st_as_sf(wkt = "geometry", crs = 4326)
     
-    return(parks)
+    parks
   }
   
   else if (deparse(substitute(parks_raw)) == 'win_park_raw'){
@@ -98,7 +98,7 @@ clean_parks <- function(parks_raw){
       select(c("park_name", "geometry")) %>%
       rename("park" = "park_name")
     
-    return(parks)
+    parks
   }
   
   else if (deparse(substitute(parks_raw)) == 'tor_park_raw'){
@@ -107,7 +107,7 @@ clean_parks <- function(parks_raw){
       select(c("OBJECTID", "geometry")) %>%
       rename("park" = "OBJECTID")
     
-    return(parks)
+    parks
   }
   
   else if (deparse(substitute(parks_raw)) == 'ott_park_raw'){
@@ -115,7 +115,7 @@ clean_parks <- function(parks_raw){
       select(c("NAME", "geometry")) %>%
       rename("park" = "NAME")
     
-    return(parks)
+    parks
   }
   
   else if (deparse(substitute(parks_raw)) == 'mon_park_raw'){
@@ -123,7 +123,7 @@ clean_parks <- function(parks_raw){
       select(c("Nom", "geometry")) %>%
       rename("park" = "Nom")
     
-    return(parks)
+    parks
   }
   
   else if (deparse(substitute(parks_raw)) == 'hal_park_raw'){
@@ -131,9 +131,12 @@ clean_parks <- function(parks_raw){
       select(c("PARK_NAME", "geometry")) %>%
       rename("park" = "PARK_NAME")
     
-    return(parks)
+    parks
   } 
   
+  else{
+    print("error: none of the park names matched")
+  }
 }
 
 
@@ -161,7 +164,8 @@ clean_trees <- function(trees_raw){
     
     tree <- assign_sp_van(tree_s)
     
-    return(tree)
+    tree
+
   }
   
   else if (deparse(substitute(trees_raw)) == 'cal_tree_raw'){
@@ -179,7 +183,8 @@ clean_trees <- function(trees_raw){
     
     tree <- assign_sp_cal(tree_s)
     
-    return(tree)
+    tree
+  
   }
   
   else if (deparse(substitute(trees_raw)) == 'win_tree_raw'){
@@ -193,7 +198,8 @@ clean_trees <- function(trees_raw){
     
     tree <- assign_sp_win(tree_s)
     
-    return(tree)
+    tree
+  
   }
   
   else if (deparse(substitute(trees_raw)) == 'tor_tree_raw'){
@@ -211,7 +217,8 @@ clean_trees <- function(trees_raw){
     
     tree <- assign_sp_tor(tree_s, tar_load(tor_tree_spcode)) # species codes may be an issue
     
-    return(tree)
+    tree
+  
   }
   
   else if (deparse(substitute(trees_raw)) == 'ott_tree_raw'){
@@ -225,7 +232,8 @@ clean_trees <- function(trees_raw){
     
     tree <- assign_sp_ott(tree_s, tar_load(ott_tree_spcode))
     
-    return(tree)
+    tree
+    
   }
   
   else if (deparse(substitute(trees_raw)) == 'mon_tree_raw'){
@@ -239,7 +247,7 @@ clean_trees <- function(trees_raw){
     
     tree <- assign_sp_mon(tree_s)
     
-    return(tree)
+    tree
 
   }
   
@@ -255,8 +263,14 @@ clean_trees <- function(trees_raw){
     
     tree <- tree_sp %>% st_as_sf(coords = c("X", "Y"), crs = 4326)
     
-    return(tree)
+    tree
+
   } 
+  
+  else {
+    print("error: none of the tree names matched")
+  }
+  
   
 }
 
