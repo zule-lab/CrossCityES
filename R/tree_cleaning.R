@@ -126,7 +126,7 @@ clean_parks <- function(parks_raw){
     parks
   }
   
-  else if (deparse(parks_raw) == 'hal_park_raw'){
+  else if (ls.str(mode = "list")[2] == 'hal_park_raw'){
     parks <- parks_raw %>%
       select(c("PARK_NAME", "geometry")) %>%
       rename("park" = "PARK_NAME")
@@ -251,7 +251,7 @@ clean_trees <- function(trees_raw){
 
   }
   
-  else if (deparse(trees_raw) == 'hal_tree_raw'){
+  else if (ls.str(mode = "list") == 'hal_tree_raw'){
     tree_s <- trees_raw %>% 
       filter(ASSETSTAT == "INS") %>%
       select(c("X", "Y", "TREEID", "SP_SCIEN", "DBH")) %>%
@@ -274,3 +274,10 @@ clean_trees <- function(trees_raw){
   
 }
 
+
+lapply(l, function(x) if (x == 'hal_tree_raw') {tree_s <- trees_raw %>% 
+  filter(ASSETSTAT == "INS") %>%
+  select(c("X", "Y", "TREEID", "SP_SCIEN", "DBH")) %>%
+  rename("id" = "TREEID") %>%
+  rename("dbh" = "DBH") %>% 
+  drop_na(c(X,Y)) })
