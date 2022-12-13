@@ -1,16 +1,17 @@
 tree_cleaning <- function(trees_raw, parks_raw, hoods, boundaries, roads){
   
+  citylabel <- levels(as.factor(hoods$city))
 
-  parks_clean <- clean_parks(parks_raw)
+  parks_clean <- clean_parks(parks_raw, citylabel)
 
-  trees_clean <- clean_trees(trees_raw)  
+  trees_clean <- clean_trees(trees_raw, citylabel)  
   
   # transformations
   parks_t <- st_transform(parks_clean, crs = 3347)
   trees_t <- st_transform(trees_clean, crs = 3347)
   
   # cleaning roads
-  city_bound <- subset(boundaries, CMANAME == hoods$city)
+  city_bound <- subset(boundaries, CMANAME == citylabel)
   city_road_ss <- roads[city_bound,]
   city_road_s <- dplyr::select(city_road_ss, c("street", "streetid", "geometry"))
   city_road <- city_road_s %>% dplyr::mutate(index = row_number())
@@ -73,9 +74,9 @@ tree_cleaning <- function(trees_raw, parks_raw, hoods, boundaries, roads){
 
 
 # parks cleaning ----------------------------------------------------------
-clean_parks <- function(parks_raw){
+clean_parks <- function(parks_raw, citylabel){
   
-  if (deparse(parks_raw) == 'van_park_raw'){
+  if (citylabel == 'Vancouver'){
     parks <- parks_raw %>%
       select(c("park_name", "geometry")) %>%
       rename("park" = "park_name")
@@ -83,7 +84,7 @@ clean_parks <- function(parks_raw){
     parks
   }
   
-  else if (deparse(parks_raw) == 'cal_park_raw'){
+  else if (citylabel == 'Calgary'){
     parks <- parks_raw %>%
       select(c("SITE_NAME", "the_geom")) %>%
       rename("park" = "SITE_NAME") %>%
@@ -93,7 +94,7 @@ clean_parks <- function(parks_raw){
     parks
   }
   
-  else if (deparse(parks_raw) == 'win_park_raw'){
+  else if (citylabel == 'Winnipeg'){
     parks <- parks_raw %>%
       select(c("park_name", "geometry")) %>%
       rename("park" = "park_name")
@@ -101,7 +102,7 @@ clean_parks <- function(parks_raw){
     parks
   }
   
-  else if (deparse(parks_raw) == 'tor_park_raw'){
+  else if (citylabel == 'Toronto'){
     
     parks <- parks_raw %>%
       select(c("OBJECTID", "geometry")) %>%
@@ -110,7 +111,7 @@ clean_parks <- function(parks_raw){
     parks
   }
   
-  else if (deparse(parks_raw) == 'ott_park_raw'){
+  else if (citylabel == 'Ottawa'){
     parks <- parks_raw %>%
       select(c("NAME", "geometry")) %>%
       rename("park" = "NAME")
@@ -118,7 +119,7 @@ clean_parks <- function(parks_raw){
     parks
   }
   
-  else if (deparse(parks_raw) == 'mon_park_raw'){
+  else if (citylabel == 'Montreal'){
     parks <- parks_raw %>%
       select(c("Nom", "geometry")) %>%
       rename("park" = "Nom")
@@ -126,7 +127,7 @@ clean_parks <- function(parks_raw){
     parks
   }
   
-  else if (ls.str(mode = "list")[2] == 'hal_park_raw'){
+  else if (citylabel == 'Halifax'){
     parks <- parks_raw %>%
       select(c("PARK_NAME", "geometry")) %>%
       rename("park" = "PARK_NAME")
@@ -142,9 +143,9 @@ clean_parks <- function(parks_raw){
 
 
 # trees cleaning ----------------------------------------------------------
-clean_trees <- function(trees_raw){
+clean_trees <- function(trees_raw, citylabel){
   
-  if (deparse(trees_raw) == 'van_tree_raw'){
+  if (citylabel == 'Vancouver'){
     
     trees_c <- read.csv('large/trees/van_tree_raw.csv', sep = ";")
     
@@ -168,7 +169,7 @@ clean_trees <- function(trees_raw){
 
   }
   
-  else if (deparse(trees_raw) == 'cal_tree_raw'){
+  else if (citylabel == 'Calgary'){
     
     tree_s <- trees_raw %>%
       select(c("GENUS", "SPECIES", "CULTIVAR", "DBH_CM", "WAM_ID", "POINT")) %>%
@@ -187,7 +188,7 @@ clean_trees <- function(trees_raw){
   
   }
   
-  else if (deparse(trees_raw) == 'win_tree_raw'){
+  else if (citylabel == 'Winnipeg'){
     tree_s <- trees_raw %>%
       select(c("the_geom","tree_id","botanical","dbh","park","street")) %>%
       rename("id" = "tree_id") %>%
@@ -202,7 +203,7 @@ clean_trees <- function(trees_raw){
   
   }
   
-  else if (deparse(trees_raw) == 'tor_tree_raw'){
+  else if (citylabel == 'Toronto'){
     
     tree_s <- trees_raw %>%
       select(c("STRUCTID","DBH_TRUNK","COMMON_NAME", "STREETNAME","geometry")) %>%
@@ -215,13 +216,13 @@ clean_trees <- function(trees_raw){
       drop_na(c(lat,long)) %>%
       st_as_sf(coords = c("long", "lat"), crs = 4326, na.fail = FALSE, remove = FALSE)
     
-    tree <- assign_sp_tor(tree_s, tar_load(tor_tree_spcode)) # species codes may be an issue
+    tree <- assign_sp_tor(tree_s, tar_read(tor_tree_spcode)) # species codes may be an issue
     
     tree
   
   }
   
-  else if (deparse(trees_raw) == 'ott_tree_raw'){
+  else if (citylabel == 'Ottawa'){
     tree_s <- trees_raw %>%
       select(c("X","Y","OBJECTID","ADDSTR","SPECIES","DBH")) %>%
       rename("long" = "X") %>%
@@ -230,13 +231,13 @@ clean_trees <- function(trees_raw){
       rename("street" = "ADDSTR") %>%
       rename("dbh" = "DBH")
     
-    tree <- assign_sp_ott(tree_s, tar_load(ott_tree_spcode))
+    tree <- assign_sp_ott(tree_s, tar_read(ott_tree_spcode))
     
     tree
     
   }
   
-  else if (deparse(trees_raw) == 'mon_tree_raw'){
+  else if (citylabel == 'Montreal'){
     tree_s <- trees_raw %>%
       select(c("Essence_latin","DHP", "Rue", "NOM_PARC","Longitude","Latitude")) %>%
       rename("dbh" = "DHP",
@@ -251,7 +252,7 @@ clean_trees <- function(trees_raw){
 
   }
   
-  else if (ls.str(mode = "list") == 'hal_tree_raw'){
+  else if (citylabel == 'Halifax'){
     tree_s <- trees_raw %>% 
       filter(ASSETSTAT == "INS") %>%
       select(c("X", "Y", "TREEID", "SP_SCIEN", "DBH")) %>%
@@ -273,11 +274,3 @@ clean_trees <- function(trees_raw){
   
   
 }
-
-
-lapply(l, function(x) if (x == 'hal_tree_raw') {tree_s <- trees_raw %>% 
-  filter(ASSETSTAT == "INS") %>%
-  select(c("X", "Y", "TREEID", "SP_SCIEN", "DBH")) %>%
-  rename("id" = "TREEID") %>%
-  rename("dbh" = "DBH") %>% 
-  drop_na(c(X,Y)) })
