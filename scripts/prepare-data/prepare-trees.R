@@ -34,6 +34,7 @@ targets_prepare_trees <- c(
   tar_target(
     can_trees,
     rbind(van_tree_clean, cal_tree_clean, win_tree_clean,
-          tor_tree_clean, ott_tree_clean, hal_tree_clean)
+          tor_tree_clean, ott_tree_clean, mon_tree_clean, 
+          hal_tree_clean)
   )
 )
