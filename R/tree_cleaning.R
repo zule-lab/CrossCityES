@@ -75,7 +75,7 @@ tree_cleaning <- function(trees_raw, parks_raw, hoods, boundaries, roads){
 # parks cleaning ----------------------------------------------------------
 clean_parks <- function(parks_raw){
   
-  if (deparse(substitute(parks_raw)) == 'van_park_raw'){
+  if (deparse(parks_raw) == 'van_park_raw'){
     parks <- parks_raw %>%
       select(c("park_name", "geometry")) %>%
       rename("park" = "park_name")
@@ -83,7 +83,7 @@ clean_parks <- function(parks_raw){
     parks
   }
   
-  else if (deparse(substitute(parks_raw)) == 'cal_park_raw'){
+  else if (deparse(parks_raw) == 'cal_park_raw'){
     parks <- parks_raw %>%
       select(c("SITE_NAME", "the_geom")) %>%
       rename("park" = "SITE_NAME") %>%
@@ -93,7 +93,7 @@ clean_parks <- function(parks_raw){
     parks
   }
   
-  else if (deparse(substitute(parks_raw)) == 'win_park_raw'){
+  else if (deparse(parks_raw) == 'win_park_raw'){
     parks <- parks_raw %>%
       select(c("park_name", "geometry")) %>%
       rename("park" = "park_name")
@@ -101,7 +101,7 @@ clean_parks <- function(parks_raw){
     parks
   }
   
-  else if (deparse(substitute(parks_raw)) == 'tor_park_raw'){
+  else if (deparse(parks_raw) == 'tor_park_raw'){
     
     parks <- parks_raw %>%
       select(c("OBJECTID", "geometry")) %>%
@@ -110,7 +110,7 @@ clean_parks <- function(parks_raw){
     parks
   }
   
-  else if (deparse(substitute(parks_raw)) == 'ott_park_raw'){
+  else if (deparse(parks_raw) == 'ott_park_raw'){
     parks <- parks_raw %>%
       select(c("NAME", "geometry")) %>%
       rename("park" = "NAME")
@@ -118,7 +118,7 @@ clean_parks <- function(parks_raw){
     parks
   }
   
-  else if (deparse(substitute(parks_raw)) == 'mon_park_raw'){
+  else if (deparse(parks_raw) == 'mon_park_raw'){
     parks <- parks_raw %>%
       select(c("Nom", "geometry")) %>%
       rename("park" = "Nom")
@@ -126,7 +126,7 @@ clean_parks <- function(parks_raw){
     parks
   }
   
-  else if (deparse(substitute(parks_raw)) == 'hal_park_raw'){
+  else if (deparse(parks_raw) == 'hal_park_raw'){
     parks <- parks_raw %>%
       select(c("PARK_NAME", "geometry")) %>%
       rename("park" = "PARK_NAME")
@@ -144,7 +144,7 @@ clean_parks <- function(parks_raw){
 # trees cleaning ----------------------------------------------------------
 clean_trees <- function(trees_raw){
   
-  if (deparse(substitute(trees_raw)) == 'van_tree_raw'){
+  if (deparse(trees_raw) == 'van_tree_raw'){
     
     trees_c <- read.csv('large/trees/van_tree_raw.csv', sep = ";")
     
@@ -168,7 +168,7 @@ clean_trees <- function(trees_raw){
 
   }
   
-  else if (deparse(substitute(trees_raw)) == 'cal_tree_raw'){
+  else if (deparse(trees_raw) == 'cal_tree_raw'){
     
     tree_s <- trees_raw %>%
       select(c("GENUS", "SPECIES", "CULTIVAR", "DBH_CM", "WAM_ID", "POINT")) %>%
@@ -187,7 +187,7 @@ clean_trees <- function(trees_raw){
   
   }
   
-  else if (deparse(substitute(trees_raw)) == 'win_tree_raw'){
+  else if (deparse(trees_raw) == 'win_tree_raw'){
     tree_s <- trees_raw %>%
       select(c("the_geom","tree_id","botanical","dbh","park","street")) %>%
       rename("id" = "tree_id") %>%
@@ -202,7 +202,7 @@ clean_trees <- function(trees_raw){
   
   }
   
-  else if (deparse(substitute(trees_raw)) == 'tor_tree_raw'){
+  else if (deparse(trees_raw) == 'tor_tree_raw'){
     
     tree_s <- trees_raw %>%
       select(c("STRUCTID","DBH_TRUNK","COMMON_NAME", "STREETNAME","geometry")) %>%
@@ -221,7 +221,7 @@ clean_trees <- function(trees_raw){
   
   }
   
-  else if (deparse(substitute(trees_raw)) == 'ott_tree_raw'){
+  else if (deparse(trees_raw) == 'ott_tree_raw'){
     tree_s <- trees_raw %>%
       select(c("X","Y","OBJECTID","ADDSTR","SPECIES","DBH")) %>%
       rename("long" = "X") %>%
@@ -236,7 +236,7 @@ clean_trees <- function(trees_raw){
     
   }
   
-  else if (deparse(substitute(trees_raw)) == 'mon_tree_raw'){
+  else if (deparse(trees_raw) == 'mon_tree_raw'){
     tree_s <- trees_raw %>%
       select(c("Essence_latin","DHP", "Rue", "NOM_PARC","Longitude","Latitude")) %>%
       rename("dbh" = "DHP",
@@ -251,7 +251,7 @@ clean_trees <- function(trees_raw){
 
   }
   
-  else if (deparse(substitute(trees_raw)) == 'hal_tree_raw'){
+  else if (deparse(trees_raw) == 'hal_tree_raw'){
     tree_s <- trees_raw %>% 
       filter(ASSETSTAT == "INS") %>%
       select(c("X", "Y", "TREEID", "SP_SCIEN", "DBH")) %>%
