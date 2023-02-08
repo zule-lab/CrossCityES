@@ -21,10 +21,6 @@ values_hood <- tribble(
 
 
 
-
-
-
-
 # Parks -------------------------------------------------------------------
 values_parks <- tribble(
   ~dl_path, ~dl_link,
@@ -87,17 +83,13 @@ values_bounds <- tribble(
 # Census ------------------------------------------------------------------
 values_census <- tribble(
   ~dl_path, ~dl_link,
-  
-  'large/national/cen_da_raw.zip', 'https://www12.statcan.gc.ca/census-recensement/2021/dp-pd/prof/details/download-telecharger/comp/GetFile.cfm?Lang=E&FILETYPE=CSV&GEONO=006CI',
+  'large/national/cen_da_raw.zip', 'https://www12.statcan.gc.ca/census-recensement/2021/dp-pd/prof/details/download-telecharger/comp/GetFile.cfm?Lang=E&FILETYPE=CSV&GEONO=006',
 ) %>% 
   mutate(
     file_name = basename(sans_ext(dl_path)),
     file_name_sym = lapply(file_name, as.symbol),
     file_ext = file_ext(dl_path)
   )
-
-
-# Census ------------------------------------------------------------------
 
 
 

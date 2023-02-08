@@ -13,7 +13,7 @@ clean_census_da <- function(x, n, o, da_bound){
     rename(da = "ALT_GEO_CODE",
            sofac = "CHARACTERISTIC_ID",
            sonum = "C1_COUNT_TOTAL") %>%
-    filter(sofac %in% c(1, 6:7, 42:49, 115, 331, 1522, 1389, 1670)) # missing education right now
+    filter(sofac %in% c(1, 6:7, 42:49, 115, 345, 1527, 1402, 1683, 2014)) 
   
   # 1 = Population 2021
   # 6 = Pop density per sq km
@@ -28,11 +28,12 @@ clean_census_da <- function(x, n, o, da_bound){
   # 48 = Other single-attached house
   # 49 = Movable dwelling (9)
   # 115 = Median after-tax income in 2015 among recipients 
-  # 331 = Prevalence of low income based on the Low-income measure, after tax (LIM-AT) (%)
-  # 1522 = Total - Immigrant status and period of immigration for the population in private households - 25% sample data (63) -> Immigrants -> 2011-2016 (recent immigrants)
-  # 1389 = Total - Aboriginal identity for the population in private households - 25% sample data (104) -> Aboriginal identity (105)
-  # 1670 = Total - Visible minority for the population in private households - 25% sample data (121) -> Total visible minority population (122)
-  # we want percentages for all datasets except median income - need to transform 41:50, 1149, 1290, 1324, 1692
+  # 345 = Prevalence of low income based on the Low-income measure, after tax (LIM-AT) (%)
+  # 1527 = Total - Immigrant status and period of immigration for the population in private households - 25% sample data (63) -> Immigrants -> 2011-2016 (recent immigrants)
+  # 1402 = Total - Indigenous identity for the population in private households - 25% sample data (104) -> Aboriginal identity (105)
+  # 1683 = Total - Visible minority for the population in private households - 25% sample data (121) -> Total visible minority population (122)
+  # 2014 = Total - Highest certificate, diploma or degree for the population aged 25 to 64 years in private households - 25% sample data (165)
+  # we want percentages for all datasets except median income - need to transform 41:49, 1527, 1402, 1683, 2014
   # start with dwelling types
   
   census_da_w <- census_da_f %>% pivot_wider(names_from = sofac, values_from = sonum)
@@ -50,11 +51,11 @@ clean_census_da <- function(x, n, o, da_bound){
     rename(otsiho = "48") %>%
     rename(mvdwel = "49") %>%
     rename(medinc = "115") %>%
-    rename(lowinc = "331") %>%
-    rename(recimm = "1522") %>%
+    rename(lowinc = "345") %>%
+    rename(recimm = "1527") %>%
     rename(aborig = "1389") %>%
-    rename(vismin = "1670") 
-  #rename(edubac = "1692")
+    rename(vismin = "1683") %>%
+    rename(edubac = "2014")
   
   census_da_m <- merge(census_da_r, da_bound, by = "da")
   
@@ -73,7 +74,7 @@ clean_census_da <- function(x, n, o, da_bound){
   can_cen_p <- can_cen[, c(paste0(names(can_cen[,5:12]), "p")) := lapply(.SD, function(x) x / sum(.SD)), by=1:nrow(can_cen), .SDcols = c(5:12)]
   
   # population percentages 
-  can_cen_pp <- can_cen_p[ , c(paste0(names(can_cen_p[,15:17]), "p")) := lapply(.SD, function(x) x/totpop), .SDcols = 15:17]
+  can_cen_pp <- can_cen_p[ , c(paste0(names(can_cen_p[,14:17]), "p")) := lapply(.SD, function(x) x/totpop), .SDcols = 14:17]
   
   return(can_cen_pp)
   
