@@ -1,7 +1,6 @@
 targets_data_download <- c(
 
   # Microsoft Building Footprints -------------------------------------------
-  # TODO: SWITCH TO GEE
   tar_target(
     prov_list,
     c("Alberta", "NovaScotia", "Quebec", "Ontario", "BritishColumbia", "Manitoba")
