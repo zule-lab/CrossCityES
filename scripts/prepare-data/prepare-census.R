@@ -15,5 +15,4 @@ targets_prepare_census <- c(
     clean_census_da("large/national/cen_da_raw.zip", 5, "large/national/cen_da_raw", da_bound_clean)
   )
   
-  # TODO: municipal level census with DAs that intersect with tree data
 )
