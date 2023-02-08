@@ -23,8 +23,8 @@ restore()
 
 
 # rgee --------------------------------------------------------------------
-#ee_check()
-#ee_Initialize()
+ee_check()
+ee_Initialize()
 
 
 
@@ -50,4 +50,4 @@ tar_source('scripts')
 
 # lapply(grep('targets', ls(), value = TRUE), get)
 
-c(targets_prepare_boundaries, targets_prepare_dems, targets_prepare_neighbourhoods, targets_prepare_trees)
+c(targets_prepare_boundaries, targets_prepare_neighbourhoods, targets_prepare_census, targets_prepare_supp, targets_prepare_trees)
