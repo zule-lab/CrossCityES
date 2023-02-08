@@ -79,6 +79,23 @@ values_bounds <- tribble(
 
 
 
+# Buildings ---------------------------------------------------------------
+values_buildings <- tribble(
+  ~dl_path, ~dl_link,
+  
+  'large/national/Alberta_building_density.zip', 'https://usbuildingdata.blob.core.windows.net/canadian-buildings-v2/Alberta.zip',
+  'large/national/BritishColumbia_building_density.zip', 'https://usbuildingdata.blob.core.windows.net/canadian-buildings-v2/BritishColumbia.zip',
+  'large/national/Manitoba_building_density.zip', 'https://usbuildingdata.blob.core.windows.net/canadian-buildings-v2/Manitoba.zip',
+  'large/national/NovaScotia_building_density.zip', 'https://usbuildingdata.blob.core.windows.net/canadian-buildings-v2/NovaScotia.zip',
+  'large/national/Ontario_building_density.zip', 'https://usbuildingdata.blob.core.windows.net/canadian-buildings-v2/Ontario.zip',
+  'large/national/Quebec_building_density.zip', 'https://usbuildingdata.blob.core.windows.net/canadian-buildings-v2/Quebec.zip'
+) %>% 
+  mutate(
+    file_name = basename(sans_ext(dl_path)),
+    file_name_sym = lapply(file_name, as.symbol),
+    file_ext = file_ext(dl_path)
+  )
+
 
 # Census ------------------------------------------------------------------
 values_census <- tribble(
