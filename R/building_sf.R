@@ -23,7 +23,7 @@ building_cleanup <- function(p, g){
     geo <- st_as_sfc(g, GeoJson = TRUE)
     geo_sf <- st_as_sf(geo)
     geo_t <- st_transform(geo_sf, crs = 3347)
-    geo_c <- geo %>% mutate(city = c("Vancouver"))
+    geo_c <- geo_t %>% mutate(city = c("Vancouver"))
     geo_build <- geo_c[boundary,]
     
     return(geo_build)
@@ -33,7 +33,7 @@ building_cleanup <- function(p, g){
     geo <- st_as_sfc(g, GeoJson = TRUE)
     geo_sf <- st_as_sf(geo)
     geo_t <- st_transform(geo_sf, crs = 3347)
-    geo_c <- geo %>% mutate(city = c("Calgary"))
+    geo_c <- geo_t %>% mutate(city = c("Calgary"))
     geo_build <- geo_c[boundary,]
     
     return(geo_build)
@@ -44,7 +44,7 @@ building_cleanup <- function(p, g){
     geo <- st_as_sfc(g, GeoJson = TRUE)
     geo_sf <- st_as_sf(geo)
     geo_t <- st_transform(geo_sf, crs = 3347)
-    geo_c <- geo %>% mutate(city = c("Winnipeg"))
+    geo_c <- geo_t %>% mutate(city = c("Winnipeg"))
     geo_build <- geo_c[boundary,]
     
     return(geo_build)
@@ -90,7 +90,7 @@ building_cleanup <- function(p, g){
     geo <- st_as_sfc(g, GeoJson = TRUE)
     geo_sf <- st_as_sf(geo)
     geo_t <- st_transform(geo_sf, crs = 3347)
-    geo_c <- geo %>% mutate(city = c("Montreal"))
+    geo_c <- geo_t %>% mutate(city = c("Montreal"))
     geo_build <- geo_c[boundary,]
     
     return(geo_build)
@@ -101,7 +101,7 @@ building_cleanup <- function(p, g){
     geo <- st_as_sfc(g, GeoJson = TRUE)
     geo_sf <- st_as_sf(geo)
     geo_t <- st_transform(geo_sf, crs = 3347)
-    geo_c <- geo %>% mutate(city = c("Halifax"))
+    geo_c <- geo_t %>% mutate(city = c("Halifax"))
     geo_build <- geo_c[boundary,]
     
     return(geo_build)
