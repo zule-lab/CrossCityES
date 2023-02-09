@@ -21,13 +21,6 @@ snapshot()
 restore()
 
 
-
-# rgee --------------------------------------------------------------------
-ee_check()
-ee_Initialize()
-
-
-
 # Variables ---------------------------------------------------------------
 getOption('timeout')
 options(timeout=1200)
