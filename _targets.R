@@ -30,7 +30,7 @@ ee_Initialize()
 
 # Variables ---------------------------------------------------------------
 getOption('timeout')
-options(timeout=600)
+options(timeout=1200)
 
 
 
@@ -50,4 +50,5 @@ tar_source('scripts')
 
 # lapply(grep('targets', ls(), value = TRUE), get)
 
-c(targets_prepare_boundaries, targets_prepare_neighbourhoods, targets_prepare_census, targets_prepare_supp, targets_prepare_trees)
+c(targets_prepare_boundaries, targets_prepare_neighbourhoods, targets_prepare_census, 
+  targets_prepare_supp, targets_prepare_trees, targets_prepare_buildings)
