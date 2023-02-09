@@ -53,7 +53,7 @@ clean_census_da <- function(x, n, o, da_bound){
     rename(medinc = "115") %>%
     rename(lowinc = "345") %>%
     rename(recimm = "1527") %>%
-    rename(aborig = "1389") %>%
+    rename(indig = "1402") %>%
     rename(vismin = "1683") %>%
     rename(edubac = "2014")
   
