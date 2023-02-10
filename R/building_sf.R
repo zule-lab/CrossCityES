@@ -10,7 +10,7 @@ building_sf <- function(dl_link, dl_path, file_ext){
   
   geo_sf <- building_cleanup(dl_path, gjson)
   
-  
+  return(geo_sf)
   
 }
 
