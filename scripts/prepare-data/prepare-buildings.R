@@ -10,7 +10,7 @@ targets_prepare_buildings <- c(
   
   tar_target(
     can_build,
-    rbind(cal_build, hal_build, mon_build, ott_build, tor_build, van_build, win_build)
+    rbind(BritishColumbia_Buildings, Alberta_Buildings, Manitoba_Buildings, Ontario_Buildings, Quebec_Buildings, NovaScotia_Buildings)
   )
   
 )
