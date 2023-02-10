@@ -4,9 +4,9 @@ clean_ee <- function(dl_link, dl_path, file_ext){
   
   file <- read.csv(dl_path)
   
-  ee <- clean_sat(file, dl_path)
+  #ee <- clean_sat(file, dl_path)
   
-  return(ee)
+  return(file)
   
 }
 
