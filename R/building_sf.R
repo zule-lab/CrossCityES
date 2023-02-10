@@ -52,7 +52,8 @@ building_cleanup <- function(p, g){
   }
   
   else if (p == "large/national/Ontario_Buildings.zip"){
-      geo <- st_as_sfc(ont_json, GeoJson = TRUE) %>% 
+      
+    geo <- st_as_sfc(g, GeoJson = TRUE) %>% 
         st_as_sf() %>%
         st_transform(crs = 3347) %>%
         st_join(., boundary) %>% 
@@ -60,28 +61,11 @@ building_cleanup <- function(p, g){
       
 
       geo_build <- geo %>% 
-        filter(city %in% "Ottawa") %>%
+        filter(city %in% c("Ottawa", "Toronto")) %>%
         select(c(geometry, city)) %>%
         rename(x = geometry) 
-      
+    
       return(geo_build)
-    
-  }
-  
-  else if (p == "large/national/Ontario_Buildings.zip"){
-    geo <- st_as_sfc(ont_json, GeoJson = TRUE) %>% 
-      st_as_sf() %>%
-      st_transform(crs = 3347) %>%
-      st_join(., boundary) %>% 
-      rename(city = CMANAME)
-    
-    
-    geo_build <- geo %>% 
-      filter(city %in% "Toronto") %>%
-      select(c(geometry, city)) %>%
-      rename(x = geometry) 
-    
-    return(geo_build)
     
   }
   
