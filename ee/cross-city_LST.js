@@ -15,6 +15,9 @@ Example 1:
     
 */
 
+// create 25 m buffer around roads
+var roads_buff = roads.map(function(x){return x.buffer(25)});
+
 // link to the code that computes the Landsat LST
 var LandsatLST = require('users/sofiaermida/landsat_smw_lst:modules/Landsat_LST.js')
 
@@ -32,7 +35,7 @@ var LST = LandsatLST.collection(satellite, date_start, date_end, geometry, use_n
 // convert to Celsius for easier analysis 
 var LSTc = LST.select('LST').map(function(image) {
   return image
-    .subtract(273.15)
+    .subtract(273.15) // multiply by band scale for true value? 2.75e-05 
 });
 
 
@@ -94,7 +97,7 @@ Export.table.toDrive({
 var StreetLST = LSTcMean.reduceRegions({
   'reducer': reducer,
   'scale': 30,
-  'collection': roads
+  'collection': roads_buff
 });
 
 // save
