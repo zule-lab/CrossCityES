@@ -1,4 +1,4 @@
-building_sf <- function(dl_link, dl_path, file_ext){
+building_sf <- function(dl_link, dl_path, file_ext, mun_bound_trees){
   
   download_file(dl_link, dl_path, file_ext)
   
@@ -8,16 +8,14 @@ building_sf <- function(dl_link, dl_path, file_ext){
   
   gjson <- geojson_read(file.path(path), what = "sp")
   
-  geo_sf <- building_cleanup(dl_path, gjson)
+  geo_sf <- building_cleanup(dl_path, gjson, mun_bound_trees)
   
   return(geo_sf)
   
 }
 
 
-building_cleanup <- function(p, g){
-  
-  boundary <- tar_read(mun_bound_trees)
+building_cleanup <- function(p, g, mun_bound_trees){
   
   if (p == "large/national/BritishColumbia_Buildings.zip"){
     geo <- st_as_sfc(g, GeoJson = TRUE)

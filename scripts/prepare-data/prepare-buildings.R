@@ -3,7 +3,7 @@ targets_prepare_buildings <- c(
   tar_eval(
     tar_target(
       file_name_sym,
-      building_sf(dl_link, dl_path, file_ext)
+      building_sf(dl_link, dl_path, file_ext, mun_bound_trees)
     ),
     values = values_buildings
   ),
