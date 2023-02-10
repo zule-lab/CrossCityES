@@ -3,7 +3,7 @@ targets_prepare_scales <- c(
   # select DAs that intersect with tree data and then merge to create the "city" boundaries
   tar_target(
     mun_bound_trees,
-    trees_mun_bounds(da_bound_clean, can_trees, mun_bound)
+    trees_mun_bounds(da_bound_clean, can_trees, mun_bound_clean)
   ),
   
   # subset neighbourhoods to ones that intersect with tree data
