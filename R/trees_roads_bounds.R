@@ -5,7 +5,7 @@ trees_roads_bounds <- function(mun_road_clean, can_trees){
     mutate(id = row_number()) %>%
     filter(id %in% unlist(st_intersects(can_trees, .))) 
   
-  write_sf(bounds, "output/ee_assets/RoadBoundaries.shp")
+  write_sf(bounds, "large/ee_assets/RoadBoundaries.shp")
   
   return(bounds)
   

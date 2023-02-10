@@ -10,7 +10,7 @@ trees_mun_bounds <- function(da_bound_clean, can_trees, mun_bound){
               CMANAME = first(CMANAME))
   
   # export as shapefiles so they can be uploaded to EE as assets
-  write_sf(bounds, "output/ee_assets/MunicipalBoundaries.shp")
+  write_sf(bounds, "large/ee_assets/MunicipalBoundaries.shp")
   
   return(bounds)
   

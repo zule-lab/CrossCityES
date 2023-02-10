@@ -5,7 +5,7 @@ trees_neighbourhood_bounds <- function(can_hood, can_trees){
     filter(id %in% unlist(st_intersects(can_trees, can_hood))) 
   
   # export as shapefiles so they can be uploaded to EE as assets
-  write_sf(bounds, "output/ee_assets/NeighbourhhoodBoundaries.shp")
+  write_sf(bounds, "large/ee_assets/NeighbourhhoodBoundaries.shp")
   
   return(bounds)
   
