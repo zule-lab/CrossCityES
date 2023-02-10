@@ -21,7 +21,7 @@ targets_prepare_neighbourhoods <- c(
   tar_target(
     can_hood,
     rbind(van_hood_clean, cal_hood_clean, win_hood_clean,
-          tor_hood_clean, ott_hood_clean, hal_hood_clean)
+          tor_hood_clean, ott_hood_clean, mon_hood_clean, hal_hood_clean)
   )
 
 )
