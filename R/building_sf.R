@@ -17,7 +17,7 @@ building_sf <- function(dl_link, dl_path, file_ext){
 
 building_cleanup <- function(p, g){
   
-  boundary <- tar_read(mun_bound_clean)
+  boundary <- tar_read(mun_bound_trees)
   
   if (p == "large/national/BritishColumbia_Buildings.zip"){
     geo <- st_as_sfc(g, GeoJson = TRUE)
