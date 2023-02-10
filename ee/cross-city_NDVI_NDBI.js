@@ -1,6 +1,9 @@
 // Data Import + Cloud Removal -----------------------------------
 // code from this tutorial: https://developers.google.com/earth-engine/tutorials/community/sentinel-2-s2cloudless
 
+// create 25 m buffer around roads
+var roads_buff = roads.map(function(x){return x.buffer(25)});
+
 // Sentinel-2 surface reflectance data for the composite.
 var s2Sr = ee.ImageCollection('COPERNICUS/S2_SR');
 
@@ -62,7 +65,7 @@ var NDVI_NDBI_hood = indicesMean.reduceRegions({
 var NDVI_NDBI_roads = indicesMean.reduceRegions({
   'reducer': reducer,
   'scale': 10, 
-  'collection': roads});
+  'collection': roads_buff});
 
 
 // Export --------------------------------------------------------------------------------------------------
