@@ -122,7 +122,7 @@ values_ee <- tribble(
   
   'large/dem/cities_bldhgt.csv', 'Data/DEM/cities_dem.csv',
   'large/dem/neighbourhoods_bldhgt.csv', 'Data/DEM/neighbourhoods_dem.csv',
-  'large/dem/streets_bldhgt.csv', 'Data/Landsat_Temperature/streets_dem.csv',
+  'large/dem/streets_bldhgt.csv', 'Data/DEM/streets_dem.csv',
   
   'large/pollution/cities_CO.csv', 'Data/SENTINEL_Pollution/CO_city.csv',
   'large/pollution/neighbourhoods_CO.csv', 'Data/SENTINEL_Pollution/CO_hood.csv',
