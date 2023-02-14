@@ -14,7 +14,7 @@ clean_ee <- function(dl_link, dl_path, file_ext){
   
 }
 
-clean_sat <- function(folder, file){
+clean_sat <- function(folder, file, dl_path){
   
   if (folder == 'large/ndvi_ndbi'){
     
