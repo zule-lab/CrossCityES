@@ -12,7 +12,7 @@ targets_prepare_ee <- c(
   # combine pollution for city level
   tar_target(
     cities_pollution,
-    cbind(cities_CO, cities_NO2[,-'city'], cities_O3[,-'city'], cities_SO2[,-'city'], cities_UV[,-'city'])
+    cbind(cities_CO, cities_NO2[,-'CMANAME'], cities_O3[,-'CMANAME'], cities_SO2[,-'CMANAME'], cities_UV[,-'CMANAME'])
   ),
   
   # combine pollution for neighbourhood level
