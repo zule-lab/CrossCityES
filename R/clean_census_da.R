@@ -13,7 +13,7 @@ clean_census_da <- function(x, n, o, da_bound){
     rename(da = "ALT_GEO_CODE",
            sofac = "CHARACTERISTIC_ID",
            sonum = "C1_COUNT_TOTAL") %>%
-    filter(sofac %in% c(1, 6:7, 42:49, 115, 345, 1527, 1402, 1683, 2014)) 
+    filter(sofac %in% c(1, 6:7, 42:49, 115, 345, 1527, 1403, 1684, 2024)) 
   
   # 1 = Population 2021
   # 6 = Pop density per sq km
@@ -30,10 +30,10 @@ clean_census_da <- function(x, n, o, da_bound){
   # 115 = Median after-tax income in 2015 among recipients 
   # 345 = Prevalence of low income based on the Low-income measure, after tax (LIM-AT) (%)
   # 1527 = Total - Immigrant status and period of immigration for the population in private households - 25% sample data (63) -> Immigrants -> 2011-2016 (recent immigrants)
-  # 1402 = Total - Indigenous identity for the population in private households - 25% sample data (104) -> Aboriginal identity (105)
-  # 1683 = Total - Visible minority for the population in private households - 25% sample data (121) -> Total visible minority population (122)
-  # 2014 = Total - Highest certificate, diploma or degree for the population aged 25 to 64 years in private households - 25% sample data (165)
-  # we want percentages for all datasets except median income - need to transform 41:49, 1527, 1402, 1683, 2014
+  # 1403 = Indigenous identity (45)
+  # 1684 = Total visible minority population (118)
+  # 2024 = Bachelor's degree or higher
+  # we want percentages for all datasets except median income - need to transform 41:49, 1527, 1403, 1684, 2024
   # start with dwelling types
   
   census_da_w <- census_da_f %>% pivot_wider(names_from = sofac, values_from = sonum)
