@@ -45,4 +45,4 @@ tar_source('scripts')
 
 c(targets_prepare_boundaries, targets_prepare_neighbourhoods, targets_prepare_census, 
   targets_prepare_supp, targets_prepare_trees, targets_prepare_scales, targets_prepare_buildings,
-  targets_prepare_ee)
+  targets_prepare_ee, targets_building_density)
