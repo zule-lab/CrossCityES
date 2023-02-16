@@ -12,15 +12,22 @@ targets_prepare_ee <- c(
   # combine pollution for city level
   tar_target(
     cities_pollution,
-    cbind(cities_CO, cities_NO2[,-'CMANAME'], cities_O3[,-'CMANAME'], cities_SO2[,-'CMANAME'], cities_UV[,-'CMANAME'])
-  ),
+    bind_cols(cities_CO, 
+              cities_NO2 %>% select(-CMANAME), 
+              cities_O3 %>% select(-CMANAME),
+              cities_SO2 %>% select(-CMANAME),
+              cities_UV %>% select(-CMANAME)) %>%
+      rename(city = CMANAME)
+    ),
   
   # combine pollution for neighbourhood level
   tar_target(
     neighbourhoods_pollution,
-    cbind(neighbourhoods_CO, neighbourhoods_NO2[,-c('city', 'hood', 'hood_area', 'hood_id')], neighbourhoods_O3[,-c('city', 'hood', 'hood_area', 'hood_id')], neighbourhoods_SO2[,-c('city', 'hood', 'hood_area', 'hood_id')], neighbourhoods_UV[,-c('city', 'hood', 'hood_area', 'hood_id')])
-  )
-  
-  
+    bind_cols(neighbourhoods_CO %>% select(-c('id')),
+              neighbourhoods_NO2 %>% select(-c('id', 'city', 'hood', 'hood_area', 'hood_id')),
+              neighbourhoods_O3 %>% select(-c('id', 'city', 'hood', 'hood_area', 'hood_id')),
+              neighbourhoods_SO2 %>% select(-c('id', 'city', 'hood', 'hood_area', 'hood_id')),
+              neighbourhoods_UV %>% select(-c('id', 'city', 'hood', 'hood_area', 'hood_id')))
+    )
   
 )
