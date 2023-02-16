@@ -15,9 +15,6 @@ Example 1:
     
 */
 
-// create 25 m buffer around roads
-var roads_buff = roads.map(function(x){return x.buffer(25)});
-
 // link to the code that computes the Landsat LST
 var LandsatLST = require('users/sofiaermida/landsat_smw_lst:modules/Landsat_LST.js')
 
@@ -97,7 +94,7 @@ Export.table.toDrive({
 var StreetLST = LSTcMean.reduceRegions({
   'reducer': reducer,
   'scale': 30,
-  'collection': roads_buff
+  'collection': roads
 });
 
 // save
@@ -119,12 +116,11 @@ Map.addLayer(LSTcMean.select('LST'), {min:0, max:50, opacity:0.49, palette:cmap1
 // visualize city boundaries
 var empty = ee.Image().byte();
 var outline = empty.paint({
-  featureCollection: hoods,
+  featureCollection: roads,
   color: 1,
   width: 3
 });
 Map.addLayer(outline, {colour: 'black'}, 'Boundaries')
-
 
 /*
 

@@ -5,7 +5,6 @@
 var cities = ee.FeatureCollection('users/icrichmond/MunicipalBoundaries');
 var neighbourhoods = ee.FeatureCollection('users/icrichmond/NeighbourhoodBoundaries');
 var streets = ee.FeatureCollection('users/icrichmond/RoadBoundaries');
-var streets_buff = streets.map(function(x){return x.buffer(25)});
 
 // load Canadian buildings
 var canBuildings = ee.FeatureCollection('projects/sat-io/open-datasets/MSBuildings/Canada')
@@ -36,7 +35,7 @@ var neighbourhoods_dem = dem_mask.reduceRegions({collection: neighbourhoods,
                                       scale: 5
 });
 
-var streets_dem = dem_mask.reduceRegions({collection: streets_buff,
+var streets_dem = dem_mask.reduceRegions({collection: streets,
                                       reducer: ee.Reducer.mean().combine({reducer2: ee.Reducer.stdDev(), outputPrefix: null, sharedInputs: true}),
                                       scale: 5
 });
@@ -61,5 +60,5 @@ Export.table.toDrive({
 });
 
 // Visualize ----------
-Map.addLayer(streets_buff);
+Map.addLayer(streets);
 Map.addLayer(dem_mask);
