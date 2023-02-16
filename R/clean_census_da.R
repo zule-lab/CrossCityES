@@ -61,20 +61,20 @@ clean_census_da <- function(x, n, o, da_bound){
   
   census_da_sf <- st_as_sf(census_da_m, sf_column_name = c("geometry"), crs = 3347)
   
-  census_da_na <- census_da_sf %>% mutate(across(c(2:17), ~na_if(., "x")),
-                          across(c(2:17), ~na_if(., "F")))
+  census_da_na <- census_da_sf %>% mutate(across(c(totpop:edubac), ~na_if(., "x")),
+                          across(c(totpop:edubac), ~na_if(., "F")))
   
   census_da_num <- census_da_na %>% 
     mutate(da = as.factor(da)) %>%
-    mutate(across(c(2:17), ~as.numeric(.))) %>%
+    mutate(across(c(totpop:edubac), ~as.numeric(.))) %>%
     drop_na()
   
   can_cen <- setDT(census_da_num)
   
-  can_cen_p <- can_cen[, c(paste0(names(can_cen[,5:12]), "p")) := lapply(.SD, function(x) x / sum(.SD)), by=1:nrow(can_cen), .SDcols = c(5:12)]
+  can_cen_p <- can_cen[, c(paste0(names(can_cen[,sideho:mvdwel]), "p")) := lapply(.SD, function(x) x / sum(.SD)), by=1:nrow(can_cen), .SDcols = c(sideho:mvdwel)]
   
   # population percentages 
-  can_cen_pp <- can_cen_p[ , c(paste0(names(can_cen_p[,14:17]), "p")) := lapply(.SD, function(x) x/totpop), .SDcols = 14:17]
+  can_cen_pp <- can_cen_p[ , c(paste0(names(can_cen_p[,recimm:edubac]), "p")) := lapply(.SD, function(x) x/totpop), .SDcols = recimm:edubac]
   
   return(can_cen_pp)
   
