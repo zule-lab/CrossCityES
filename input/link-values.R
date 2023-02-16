@@ -118,7 +118,7 @@ values_ee <- tribble(
   
   'large/temperature/cities_lst.csv', 'Data/Landsat_Temperature/cities_lst.csv',
   'large/temperature/neighbourhoods_lst.csv', 'Data/Landsat_Temperature/neighbourhoods_lst.csv',
-#  'large/temperature/streets_lst.csv', 'Data/Landsat_Temperature/streets_lst.csv',
+  'large/temperature/streets_lst.csv', 'Data/Landsat_Temperature/streets_lst.csv',
   
   'large/dem/cities_bldhgt.csv', 'Data/DEM/cities_dem.csv',
   'large/dem/neighbourhoods_bldhgt.csv', 'Data/DEM/neighbourhoods_dem.csv',
