@@ -53,9 +53,9 @@ clean_census_da <- function(x, n, o, da_bound){
     rename(medinc = "115") %>%
     rename(lowinc = "345") %>%
     rename(recimm = "1527") %>%
-    rename(indig = "1402") %>%
-    rename(vismin = "1683") %>%
-    rename(edubac = "2014")
+    rename(indig = "1403") %>%
+    rename(vismin = "1684") %>%
+    rename(edubac = "2024")
   
   census_da_m <- merge(census_da_r, da_bound, by = "da")
   
@@ -71,11 +71,11 @@ clean_census_da <- function(x, n, o, da_bound){
   
   can_cen <- setDT(census_da_num)
   
-  can_cen_p <- can_cen[, c(paste0(names(can_cen[,sideho:mvdwel]), "p")) := lapply(.SD, function(x) x / sum(.SD)), by=1:nrow(can_cen), .SDcols = c(sideho:mvdwel)]
+  can_cen_p <- can_cen[, c(paste0(names(can_cen[,c('sideho', 'semhou', 'rowhou', 'aptdup', 'aptbui', 'aptfiv', 'otsiho', 'mvdwel')]), "p")) := lapply(.SD, function(x) x / sum(.SD)), by=1:nrow(can_cen), .SDcols = c('sideho', 'semhou', 'rowhou', 'aptdup', 'aptbui', 'aptfiv', 'otsiho', 'mvdwel')]
   
-  # population percentages 
-  can_cen_pp <- can_cen_p[ , c(paste0(names(can_cen_p[,recimm:edubac]), "p")) := lapply(.SD, function(x) x/totpop), .SDcols = recimm:edubac]
+  ## population percentages 
+  can_cen_pp <- can_cen_p[ , c(paste0(names(can_cen_p[,c('recimm', 'indig', 'vismin', 'edubac')]), "p")) := lapply(.SD, function(x) x/totpop), .SDcols = c('recimm', 'indig', 'vismin', 'edubac')]
   
-  return(can_cen_pp)
+  return(can_cen)
   
 }
