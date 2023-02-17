@@ -53,24 +53,6 @@ targets_tree_size <- c(
              mean_dbh = set_units(mean_dbh, "in"),
              sd_dbh = set_units(sd_dbh, "in"))
     
-  ),
-  
-  
-  tar_target(
-    skewness_vis_city,
-    ggplot(all_tree_in, aes(x = dbh_in, group = city, col = city)) + 
-      geom_density(alpha= 0.02, mapping = aes(y= ..count..)) +
-      theme_classic() + xlim(c(0,100)) + xlab("DBH (in)")+ ylab("Density")+ 
-      theme(legend.position = "top", axis.title = element_text(face= "bold", size= 18), axis.text.x = element_text(size= 18), axis.text.y = element_text(size= 18))
-  ),
-  
-  
-  tar_target(
-    skewness_vis_hood,
-    ggplot(all_tree_in, aes(x = dbh_in, group = hood_id, col = city)) + 
-      geom_density(alpha= 0.02, mapping = aes(y= ..count..)) +
-      theme_classic() + xlim(c(0,100)) + xlab("DBH (in)")+ ylab("Density")+ 
-      theme(legend.position = "top", axis.title = element_text(face= "bold", size= 18), axis.text.x = element_text(size= 18), axis.text.y = element_text(size= 18))
   )
   
   
