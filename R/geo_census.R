@@ -7,7 +7,7 @@ geo_census <- function(can_bound, census_da_clean, scale){
     # spatially weighted join
     city_cen_swj <- city_cen_i %>%
       select(c("CMANAME","da","totpop","popdens", "area", "sidehop","aptfivp","semhoup","rowhoup","aptdupp","aptbuip","otsihop","mvdwelp",
-               "medinc", "lowinc", "recimmp", "indigp", "visminp")) %>%
+               "medinc", "lowinc", "recimmp", "indigp", "visminp", "edubacp")) %>%
       rename(city = CMANAME) %>%
       group_by(city) %>% 
       mutate(area = st_area(geometry)) %>% 
@@ -53,7 +53,7 @@ geo_census <- function(can_bound, census_da_clean, scale){
     # spatially weighted join
     hood_cen_swj <- hood_cen_i %>%
       select(c("city","hood","hood_id","da","totpop","popdens", "area", "sidehop","aptfivp","semhoup","rowhoup","aptdupp","aptbuip","otsihop","mvdwelp",
-               "medinc", "lowinc", "recimmp", "indigp", "visminp")) %>%
+               "medinc", "lowinc", "recimmp", "indigp", "visminp", "edubacp")) %>%
       group_by(hood) %>% 
       mutate(area = st_area(geometry)) %>% 
       mutate(weight = as.numeric(area / sum(area))) %>%
