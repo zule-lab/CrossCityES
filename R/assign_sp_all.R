@@ -1,6 +1,10 @@
-assign_sp_all <- function(can_trees_raw){
+assign_sp_all <- function(van_tree_clean, cal_tree_clean, win_tree_clean, tor_tree_clean, ott_tree_clean, mon_tree_clean, hal_tree_clean){
   
-  all <-  can_trees_raw %>%
+  bind <- rbind(van_tree_clean, cal_tree_clean, win_tree_clean,
+        tor_tree_clean, ott_tree_clean, mon_tree_clean, 
+        hal_tree_clean)
+  
+  all <-  bind %>%
     drop_na(city) %>%
     mutate(species = as.factor(species),
            genus = as.factor(genus),

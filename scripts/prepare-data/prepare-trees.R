@@ -30,17 +30,9 @@ targets_prepare_trees <- c(
     values = symbol_values
   ),
   
-  # Combine
-  tar_target(
-    can_trees_raw,
-    rbind(van_tree_clean, cal_tree_clean, win_tree_clean,
-          tor_tree_clean, ott_tree_clean, mon_tree_clean, 
-          hal_tree_clean)
-  ),
-  
-  # clean species names
+  # Combine and clean species names
   tar_target(
     can_trees,
-    assign_sp_all(can_trees_raw)
+    assign_sp_all(van_tree_clean, cal_tree_clean, win_tree_clean, tor_tree_clean, ott_tree_clean, mon_tree_clean, hal_tree_clean)
   )
 )
