@@ -1,4 +1,14 @@
-assign_sp_all <- function(all){
+assign_sp_all <- function(can_trees_raw){
+  
+  all <-  can_trees_raw %>%
+    drop_na(city) %>%
+    mutate(species = as.factor(species),
+           genus = as.factor(genus),
+           city = as.factor(city),
+           fullname = as.factor(paste0(genus, " ", species))) %>%
+    filter(dbh < 500) %>%
+    group_by(city) %>%
+    mutate(nspecies = n_distinct(fullname))
   
   # manually inspected for spelling errors and inconsistencies 
   # Abies balsamea 
