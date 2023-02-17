@@ -41,14 +41,5 @@ targets_prepare_trees <- c(
   tar_target(
     can_trees,
     assign_sp_all(can_trees_raw)
-  ),
-  
-  tar_target(
-    abundance,
-    all_tree %>%
-      group_by(city, fullname) %>%
-      summarise(n = n()) %>%
-      mutate(freq = (n / sum(n))*100) %>%
-      arrange(desc(freq), .by_group = T)
-  ),
+  )
 )
