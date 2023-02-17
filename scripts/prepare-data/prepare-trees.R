@@ -38,6 +38,7 @@ targets_prepare_trees <- c(
           hal_tree_clean)
   ),
   
+  # clean species names
   tar_target(
     can_trees,
     assign_sp_all(can_trees_raw)
