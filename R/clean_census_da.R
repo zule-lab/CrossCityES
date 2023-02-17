@@ -13,7 +13,7 @@ clean_census_da <- function(x, n, o, da_bound){
     rename(da = "ALT_GEO_CODE",
            sofac = "CHARACTERISTIC_ID",
            sonum = "C1_COUNT_TOTAL") %>%
-    filter(sofac %in% c(1, 6:7, 42:49, 115, 345, 1527, 1403, 1684, 2024)) 
+    filter(sofac %in% c(1, 6:7, 42:49, 115, 345, 1527, 1534, 1402, 1403, 1683, 1684, 2014, 2024)) 
   
   # 1 = Population 2021
   # 6 = Pop density per sq km
@@ -30,8 +30,12 @@ clean_census_da <- function(x, n, o, da_bound){
   # 115 = Median after-tax income in 2015 among recipients 
   # 345 = Prevalence of low income based on the Low-income measure, after tax (LIM-AT) (%)
   # 1527 = Total - Immigrant status and period of immigration for the population in private households - 25% sample data (63) -> Immigrants -> 2011-2016 (recent immigrants)
+  # 1534 = Immigrants    2011 to 2021 (82)
+  # 1402 = Total - Indigenous identity for the population in private households - 25% sample data (44)
   # 1403 = Indigenous identity (45)
+  # 1683 = Total - Visible minority for the population in private households - 25% sample data (117)
   # 1684 = Total visible minority population (118)
+  # 2014 = Total - Highest certificate, diploma or degree for the population aged 25 to 64 years in private households - 25% sample data (165)
   # 2024 = Bachelor's degree or higher
   # we want percentages for all datasets except median income - need to transform 41:49, 1527, 1403, 1684, 2024
   # start with dwelling types
@@ -52,9 +56,13 @@ clean_census_da <- function(x, n, o, da_bound){
     rename(mvdwel = "49") %>%
     rename(medinc = "115") %>%
     rename(lowinc = "345") %>%
-    rename(recimm = "1527") %>%
+    rename(totimm = "1527") %>%
+    rename(recimm = "1534") %>%
+    rename(totindig = "1402") %>%
     rename(indig = "1403") %>%
+    rename(totvismin = "1683") %>%
     rename(vismin = "1684") %>%
+    rename(totedu = "2014") %>%
     rename(edubac = "2024")
   
   census_da_m <- merge(census_da_r, da_bound, by = "da")
@@ -73,9 +81,12 @@ clean_census_da <- function(x, n, o, da_bound){
   
   can_cen_p <- can_cen[, c(paste0(names(can_cen[,c('sideho', 'semhou', 'rowhou', 'aptdup', 'aptbui', 'aptfiv', 'otsiho', 'mvdwel')]), "p")) := lapply(.SD, function(x) x / sum(.SD)), by=1:nrow(can_cen), .SDcols = c('sideho', 'semhou', 'rowhou', 'aptdup', 'aptbui', 'aptfiv', 'otsiho', 'mvdwel')]
   
-  ## population percentages 
-  can_cen_pp <- can_cen_p[ , c(paste0(names(can_cen_p[,c('recimm', 'indig', 'vismin', 'edubac')]), "p")) := lapply(.SD, function(x) x/totpop), .SDcols = c('recimm', 'indig', 'vismin', 'edubac')]
-  
-  return(can_cen)
+  ## population percentages
+  can_cen_pp <- can_cen_p[, recimmp := recimm/totimm
+                        ][, indigp := indig/totindig
+                          ][, visminp := vismin/totvismin
+                            ][, edubacp := edubac/totedu]
+
+  return(can_cen_pp)
   
 }
