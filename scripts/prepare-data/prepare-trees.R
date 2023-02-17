@@ -36,5 +36,32 @@ targets_prepare_trees <- c(
     rbind(van_tree_clean, cal_tree_clean, win_tree_clean,
           tor_tree_clean, ott_tree_clean, mon_tree_clean, 
           hal_tree_clean)
-  )
+  ),
+  
+  tar_target(
+    all_tree_e,
+    all_tree_raw %>%
+      drop_na(city) %>%
+      mutate(species = as.factor(species),
+             genus = as.factor(genus),
+             city = as.factor(city),
+             fullname = as.factor(paste0(genus, " ", species))) %>%
+      filter(dbh < 500) %>%
+      group_by(city) %>%
+      mutate(nspecies = n_distinct(fullname))
+  ), 
+  
+  tar_target(
+    all_tree,
+    assign_sp_all(all_tree_e)
+  ),
+  
+  tar_target(
+    abundance,
+    all_tree %>%
+      group_by(city, fullname) %>%
+      summarise(n = n()) %>%
+      mutate(freq = (n / sum(n))*100) %>%
+      arrange(desc(freq), .by_group = T)
+  ),
 )
