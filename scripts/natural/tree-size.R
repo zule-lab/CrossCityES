@@ -1,4 +1,4 @@
-targets_treesize_city_neighbourhood_road <- c(
+targets_tree_size <- c(
   
   tar_target(
     all_tree_in, 
@@ -38,7 +38,7 @@ targets_treesize_city_neighbourhood_road <- c(
     
   ),
   
-
+  
   tar_target(
     treesize_road, 
     all_tree_in %>%
