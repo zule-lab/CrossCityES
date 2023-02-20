@@ -19,7 +19,6 @@ geo_census <- function(can_bound, census_da_clean, scale){
       mutate(DSAcount = n(),
              weight = sum(weight),
              area = sum(area),
-             da = list(da),
              geometry = st_union(geometry),
              totpop = sum(as.numeric(totpop)),
              popdens = mean(as.numeric(popdens)),
@@ -48,7 +47,7 @@ geo_census <- function(can_bound, census_da_clean, scale){
   
   else if (scale == 'neighbourhood'){
     
-    hood_cen_i <- st_intersection(can_bound, st_as_sf(census_da))
+    hood_cen_i <- st_intersection(can_bound, st_as_sf(census_da_clean))
     
     # spatially weighted join
     hood_cen_swj <- hood_cen_i %>%
