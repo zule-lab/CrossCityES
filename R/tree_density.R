@@ -43,6 +43,9 @@ tree_density <- function(can_trees, scale, treesize, builddens){
   
   else if (scale == 'road'){
     
+    treesize$streetid <- as.character(treesize$streetid)
+    builddens$streetid <- as.character(builddens$streetid)
+    
     treedensity_road <- can_trees %>% 
       group_by(city, hood_id, streetid) %>%
       summarize(nTrees = n()) %>%
