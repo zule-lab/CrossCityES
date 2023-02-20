@@ -6,7 +6,7 @@ tree_density <- function(can_trees, scale, treesize, builddens){
       group_by(city) %>%
       st_set_geometry(NULL) %>%
       summarize(nTrees = n()) %>%
-      inner_join(., as.data.frame(treeesize), by = "city") %>% 
+      inner_join(., as.data.frame(treesize), by = "city") %>% 
       inner_join(., as.data.frame(builddens), by = "city") %>%
       summarize(city = city,
                 nTrees = nTrees,
