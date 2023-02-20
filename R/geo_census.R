@@ -64,7 +64,6 @@ geo_census <- function(can_bound, census_da_clean, scale){
              area = sum(area),
              da = list(da),
              geometry = st_union(geometry),
-             popwithin = sum(as.numeric(popwithin)),
              popdens = weighted.mean(as.numeric(popdens), as.numeric(popwithin)),
              sidehop = weighted.mean(as.numeric(sidehop), as.numeric(popwithin)),
              aptfivp = weighted.mean(as.numeric(aptfivp), as.numeric(popwithin)),
@@ -79,7 +78,8 @@ geo_census <- function(can_bound, census_da_clean, scale){
              recimmp = weighted.mean(as.numeric(recimmp), as.numeric(popwithin)),
              indigp = weighted.mean(as.numeric(indigp), as.numeric(popwithin)),
              visminp = weighted.mean(as.numeric(visminp), as.numeric(popwithin)) ,
-             edubacp = weighted.mean(as.numeric(edubacp), as.numeric(popwithin))
+             edubacp = weighted.mean(as.numeric(edubacp), as.numeric(popwithin)),
+             popwithin = sum(as.numeric(popwithin))
       ) %>%
       distinct(hood, .keep_all = TRUE)
     
