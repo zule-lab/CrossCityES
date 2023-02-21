@@ -11,7 +11,7 @@ tree_density <- function(can_trees, scale, treesize, builddens){
       summarize(city = city,
                 nTrees = nTrees,
                 mean_ba = mean_ba, # sq ft
-                cityarea = city_area, # km2
+                city_area = city_area, # km2
                 stemdens = nTrees/cityarea, # trees/km2
                 stemdens_acre = stemdens/247.105, # conversion from num trees/km2 to num trees/acre
                 basaldens = mean_ba*stemdens_acre) # sq ft/acre
@@ -57,8 +57,8 @@ tree_density <- function(can_trees, scale, treesize, builddens){
                 streetid = streetid,
                 nTrees = nTrees,
                 mean_ba = mean_ba,
-                roadlength = road_length,
-                stemdens = nTrees/roadlength,
+                roadarea = road_area,
+                stemdens = nTrees/roadarea,
                 stemdens_acre = stemdens/247.105,
                 basaldens = mean_ba*stemdens_acre)
     
