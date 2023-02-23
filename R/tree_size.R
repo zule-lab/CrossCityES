@@ -21,8 +21,12 @@ tree_size <- function(can_trees, scale){
   }
   
   else if (scale == 'road'){
+    
+    road_bound_trees <- tar_read(road_bound_trees)
+    
+    can_trees_i <- st_intersection(all_tree_in, road_bound_trees)
    
-     grouped <- all_tree_in %>%
+    grouped <- can_trees_i %>%
       group_by(city, hood, streetid)
     
   }
