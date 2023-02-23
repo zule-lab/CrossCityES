@@ -33,7 +33,10 @@ geo_census <- function(can_bound, census_da_clean, scale){
       ) %>%
       distinct(city, .keep_all = TRUE)
     
-    return(city_cen)
+    city_cen_onep <- bind_cols(city_cen %>% select(c(city, area, da, geometry)),
+              city_cen %>% st_set_geometry(NULL) %>% select(-c(city, area, da)) %>% select_if(~any(. > 0.01)))
+    
+    return(city_cen_onep)
     
     
   }
@@ -83,7 +86,11 @@ geo_census <- function(can_bound, census_da_clean, scale){
       ) %>%
       distinct(hood, .keep_all = TRUE)
     
-    return(hood_cen)
+    hood_cen_onep <- bind_cols(hood_cen %>% select(c(hood, area, da, geometry)),
+                               hood_cen %>% st_set_geometry(NULL) %>% select(-c(hood, area, da)) %>% select_if(~any(. > 0.01)))
+    
+    
+    return(hood_cen_onep)
     
   }
   
