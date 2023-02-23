@@ -23,13 +23,13 @@ tree_density <- function(can_trees, scale, treesize, builddens){
   else if (scale == 'neighbourhood'){
     
     treedensity_neighbourhood <- can_trees %>% 
-      group_by(city, hood_id) %>%
+      group_by(city, hood) %>%
       st_set_geometry(NULL) %>%
       summarize(nTrees = n()) %>%
-      inner_join(., as.data.frame(treesize), by = "hood_id") %>% 
-      inner_join(., as.data.frame(builddens), by = "hood_id") %>%
+      inner_join(., as.data.frame(builddens), by = c("city", "hood")) %>% 
+      inner_join(., as.data.frame(treesize), by = c("city" , "hood")) %>%
       summarize(city = city,
-                hood_id = hood_id,
+                hood = hood,
                 nTrees = nTrees,
                 mean_ba = mean_ba,
                 hoodarea = hood_area,
