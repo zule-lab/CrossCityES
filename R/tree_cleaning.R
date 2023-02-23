@@ -10,6 +10,9 @@ tree_cleaning <- function(trees_raw, parks_raw, hoods, boundaries, roads){
   parks_t <- st_transform(parks_clean, crs = 3347)
   trees_t <- st_transform(trees_clean, crs = 3347)
   
+  # city boundaries
+  city_bound <- subset(boundaries, CMANAME == citylabel)
+  
   # check for duplicates
   dup <- trees_t$id[duplicated(trees_t$id)]
   trees_nd <- trees_t %>% dplyr::filter(!id %in% dup)
@@ -30,7 +33,7 @@ tree_cleaning <- function(trees_raw, parks_raw, hoods, boundaries, roads){
   
   
   # filtering for street trees 
-  trees_rna <- dplyr::mutate(trees_st, park = replace_na(as.character(park), "no"))
+  trees_rna <- dplyr::mutate(trees_p, park = replace_na(as.character(park), "no"))
   trees_cde <- dplyr::mutate(trees_rna, park = ifelse(park == "no", "no", "yes"))
   trees_nopark <- trees_cde %>% dplyr::filter(park == "no")
   
