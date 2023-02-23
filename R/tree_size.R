@@ -16,14 +16,14 @@ tree_size <- function(can_trees, scale){
   else if (scale == 'neighbourhood'){
     
     grouped <- all_tree_in %>%
-      group_by(city, hood_id)
+      group_by(city, hood)
     
   }
   
   else if (scale == 'road'){
    
      grouped <- all_tree_in %>%
-      group_by(city, hood_id, streetid)
+      group_by(city, hood, streetid)
     
   }
   

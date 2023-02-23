@@ -47,13 +47,13 @@ tree_density <- function(can_trees, scale, treesize, builddens){
     builddens$streetid <- as.character(builddens$streetid)
     
     treedensity_road <- can_trees %>% 
-      group_by(city, hood_id, streetid) %>%
+      group_by(city, hood, streetid) %>%
       summarize(nTrees = n()) %>%
       mutate(streetid = as.character(streetid)) %>%
       inner_join(., as.data.frame(treesize), by = "streetid") %>% 
       inner_join(., as.data.frame(builddens), by = "streetid") %>%
       summarize(city = city,
-                hood_id = hood_id.x,
+                hood = hood,
                 streetid = streetid,
                 nTrees = nTrees,
                 mean_ba = mean_ba,
