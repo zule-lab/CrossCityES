@@ -43,15 +43,20 @@ tree_density <- function(can_trees, scale, treesize, builddens){
   
   else if (scale == 'road'){
     
+    road_bound_trees <- tar_read(road_bound_trees)
+    
+    can_trees_i <- st_intersection(can_trees, road_bound_trees)
+    
+    
     treesize$streetid <- as.character(treesize$streetid)
     builddens$streetid <- as.character(builddens$streetid)
     
-    treedensity_road <- can_trees %>% 
+    treedensity_road <- can_trees_i %>% 
       group_by(city, hood, streetid) %>%
       summarize(nTrees = n()) %>%
       mutate(streetid = as.character(streetid)) %>%
-      inner_join(., as.data.frame(treesize), by = "streetid") %>% 
-      inner_join(., as.data.frame(builddens), by = "streetid") %>%
+      inner_join(., as.data.frame(treesize), by = "streetid", suffix = c("", ".x")) %>% 
+      inner_join(., as.data.frame(builddens), by = "streetid", suffix = c("", ".y")) %>%
       summarize(city = city,
                 hood = hood,
                 streetid = streetid,
