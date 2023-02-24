@@ -23,17 +23,17 @@ tree_richness <- function(can_trees, scale){
                        level= cov, conf=0.95)
   
   
-  rarediv_w <- pivot_wider(rarediv, id_cols = site, names_from = order,
-                           names_sep = ".", values_from = c(method, SC, qD))
-  rarediv_w <- rarediv_w %>% 
-    select(-c(method.1, method.2, SC.1, SC.2)) %>% 
-    rename(SWP = site, 
-           method = method.0, 
-           sampcov = SC.0, 
-           SpeciesRichness = qD.0, 
-           Shannon = qD.1, 
-           Simpson = qD.2)
-  
+  #rarediv_w <- pivot_wider(rarediv, id_cols = site, names_from = order,
+  #                         names_sep = ".", values_from = c(method, SC, qD))
+  #rarediv_w <- rarediv_w %>% 
+  #  select(-c(method.1, method.2, SC.1, SC.2)) %>% 
+  #  rename(SWP = site, 
+  #         method = method.0, 
+  #         sampcov = SC.0, 
+  #         SpeciesRichness = qD.0, 
+  #         Shannon = qD.1, 
+  #         Simpson = qD.2)
+  #
   
   
   
