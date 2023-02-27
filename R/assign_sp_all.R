@@ -118,6 +118,8 @@ assign_sp_all <- function(van_tree_clean, cal_tree_clean, win_tree_clean, tor_tr
   # Unknown sp.
   all$fullname[all$fullname %in% c("NA sp.", "See notes", "Various sp.", "Not suitable", "Populus deltoides / balsamifera (?)")] <- "Unknown sp."
   
+  all$fullname <- droplevels(all$fullname)
+  
   return(all)
   
 }
