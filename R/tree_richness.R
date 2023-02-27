@@ -1,6 +1,6 @@
 tree_richness <- function(can_trees, scale){
   
-  # TODO: talk to Kayleigh/Carly about cultivars, check typos, think about SR on street scale 
+  # TODO: talk to Kayleigh/Carly about cultivars + SR on street scale 
   
   
   #  Individual‐based abundance data (datatype="abundance"): Input data for each assemblage/site
