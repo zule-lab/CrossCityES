@@ -9,7 +9,7 @@ assign_sp_all <- function(van_tree_clean, cal_tree_clean, win_tree_clean, tor_tr
     mutate(species = as.factor(species),
            genus = as.factor(genus),
            city = as.factor(city),
-           fullname = as.factor(paste0(genus, " ", species))) %>%
+           fullname = as.character(paste0(genus, " ", species))) %>%
     filter(dbh < 500) %>%
     group_by(city) %>%
     mutate(nspecies = n_distinct(fullname))
@@ -91,8 +91,8 @@ assign_sp_all <- function(van_tree_clean, cal_tree_clean, win_tree_clean, tor_tr
   all$fullname[all$fullname %in% c("Fraxinus pennsylvancia")]<- "Fraxinus pennsylvanica"
   # Gleditsia triacanthos
   all$fullname[all$fullname %in% c("Gleditisia triacanthos", "Gleditsia t.")]<- "Gleditsia triacanthos"
-  # Gleditsia dioicus
-  all$fullname[all$fullname %in% c("Gleditisia d.")]<- "Gleditsia dioicus"
+  # Gymnocladus dioicus
+  all$fullname[all$fullname %in% c("Gymnocladus d.")]<- "Gymnocladus dioicus"
   # Hydrangea paniculata
   all$fullname[all$fullname %in% c("Hydrangea paniculata grandiflora")]<- "Hydrangea paniculata"
   # Juglans ailantifolia
@@ -223,6 +223,10 @@ assign_sp_all <- function(van_tree_clean, cal_tree_clean, win_tree_clean, tor_tr
   # Unknown sp.
   all$fullname[all$fullname %in% c("NA sp.", "See notes", "Various sp.", "Not suitable", "Hedge sp.", "Stump sp.", "Divers sp.")] <- "Unknown sp."
   
+  # make into factor
+  all$fullname <- as.factor(all$fullname)
+  
+  # update factor levels
   all$fullname <- droplevels(all$fullname)
   
   return(all)
