@@ -1,8 +1,5 @@
 tree_richness <- function(can_trees, scale){
   
-  # TODO: talk to Kayleigh/Carly about cultivars + SR on street scale 
-  
-  
   #  Individual‐based abundance data (datatype="abundance"): Input data for each assemblage/site
   #  include species abundances in an empirical sample of n individuals (“reference sample”). When
   #  there are N assemblages, input data consist of an S by N abundance matrix, or N lists of species
@@ -59,8 +56,12 @@ format_inext <- function(can_trees, scale){
   
   else if (scale == 'neighbourhood'){
     
+    cutoff <- can_trees %>%
+      group_by(city, hood) %>% 
+      mutate(nTrees = n()) %>% 
+      filter(nTrees > 50)
     
-    matrix <- can_trees %>% 
+    matrix <- cutoff %>% 
       drop_na(species) %>%
       group_by(city, hood, fullname) %>% 
       mutate(n = n(),
@@ -68,6 +69,28 @@ format_inext <- function(can_trees, scale){
       select(c(city_hood, fullname, n)) %>% 
       st_set_geometry(NULL) %>%
       pivot_wider(names_from = 'city_hood', values_from = 'n', values_fill = 0, values_fn = first) %>%
+      column_to_rownames(var='fullname')
+    
+    return(matrix)
+    
+  }
+  
+  else if (scale == 'road') {
+    
+    # TODO: figure out if we need a cutoff for streets 
+    # remove streets in the neighbourhoods we removed and leave the rest?
+    
+    road_bound_trees <- tar_read(road_bound_trees)
+    can_trees_i <- st_intersection(can_trees, road_bound_trees)
+    
+    matrix <- can_trees_i %>% 
+      drop_na(species) %>%
+      group_by(city, hood, streetid, fullname) %>%
+      mutate(n = n(),
+             hood_streetid = paste0(city, "_", hood, "_", streetid)) %>%
+      select(c(hood_streetid, fullname, n)) %>% 
+      st_set_geometry(NULL) %>%
+      pivot_wider(names_from = 'hood_streetid', values_from = 'n', values_fill = 0, values_fn = first) %>%
       column_to_rownames(var='fullname')
     
     return(matrix)
