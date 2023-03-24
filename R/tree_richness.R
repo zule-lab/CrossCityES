@@ -8,9 +8,18 @@ tree_richness <- function(can_trees, scale){
   # format data for iNEXT
   matrix <- format_inext(can_trees, scale)
   
-
-  # use iNEXT to get Hill numbers
-  inext <- iNEXT(matrix, datatype = "abundance", q = 0)
+  if (scale == 'city' | 'neighbourhood'){
+    # use iNEXT to get Hill number
+    inext <- iNEXT(matrix, datatype = "abundance", q = 0)
+    return(inext)
+  } 
+  
+  else if (scale == 'road'){
+    inext <- iNEXT(matrix, datatype = "incidence_raw", q=0)
+    return(inext)
+    
+  }
+  else{ print('inext error')}
   
   # extract minimum sampling coverage
   cov <- min(inext$DataInfo$SC)
@@ -77,21 +86,27 @@ format_inext <- function(can_trees, scale){
   
   else if (scale == 'road') {
     
-    # TODO: figure out if we need a cutoff for streets 
-    # remove streets in the neighbourhoods we removed and leave the rest?
-    
     road_bound_trees <- tar_read(road_bound_trees)
     can_trees_i <- st_intersection(can_trees, road_bound_trees)
     
-    matrix <- can_trees_i %>% 
+    # include streets that have more than 1 tree
+    cutoff <- can_trees_i %>%
+      group_by(city, hood, streetid) %>% 
+      mutate(nTrees = n()) %>% 
+      filter(nTrees > 1)
+    
+    
+    matrix <- cutoff %>% 
       drop_na(species) %>%
-      group_by(city, hood, streetid, fullname) %>%
-      mutate(n = n(),
-             hood_streetid = paste0(city, "_", hood, "_", streetid)) %>%
-      select(c(hood_streetid, fullname, n)) %>% 
-      st_set_geometry(NULL) %>%
-      pivot_wider(names_from = 'hood_streetid', values_from = 'n', values_fill = 0, values_fn = first) %>%
-      column_to_rownames(var='fullname')
+      group_by(city) %>%
+      group_map(~ group_by(.x, hood, streetid, fullname) %>%
+                  mutate(n = n(),
+                         hood_streetid = paste0(hood, "_", streetid)) %>%
+                  st_set_geometry(NULL) %>%
+                  pivot_wider(id_cols = fullname, names_from = hood_streetid, values_from = n, values_fill = 0, values_fn = first) %>%
+                  mutate_if(is.numeric, ~1 * (. != 0)) %>%
+                  column_to_rownames("fullname")) %>%
+      setNames(unique(can_trees_i$city))
     
     return(matrix)
     
