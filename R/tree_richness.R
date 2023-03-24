@@ -8,7 +8,13 @@ tree_richness <- function(can_trees, scale){
   # format data for iNEXT
   matrix <- format_inext(can_trees, scale)
   
-  if (scale == 'city' | 'neighbourhood'){
+  if (scale == 'city'){
+    # use iNEXT to get Hill number
+    inext <- iNEXT(matrix, datatype = "abundance", q = 0)
+    return(inext)
+  } 
+  
+  else if (scale == 'neighbourhood'){
     # use iNEXT to get Hill number
     inext <- iNEXT(matrix, datatype = "abundance", q = 0)
     return(inext)
