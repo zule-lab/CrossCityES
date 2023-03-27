@@ -8,24 +8,8 @@ tree_richness <- function(can_trees, scale){
   # format data for iNEXT
   matrix <- format_inext(can_trees, scale)
   
-  if (scale == 'city'){
-    # use iNEXT to get Hill number
-    inext <- iNEXT(matrix, datatype = "abundance", q = 0)
-    return(inext)
-  } 
-  
-  else if (scale == 'neighbourhood'){
-    # use iNEXT to get Hill number
-    inext <- iNEXT(matrix, datatype = "abundance", q = 0)
-    return(inext)
-  } 
-  
-  else if (scale == 'road'){
-    inext <- iNEXT(matrix, datatype = "incidence_raw", q=0)
-    return(inext)
-    
-  }
-  else{ print('inext error')}
+  # use iNEXT to get Hill number
+  inext <- iNEXT(matrix, datatype = "abundance", q = 0)
   
   # extract minimum sampling coverage
   cov <- min(inext$DataInfo$SC)
@@ -104,15 +88,13 @@ format_inext <- function(can_trees, scale){
     
     matrix <- cutoff %>% 
       drop_na(species) %>%
-      group_by(city) %>%
-      group_map(~ group_by(.x, hood, streetid, fullname) %>%
-                  mutate(n = n(),
-                         hood_streetid = paste0(hood, "_", streetid)) %>%
-                  st_set_geometry(NULL) %>%
-                  pivot_wider(id_cols = fullname, names_from = hood_streetid, values_from = n, values_fill = 0, values_fn = first) %>%
-                  mutate_if(is.numeric, ~1 * (. != 0)) %>%
-                  column_to_rownames("fullname")) %>%
-      setNames(unique(can_trees_i$city))
+      group_by(city, hood, streetid, fullname) %>%
+      mutate(n = n(),
+             hood_streetid = paste0(city, "_", hood, "_", streetid)) %>%
+      select(c(hood_streetid, fullname, n)) %>% 
+      st_set_geometry(NULL) %>%
+      pivot_wider(names_from = 'hood_streetid', values_from = 'n', values_fill = 0, values_fn = first) %>%
+      column_to_rownames(var='fullname')
     
     return(matrix)
     
