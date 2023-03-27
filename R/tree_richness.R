@@ -12,11 +12,11 @@ tree_richness <- function(can_trees, scale){
   inext <- iNEXT(matrix, datatype = "abundance", q = 0)
   
   # extract minimum sampling coverage
-  cov <- min(inext$DataInfo$SC)
+  #cov <- min(inext$DataInfo$SC)
   
   # estimate rarified diversity at minimum sampling coverage
   rarediv <- estimateD(matrix, datatype = "abundance", base = "coverage", 
-                       level= cov, conf=0.95)
+                       level= 0.85, conf=0.95)
   
   
   rarediv_w <- pivot_wider(rarediv, id_cols = Assemblage, names_from = Order.q,
