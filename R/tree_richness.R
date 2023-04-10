@@ -1,42 +1,18 @@
 tree_richness <- function(can_trees, scale){
   
-  #  Individual‐based abundance data (datatype="abundance"): Input data for each assemblage/site
-  #  include species abundances in an empirical sample of n individuals (“reference sample”). When
-  #  there are N assemblages, input data consist of an S by N abundance matrix, or N lists of species
-  #  abundances
+  # format data for vegan
+  matrix <- format_vegan(can_trees, scale)
   
-  # format data for iNEXT
-  matrix <- format_inext(can_trees, scale)
+  # use vegan to calculate species richness and Shannon diversity
+  sr <- as_tibble(specnumber(matrix), rownames = scale) %>%
+    rename(SpeciesRichness = value) %>%
+    mutate(Shannon = diversity(matrix))
   
-  # use iNEXT to get Hill number
-  inext <- iNEXT(matrix, datatype = "abundance", q = 0)
-  
-  # extract minimum sampling coverage
-  #cov <- min(inext$DataInfo$SC)
-  
-  # estimate rarified diversity at minimum sampling coverage
-  rarediv <- estimateD(matrix, datatype = "abundance", base = "coverage", 
-                       level= 0.85, conf=0.95)
-  
-  
-  rarediv_w <- pivot_wider(rarediv, id_cols = Assemblage, names_from = Order.q,
-                           names_sep = ".", values_from = c(Method, SC, qD))
-  rarediv_w <- rarediv_w %>% 
-    select(-c(Method.1, Method.2, SC.1, SC.2)) %>% 
-    rename(city = Assemblage, 
-           method = Method.0, 
-           minsampcov = SC.0, 
-           SpeciesRichness = qD.0, 
-           Shannon = qD.1, 
-           Simpson = qD.2)
-  
-  return(rarediv_w)
-  
-  
+  return(sr)
   
 }
 
-format_inext <- function(can_trees, scale){
+format_vegan <- function(can_trees, scale){
   
   if (scale == 'city'){
     
@@ -46,8 +22,8 @@ format_inext <- function(can_trees, scale){
       mutate(n = n()) %>%
       select(c(city, fullname, n)) %>% 
       st_set_geometry(NULL) %>%
-      pivot_wider(names_from = 'city', values_from = 'n', values_fill = 0, values_fn = first) %>%
-      column_to_rownames(var='fullname')
+      pivot_wider(names_from = 'fullname', values_from = 'n', values_fill = 0, values_fn = first) %>%
+      column_to_rownames(var='city')
     
     return(matrix)
     
@@ -67,8 +43,8 @@ format_inext <- function(can_trees, scale){
              city_hood = paste0(city, "_", hood)) %>%
       select(c(city_hood, fullname, n)) %>% 
       st_set_geometry(NULL) %>%
-      pivot_wider(names_from = 'city_hood', values_from = 'n', values_fill = 0, values_fn = first) %>%
-      column_to_rownames(var='fullname')
+      pivot_wider(names_from = 'fullname', values_from = 'n', values_fill = 0, values_fn = first) %>%
+      column_to_rownames(var='city_hood')
     
     return(matrix)
     
@@ -93,8 +69,8 @@ format_inext <- function(can_trees, scale){
              hood_streetid = paste0(city, "_", hood, "_", streetid)) %>%
       select(c(hood_streetid, fullname, n)) %>% 
       st_set_geometry(NULL) %>%
-      pivot_wider(names_from = 'hood_streetid', values_from = 'n', values_fill = 0, values_fn = first) %>%
-      column_to_rownames(var='fullname')
+      pivot_wider(names_from = 'fullname', values_from = 'n', values_fill = 0, values_fn = first) %>%
+      column_to_rownames(var='hood_streetid')
     
     return(matrix)
     
