@@ -997,18 +997,6 @@
         "openssl"
       ]
     },
-    "iNEXT": {
-      "Package": "iNEXT",
-      "Version": "3.0.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "2ffb7027ef96c234c3c1ce6fef215ff8",
-      "Requirements": [
-        "Rcpp",
-        "ggplot2",
-        "reshape2"
-      ]
-    },
     "igraph": {
       "Package": "igraph",
       "Version": "1.3.5",
@@ -1325,6 +1313,14 @@
         "magrittr",
         "numDeriv"
       ]
+    },
+    "permute": {
+      "Package": "permute",
+      "Version": "0.9-7",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "abf0ca85c1c752e0d04f46334e635046",
+      "Requirements": []
     },
     "pillar": {
       "Package": "pillar",
@@ -2022,6 +2018,20 @@
         "glue",
         "lifecycle",
         "rlang"
+      ]
+    },
+    "vegan": {
+      "Package": "vegan",
+      "Version": "2.6-4",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "659fe7589b8e0b16baa49043a61a0ce0",
+      "Requirements": [
+        "MASS",
+        "cluster",
+        "lattice",
+        "mgcv",
+        "permute"
       ]
     },
     "viridis": {
