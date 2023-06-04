@@ -1,4 +1,4 @@
-targets_full_data <- c(
+targets_prepare_datasets <- c(
   
   tar_target(
     city_data, 
