@@ -51,3 +51,4 @@ c(targets_prepare_boundaries, targets_prepare_neighbourhoods, targets_prepare_ce
 # TODO: 
 # - update join
 # - update quarto doc
+# - add functional diversity of trees
