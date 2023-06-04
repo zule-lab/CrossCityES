@@ -49,7 +49,6 @@ c(targets_prepare_boundaries, targets_prepare_neighbourhoods, targets_prepare_ce
   targets_tree_density, targets_tree_richness)
 
 # TODO: 
-# - finish tree species richness
 # - filter areas under some threshold of # trees? (e.g., Montreal Est has 1 tree -> data issue)
 # - update join
 # - update quarto doc
