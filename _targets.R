@@ -49,6 +49,7 @@ c(targets_prepare_boundaries, targets_prepare_neighbourhoods, targets_prepare_ce
   targets_tree_density, targets_tree_richness)
 
 # TODO: 
+# - add Westmount data
 # - update join
 # - update quarto doc
 # - add functional diversity of trees
