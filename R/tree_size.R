@@ -16,7 +16,10 @@ tree_size <- function(can_trees, scale){
   else if (scale == 'neighbourhood'){
     
     grouped <- all_tree_in %>%
-      group_by(city, hood)
+      group_by(city, hood) %>%
+      mutate(nTrees = n()) %>% 
+      filter(nTrees > 50) %>%
+      select(-nTrees)
     
   }
   
@@ -27,7 +30,10 @@ tree_size <- function(can_trees, scale){
     can_trees_i <- st_intersection(all_tree_in, road_bound_trees)
    
     grouped <- can_trees_i %>%
-      group_by(city, hood, streetid)
+      group_by(city, hood, streetid) %>% 
+      mutate(nTrees = n()) %>% 
+      filter(nTrees > 1) %>%
+      select(-nTrees)
     
   }
   
