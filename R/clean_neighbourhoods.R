@@ -18,15 +18,17 @@ clean_neighbourhoods <- function(raw_df){
   
   if (deparse(substitute(raw_df)) == 'win_hood_raw'){
     df <- raw_df %>% 
-      select(c("name","geometry")) %>%
-      rename(hood = "name") %>%
+      select(c("name","location")) %>% 
+      st_as_sf(wkt = 'location', crs = 4326) %>% 
+      rename(geometry = location,
+             hood = name) %>%
       mutate(city = c("Winnipeg"))
   }
   
   if (deparse(substitute(raw_df)) == 'tor_hood_raw'){
     df <- raw_df %>% 
-      select(c("FIELD_8", "geometry")) %>% 
-      rename("hood" = "FIELD_8")%>%
+      select(c("AREA_NA7", "geometry")) %>% 
+      rename("hood" = "AREA_NA7")%>%
       mutate(city = c("Toronto"))
   }
   
