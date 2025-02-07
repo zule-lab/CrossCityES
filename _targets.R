@@ -52,3 +52,4 @@ c(targets_prepare_boundaries, targets_prepare_neighbourhoods, targets_prepare_ce
 # - update join
 # - update quarto doc
 # - add functional diversity of trees
+# - change downloaded google drive data to input folder so its accessible and add note to readme 
