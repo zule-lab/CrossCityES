@@ -1,4 +1,5 @@
-tree_cleaning <- function(trees_raw, parks_raw, hoods, boundaries, roads){
+tree_cleaning <- function(trees_raw, parks_raw, hoods, boundaries, roads, tor_tree_spcode, ott_tree_spcode, hal_tree_spcode,
+                          hal_tree_dbhcode){
   
   citylabel <- levels(as.factor(hoods$city))
 
@@ -79,8 +80,10 @@ clean_parks <- function(parks_raw, citylabel){
   
   else if (citylabel == 'Winnipeg'){
     parks <- parks_raw %>%
-      select(c("park_name", "geometry")) %>%
-      rename("park" = "park_name")
+      select(c("Park Name", "Polygon")) %>%
+      rename("park" = "Park Name",
+             "geometry" = "Polygon") %>% 
+      st_as_sf(wkt = 'geometry', crs = 4326)
     
     parks
   }
@@ -199,7 +202,7 @@ clean_trees <- function(trees_raw, citylabel){
       drop_na(c(lat,long)) %>%
       st_as_sf(coords = c("long", "lat"), crs = 4326, na.fail = FALSE, remove = FALSE)
     
-    tree <- assign_sp_tor(tree_s, tar_read(tor_tree_spcode)) # species codes may be an issue
+    tree <- assign_sp_tor(tree_s, read.csv('input/tor_tree_spcode.csv')) # species codes may be an issue
     
     tree
   
@@ -214,9 +217,13 @@ clean_trees <- function(trees_raw, citylabel){
       rename("street" = "ADDSTR") %>%
       rename("dbh" = "DBH")
     
-    tree <- assign_sp_ott(tree_s, tar_read(ott_tree_spcode))
+    tree <- assign_sp_ott(tree_s, read.csv('input/ott_tree_spcode.csv'))
     
-    tree
+    ott_tree <- tree %>% 
+      drop_na(c(lat, long)) %>%
+      st_as_sf(coords = c("long", "lat"), crs = 4326)
+    
+    ott_tree
     
   }
   
@@ -243,7 +250,7 @@ clean_trees <- function(trees_raw, citylabel){
       rename("dbh" = "DBH") %>% 
       drop_na(c(X,Y))
     
-    tree_sp <- assign_sp_hal(tree_s, tar_read(hal_tree_spcode), tar_read(hal_tree_dbhcode))
+    tree_sp <- assign_sp_hal(tree_s, read.csv('input/hal_tree_spcode.csv'), read.csv('input/hal_tree_dbhcode.csv', row.names = NULL))
     
     tree <- tree_sp %>% st_as_sf(coords = c("X", "Y"), crs = 4326)
     
