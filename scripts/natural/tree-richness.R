@@ -12,7 +12,7 @@ targets_tree_richness <- c(
   
   tar_target(
     road_treerichness,
-    tree_richness(can_trees, 'road')
+    tree_richness(can_trees, 'road', road_bound_trees)
   )
   
 )

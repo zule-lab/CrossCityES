@@ -1,4 +1,4 @@
-tree_richness <- function(can_trees, scale){
+tree_richness <- function(can_trees, scale, road_bound_trees = NA){
   
   # format data for vegan
   matrix <- format_vegan(can_trees, scale)
@@ -52,7 +52,6 @@ format_vegan <- function(can_trees, scale){
   
   else if (scale == 'road') {
     
-    road_bound_trees <- tar_read(road_bound_trees)
     can_trees_i <- st_intersection(can_trees, road_bound_trees)
     
     # include streets that have more than 1 tree

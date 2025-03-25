@@ -12,7 +12,7 @@ targets_tree_size <- c(
   
   tar_target(
     road_treesize,
-    tree_size(can_trees, 'road')
+    tree_size(can_trees, 'road', road_bound_trees)
   )
   
   

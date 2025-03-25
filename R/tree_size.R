@@ -1,4 +1,4 @@
-tree_size <- function(can_trees, scale){
+tree_size <- function(can_trees, scale, road_bound_trees = NA){
   
   
   all_tree_in <- can_trees %>% 
@@ -24,8 +24,6 @@ tree_size <- function(can_trees, scale){
   }
   
   else if (scale == 'road'){
-    
-    road_bound_trees <- tar_read(road_bound_trees)
     
     can_trees_i <- st_intersection(all_tree_in, road_bound_trees)
    
