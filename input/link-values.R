@@ -83,12 +83,12 @@ values_bounds <- tribble(
 values_buildings <- tribble(
   ~dl_path, ~dl_link,
   
-  'large/national/Alberta_Buildings.zip', 'https://usbuildingdata.blob.core.windows.net/canadian-buildings-v2/Alberta.zip',
-  'large/national/BritishColumbia_Buildings.zip', 'https://usbuildingdata.blob.core.windows.net/canadian-buildings-v2/BritishColumbia.zip',
-  'large/national/Manitoba_Buildings.zip', 'https://usbuildingdata.blob.core.windows.net/canadian-buildings-v2/Manitoba.zip',
-  'large/national/NovaScotia_Buildings.zip', 'https://usbuildingdata.blob.core.windows.net/canadian-buildings-v2/NovaScotia.zip',
-  'large/national/Ontario_Buildings.zip', 'https://usbuildingdata.blob.core.windows.net/canadian-buildings-v2/Ontario.zip',
-  'large/national/Quebec_Buildings.zip', 'https://usbuildingdata.blob.core.windows.net/canadian-buildings-v2/Quebec.zip'
+  'large/national/Alberta_Buildings.zip', 'https://minedbuildings.z5.web.core.windows.net/legacy/canadian-buildings-v2/Alberta.zip',
+  'large/national/BritishColumbia_Buildings.zip', 'https://minedbuildings.z5.web.core.windows.net/legacy/canadian-buildings-v2/BritishColumbia.zip',
+  'large/national/Manitoba_Buildings.zip', 'https://minedbuildings.z5.web.core.windows.net/legacy/canadian-buildings-v2/Manitoba.zip',
+  'large/national/NovaScotia_Buildings.zip', 'https://minedbuildings.z5.web.core.windows.net/legacy/canadian-buildings-v2/NovaScotia.zip',
+  'large/national/Ontario_Buildings.zip', 'https://minedbuildings.z5.web.core.windows.net/legacy/canadian-buildings-v2/Ontario.zip',
+  'large/national/Quebec_Buildings.zip', 'https://minedbuildings.z5.web.core.windows.net/legacy/canadian-buildings-v2/Quebec.zip'
 ) %>% 
   mutate(
     file_name = basename(sans_ext(dl_path)),
