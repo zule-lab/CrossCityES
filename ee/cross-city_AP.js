@@ -1,4 +1,10 @@
+// Data ----------
+// load study scale boundaries
+var cities = ee.FeatureCollection('projects/ee-isabellarichmond66/assets/cities');
+var neighbourhood = ee.FeatureCollection('projects/ee-isabellarichmond66/assets/neighbourhoods');
+
 // Functions --------------
+// what to include when reducing
 var reducer = ee.Reducer.mean()
 .combine({reducer2: ee.Reducer.median(), outputPrefix: null, sharedInputs: true})
 .combine({reducer2: ee.Reducer.max(), outputPrefix: null, sharedInputs: true})
@@ -6,7 +12,16 @@ var reducer = ee.Reducer.mean()
 .combine({reducer2: ee.Reducer.stdDev(), outputPrefix: null, sharedInputs: true})
 .combine({reducer2: ee.Reducer.count(), outputPrefix: null, sharedInputs: true});  
 
-/*  don't want to map over every image - going to calculate metrics on mean summer temperature
+
+// filter images by date
+var filter = function(images) {
+  var start_date = '2024-06-01';
+  var end_date = '2024-08-31';
+  return images.filter(ee.Filter.date(start_date, end_date));
+};
+
+
+// get values across each geometry for each date in the image collection 
 var sample = function(images, reducer, region, scale) {
   return images
     .map(function(img) {
@@ -14,15 +29,11 @@ var sample = function(images, reducer, region, scale) {
       collection: region,
       reducer: reducer,
       scale : scale
+      }).map(function (feature) {
+        return feature
+        .set('date', img.date())
       });
     }).flatten();
-};
-*/
-
-var filter = function(images) {
-  var start_date = '2021-06-01';
-  var end_date = '2021-08-31';
-  return images.filter(ee.Filter.date(start_date, end_date));
 };
 
 
@@ -34,6 +45,7 @@ var O3_trop_raw = ee.ImageCollection('COPERNICUS/S5P/OFFL/L3_O3_TCL');
 var NO2_raw = ee.ImageCollection('COPERNICUS/S5P/OFFL/L3_NO2');
 var CO_raw = ee.ImageCollection('COPERNICUS/S5P/OFFL/L3_CO');
 
+
 // Filter -------------
 var UV_raw = filter(UV_raw);
 var SO2_raw = filter(SO2_raw);
@@ -42,158 +54,142 @@ var O3_trop_raw = filter(O3_trop_raw);
 var NO2_raw = filter(NO2_raw);
 var CO_raw = filter(CO_raw);
 
-print(UV_raw)
-// Mean ----------------
-var UV_mean = UV_raw.select('absorbing_aerosol_index').mean();
-var SO2_mean = SO2_raw.select('SO2_column_number_density').mean();
-var O3_mean = O3_raw.select('O3_column_number_density').mean();
-var O3_trop_mean = O3_trop_raw.select('ozone_tropospheric_vertical_column').mean();
-var NO2_mean = NO2_raw.select('NO2_column_number_density').mean();
-var CO_mean = CO_raw.select('CO_column_number_density').mean();
+
+// Band ----------------
+// select relevant band for each image collection
+var UV_band = UV_raw.select('absorbing_aerosol_index');
+var SO2_band = SO2_raw.select('SO2_column_number_density');
+var O3_band = O3_raw.select('O3_column_number_density');
+var O3_trop_band = O3_trop_raw.select('ozone_tropospheric_vertical_column');
+var NO2_band = NO2_raw.select('NO2_column_number_density');
+var CO_band = CO_raw.select('CO_column_number_density');
 
 
 // Reduce Cities -------------
-var UV_city = UV_mean.reduceRegions({
-  'reducer': reducer,
-  'scale': 1113.2,
-  'collection': cities});
-UV_city = UV_city.filter(ee.Filter.neq('mean', null))
+var UV_city = sample(UV_band, reducer, cities, 1113.2);
+UV_city = UV_city.filter(ee.Filter.neq('mean', null));
 
-var SO2_city = SO2_mean.reduceRegions({
-  'reducer': reducer,
-  'scale': 1113.2,
-  'collection': cities});
-SO2_city = SO2_city.filter(ee.Filter.neq('mean', null))
+var SO2_city = sample(SO2_band, reducer, cities, 1113.2);
+SO2_city = SO2_city.filter(ee.Filter.neq('mean', null));
 
-var O3_city = O3_mean.reduceRegions({
-  'reducer': reducer,
-  'scale': 1113.2,
-  'collection': cities});
-O3_city = O3_city.filter(ee.Filter.neq('mean', null))
+var O3_city = sample(O3_band, reducer, cities, 1113.2);
+O3_city = O3_city.filter(ee.Filter.neq('mean', null));
 
-var O3_trop_city = O3_trop_mean.reduceRegions({
-  'reducer': reducer,
-  'scale': 1113.2,
-  'collection': cities});
-O3_trop_city = O3_trop_city.filter(ee.Filter.neq('mean', null))
+var O3_trop_city = sample(O3_trop_band, reducer, cities, 1113.2);
+O3_trop_city = O3_trop_city.filter(ee.Filter.neq('mean', null));
 
-var NO2_city = NO2_mean.reduceRegions({
-  'reducer': reducer,
-  'scale': 1113.2,
-  'collection': cities});
-NO2_city = NO2_city.filter(ee.Filter.neq('mean', null))
+var NO2_city = sample(NO2_band, reducer, cities, 1113.2);
+NO2_city = NO2_city.filter(ee.Filter.neq('mean', null));
 
-var CO_city = CO_mean.reduceRegions({
-  'reducer': reducer,
-  'scale': 1113.2,
-  'collection': cities});
-CO_city = CO_city.filter(ee.Filter.neq('mean', null))
+var CO_city = sample(CO_band, reducer, cities, 1113.2);
+CO_city = CO_city.filter(ee.Filter.neq('mean', null));
 
 // Reduce Neighbourhoods ------
-var UV_hood = UV_mean.reduceRegions({
-  'reducer': reducer,
-  'scale': 1113.2,
-  'collection': hoods});
-UV_hood = UV_hood.filter(ee.Filter.neq('mean', null))
+var UV_neighbourhood = sample(UV_band, reducer, neighbourhood, 1113.2);
+UV_neighbourhood = UV_neighbourhood.filter(ee.Filter.neq('mean', null));
 
-var SO2_hood = SO2_mean.reduceRegions({
-  'reducer': reducer,
-  'scale': 1113.2,
-  'collection': hoods});
-SO2_hood = SO2_hood.filter(ee.Filter.neq('mean', null))
+var SO2_neighbourhood = sample(SO2_band, reducer, neighbourhood, 1113.2);
+SO2_neighbourhood = SO2_neighbourhood.filter(ee.Filter.neq('mean', null));
 
-var O3_hood = O3_mean.reduceRegions({
-  'reducer': reducer,
-  'scale': 1113.2,
-  'collection': hoods});
-O3_hood = O3_hood.filter(ee.Filter.neq('mean', null))
+var O3_neighbourhood = sample(O3_band, reducer, neighbourhood, 1113.2);
+O3_neighbourhood = O3_neighbourhood.filter(ee.Filter.neq('mean', null));
 
-var O3_trop_hood = O3_trop_mean.reduceRegions({
-  'reducer': reducer,
-  'scale': 1113.2,
-  'collection': hoods});
-O3_trop_hood = O3_trop_hood.filter(ee.Filter.neq('mean', null))
+var O3_trop_neighbourhood = sample(O3_trop_band, reducer, neighbourhood, 1113.2);
+O3_trop_neighbourhood = O3_trop_neighbourhood.filter(ee.Filter.neq('mean', null));
 
-var NO2_hood = NO2_mean.reduceRegions({
-  'reducer': reducer,
-  'scale': 1113.2,
-  'collection': hoods});
-NO2_hood = NO2_hood.filter(ee.Filter.neq('mean', null))
+var NO2_neighbourhood = sample(NO2_band, reducer, neighbourhood, 1113.2);
+NO2_neighbourhood = NO2_neighbourhood.filter(ee.Filter.neq('mean', null));
 
-var CO_hood = CO_mean.reduceRegions({
-  'reducer': reducer,
-  'scale': 1113.2,
-  'collection': hoods});
-CO_hood = CO_hood.filter(ee.Filter.neq('mean', null))
+var CO_neighbourhood = sample(CO_band, reducer, neighbourhood, 1113.2);
+CO_neighbourhood = CO_neighbourhood.filter(ee.Filter.neq('mean', null));
 
+print(CO_city.first())
 
 // Export ----------------
+// select columns i want (not geometry)
+var desirable_fields_city = ['CMANAME', 'date', 'count', 'mean', 'median', 'max', 'min', 'stdDev']
+var desirable_fields_neighbourhood = ['city', 'hood', 'hood_id', 'date', 'count', 'mean', 'median', 'max', 'min', 'stdDev']
+
 // city scale
 Export.table.toDrive({
   collection: UV_city,
   description: 'UV_city',
-  folder: 'Data/SENTINEL_Pollution/'
+  folder: 'Data/SENTINEL_Pollution/',
+  selectors: desirable_fields_city
 })
+
 Export.table.toDrive({
   collection: SO2_city,
   description: 'SO2_city',
-  folder: 'Data/SENTINEL_Pollution'
+  folder: 'Data/SENTINEL_Pollution',
+  selectors: desirable_fields_city
 })
 Export.table.toDrive({
   collection: O3_city,
   description: 'O3_city',
-  folder: 'Data/SENTINEL_Pollution'
+  folder: 'Data/SENTINEL_Pollution',
+  selectors: desirable_fields_city
 })
 Export.table.toDrive({
   collection: O3_trop_city,
   description: 'O3_trop_city',
-  folder: 'Data/SENTINEL_Pollution'
+  folder: 'Data/SENTINEL_Pollution',
+  selectors: desirable_fields_city
 })
 Export.table.toDrive({
   collection: NO2_city,
   description: 'NO2_city',
-  folder: 'Data/SENTINEL_Pollution'
+  folder: 'Data/SENTINEL_Pollution',
+  selectors: desirable_fields_city
 })
 Export.table.toDrive({
   collection: CO_city,
   description: 'CO_city',
-  folder: 'Data/SENTINEL_Pollution'
+  folder: 'Data/SENTINEL_Pollution',
+  selectors: desirable_fields_city
 })
 
 // neighbourhood scale
 Export.table.toDrive({
-  collection: UV_hood,
-  description: 'UV_hood',
-  folder: 'Data/SENTINEL_Pollution'
+  collection: UV_neighbourhood,
+  description: 'UV_neighbourhood',
+  folder: 'Data/SENTINEL_Pollution',
+  selectors: desirable_fields_neighbourhood
 })
 Export.table.toDrive({
-  collection: SO2_hood,
-  description: 'SO2_hood',
-  folder: 'Data/SENTINEL_Pollution'
+  collection: SO2_neighbourhood,
+  description: 'SO2_neighbourhood',
+  folder: 'Data/SENTINEL_Pollution',
+  selectors: desirable_fields_neighbourhood
 })
 Export.table.toDrive({
-  collection: O3_hood,
-  description: 'O3_hood',
-  folder: 'Data/SENTINEL_Pollution'
+  collection: O3_neighbourhood,
+  description: 'O3_neighbourhood',
+  folder: 'Data/SENTINEL_Pollution',
+  selectors: desirable_fields_neighbourhood
 })
 Export.table.toDrive({
-  collection: O3_trop_hood,
-  description: 'O3_trop_hood',
-  folder: 'Data/SENTINEL_Pollution'
+  collection: O3_trop_neighbourhood,
+  description: 'O3_trop_neighbourhood',
+  folder: 'Data/SENTINEL_Pollution',
+  selectors: desirable_fields_neighbourhood
 })
 Export.table.toDrive({
-  collection: NO2_hood,
-  description: 'NO2_hood',
-  folder: 'Data/SENTINEL_Pollution'
+  collection: NO2_neighbourhood,
+  description: 'NO2_neighbourhood',
+  folder: 'Data/SENTINEL_Pollution',
+  selectors: desirable_fields_neighbourhood
 })
 Export.table.toDrive({
-  collection: CO_hood,
-  description: 'CO_hood',
-  folder: 'Data/SENTINEL_Pollution'
+  collection: CO_neighbourhood,
+  description: 'CO_neighbourhood',
+  folder: 'Data/SENTINEL_Pollution',
+  selectors: desirable_fields_neighbourhood
 })
 
 // Print/Map -------------
-print(UV_raw);
-print(UV_city.limit(10));
+//print(UV_raw);
+//print(UV_city.limit(10));
 
-Map.addLayer(hoods)
+print(neighbourhood.first())
+Map.addLayer(neighbourhood)

@@ -1,3 +1,10 @@
+// Data ----------
+// load study scale boundaries
+var cities = ee.FeatureCollection('projects/ee-isabellarichmond66/assets/cities');
+var neighbourhoods = ee.FeatureCollection('projects/ee-isabellarichmond66/assets/neighbourhoods');
+var streets = ee.FeatureCollection('projects/ee-isabellarichmond66/assets/roads');
+
+
 // Data Import + Cloud Removal -----------------------------------
 // code from this tutorial: https://developers.google.com/earth-engine/tutorials/community/sentinel-2-s2cloudless
 
@@ -9,8 +16,8 @@ var roi = cities;
 Map.centerObject(cities, 11);
 
 // Dates over which to create a median composite.
-var start = ee.Date('2021-06-01');
-var end = ee.Date('2021-08-30');
+var start = ee.Date('2024-06-01');
+var end = ee.Date('2024-08-30');
 
 // S2 L2A for surface reflectance bands.
 s2Sr = s2Sr
@@ -36,7 +43,6 @@ var s2Sr_NDVI = s2Sr.map(addNDVI);
 var s2Sr_NDVI_NDBI = s2Sr_NDVI.map(addNDBI);
 
 var indices = s2Sr_NDVI_NDBI.select(['NDVI', 'NDBI'])
-var indicesMean = indices.mean()
 
 
 // Reducing to Regions ------------------------------------------------------------------------------------
@@ -48,22 +54,31 @@ var reducer = ee.Reducer.mean()
 .combine({reducer2: ee.Reducer.count(), outputPrefix: null, sharedInputs: true});  
 
 
-var NDVI_NDBI_city = indicesMean.reduceRegions({
-  'collection': cities,
-  'reducer': reducer,
-  'scale': 10 
-});
+// get values across each geometry for each date in the image collection 
+var sample = function(images, reducer, region, scale) {
+  return images
+    .map(function(img) {
+      return img.reduceRegions({
+      collection: region,
+      reducer: reducer,
+      scale : scale
+      }).map(function (feature) {
+        return feature
+        .set('date', img.date());
+      });
+    }).flatten();
+};
 
-var NDVI_NDBI_hood = indicesMean.reduceRegions({
-  'reducer': reducer,
-  'scale': 10, 
-  'collection': hoods});
+var NDVI_NDBI_city = sample(indices, reducer, cities, 10);
+NDVI_NDBI_city = NDVI_NDBI_city.filter(ee.Filter.neq('NDVI_mean', null));
 
-var NDVI_NDBI_roads = indicesMean.reduceRegions({
-  'reducer': reducer,
-  'scale': 10, 
-  'collection': roads});
+var NDVI_NDBI_neighbourhood = sample(indices, reducer, neighbourhoods, 10);
+NDVI_NDBI_neighbourhood = NDVI_NDBI_neighbourhood.filter(ee.Filter.neq('NDVI_mean', null));
 
+var NDVI_NDBI_streets = sample(indices, reducer, streets, 10);
+NDVI_NDBI_streets = NDVI_NDBI_streets.filter(ee.Filter.neq('NDVI_mean', null));
+
+print(NDVI_NDBI_city.first())
 
 // Export --------------------------------------------------------------------------------------------------
 // city scale
@@ -74,13 +89,13 @@ Export.table.toDrive({
 
 // neighbourhood scale
 Export.table.toDrive({
-  collection: NDVI_NDBI_hood,
+  collection: NDVI_NDBI_neighbourhood,
   description: 'neighbourhoods'
 })
 
 // street scale
 Export.table.toDrive({
-  collection: NDVI_NDBI_roads,
+  collection: NDVI_NDBI_streets,
   description: 'streets'
 })
 

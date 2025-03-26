@@ -1,3 +1,10 @@
+// Data ----------
+// load study scale boundaries
+var cities = ee.FeatureCollection('projects/ee-isabellarichmond66/assets/cities');
+var neighbourhoods = ee.FeatureCollection('projects/ee-isabellarichmond66/assets/neighbourhoods');
+var streets = ee.FeatureCollection('projects/ee-isabellarichmond66/assets/roads');
+
+
 // PART 1: CALCULATING LST // 
 
 /*
@@ -16,13 +23,13 @@ Example 1:
 */
 
 // link to the code that computes the Landsat LST
-var LandsatLST = require('users/sofiaermida/landsat_smw_lst:modules/Landsat_LST.js')
+var LandsatLST = require('users/sofiaermida/landsat_smw_lst:modules/Landsat_LST.js');
 
 // select region of interest, date range, and landsat satellite
 var geometry = cities;
 var satellite = 'L8';
-var date_start = '2021-06-01';
-var date_end = '2021-08-31';
+var date_start = '2024-06-01';
+var date_end = '2024-08-31';
 var use_ndvi = true;
 
 // get landsat collection with added variables: NDVI, FVC, TPW, EM, LST
@@ -31,111 +38,83 @@ var LST = LandsatLST.collection(satellite, date_start, date_end, geometry, use_n
 
 // convert to Celsius for easier analysis 
 var LSTc = LST.select('LST').map(function(image) {
-  return image
-    .subtract(273.15) // multiply by band scale for true value? 2.75e-05 
+  return image.subtract(273.15).set('system:time_start', image.get('system:time_start'));
+  // multiply by band scale for true value? 2.75e-05 
 });
-
 
 // PART 2: EXTRACTING LST // 
 // want to extract LST values at various scales in each city
 // all assets were cleaned and produced in R - check github.com/icrichmond/cross-city-es for code 
 
-// 1. Mean
-// Get mean of each pixel for the summer
-var LSTcMean = LSTc.select('LST').mean()
-var LSTcCount = LSTc.select('LST').count()
+// FUNCTIONS ---- 
 
-print(LSTcCount)
-
-// 1. City Scale 
-// extract mean LST value at each image in the image collection for each city 
+// Functions --------------
+// what to include when reducing
 var reducer = ee.Reducer.mean()
 .combine({reducer2: ee.Reducer.median(), outputPrefix: null, sharedInputs: true})
 .combine({reducer2: ee.Reducer.max(), outputPrefix: null, sharedInputs: true})
 .combine({reducer2: ee.Reducer.min(), outputPrefix: null, sharedInputs: true})
 .combine({reducer2: ee.Reducer.stdDev(), outputPrefix: null, sharedInputs: true})
 .combine({reducer2: ee.Reducer.count(), outputPrefix: null, sharedInputs: true});  
-  
 
-var CityLST = LSTcMean.reduceRegions({
-  'reducer': reducer,
-  'scale': 30,
-  'collection': cities
-});
+
+// get values across each geometry for each date in the image collection 
+var sample = function(images, reducer, region, scale) {
+  return images
+    .map(function(img) {
+      return img.reduceRegions({
+      collection: region,
+      reducer: reducer,
+      scale : scale
+      }).map(function (feature) {
+        return feature
+        .set('date', img.date());
+      });
+    }).flatten();
+};
+
+
+// 1. City Scale 
+// extract mean LST value at each image in the image collection for each city 
+var CityLST = sample(LSTc, reducer, cities, 30);
 
 // filter instances where list of temperatures is empty 
 CityLST = CityLST.filter(ee.Filter.neq('mean', null));
 
+
 // Explicitly select output variables in the export (redundant with filter lines 56-57)
 Export.table.toDrive({
   collection: CityLST,
-  description: 'cities'
+  description: 'cities',
+  selectors: ['CMANAME', 'date', 'count', 'mean', 'median', 'max', 'min', 'stdDev']
 });
 
 
 // 2. Neighbourhood Scale 
 // extract LST value at each date in the image collection for each neighbourhood
-var HoodLST = LSTcMean.reduceRegions({
-  'reducer': reducer,
-  'scale': 30,
-  'collection': hoods
-});
+var neighbourhoodLST = sample(LSTc, reducer, neighbourhoods, 30);
 
-// save
-HoodLST = HoodLST.filter(ee.Filter.neq('mean', null))
+neighbourhoodLST = neighbourhoodLST.filter(ee.Filter.neq('mean', null));
 
 Export.table.toDrive({
-  collection: HoodLST,
-  description: 'neighbourhoods'
-})
+  collection: neighbourhoodLST,
+  description: 'neighbourhoods',
+  selectors: ['city', 'hood', 'hood_id', 'date', 'count', 'mean', 'median', 'max', 'min', 'stdDev']
+});
+
 
 // 3. Street Scale 
-// calculate average LST value for each street in each city
-var StreetLST = LSTcMean.reduceRegions({
-  'reducer': reducer,
-  'scale': 30,
-  'collection': roads
-});
-
-// save
-StreetLST = StreetLST.filter(ee.Filter.neq('mean', null))
-
+var StreetLST = sample(LSTc, reducer, streets, 30);
+StreetLST = StreetLST.filter(ee.Filter.neq('mean', null));
 Export.table.toDrive({
   collection: StreetLST,
-  description: 'streets'
-})
+  description: 'streets',
+  selectors: ['CMANAME', 'streetid', 'class', 'rank', 'date', 'count', 'mean', 'median', 'max', 'min', 'stdDev']
+});
 
 
-// PART 3: VISUALIZING LST // 
-// palettes
+// 4. Visualize
+var exImage = LSTc.first();
 var cmap1 = ['blue', 'cyan', 'green', 'yellow', 'red'];
-var cmap2 = ['F2F2F2','EFC2B3','ECB176','E9BD3A','E6E600','63C600','00A600']; 
-
-// visualize LST
-Map.addLayer(LSTcMean.select('LST'), {min:0, max:50, opacity:0.49, palette:cmap1},'LST')
-// visualize city boundaries
-var empty = ee.Image().byte();
-var outline = empty.paint({
-  featureCollection: roads,
-  color: 1,
-  width: 3
-});
-Map.addLayer(outline, {colour: 'black'}, 'Boundaries')
-
-/*
-
-// Export image to the cloud 
-// Retrieve the projection information from a band of the original image.
-// Call getInfo() on the projection to request a client-side object containing
-// the crs and transform information needed for the client-side Export function.
-var projection = LSTcMean.projection().getInfo();
-
-
-Export.image.toDrive({
-  image: LSTcMean,
-  description: 'LSTMeanExample',
-  region: sample,
-  scale: 30
-});
-
-*/
+Map.centerObject(exImage)
+Map.addLayer(exImage.select('LST'),{min:0, max:50, palette:cmap1}, 'LST')
