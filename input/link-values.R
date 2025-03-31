@@ -68,7 +68,7 @@ values_bounds <- tribble(
   ~dl_path, ~dl_link,
 
   'large/national/can_bound_raw.zip', 'https://www12.statcan.gc.ca/census-recensement/2021/geo/sip-pis/boundary-limites/files-fichiers/lcma000b21a_e.zip',
-  'large/national/can_road_raw.zip', 'https://www12.statcan.gc.ca/census-recensement/2021/geo/sip-pis/RNF-FRR/files-fichiers/lrnf000r21a_e.zip',
+  'large/national/can_road_raw.zip', 'https://www12.statcan.gc.ca/census-recensement/2011/geo/RNF-FRR/files-fichiers/lrnf000r24a_e.zip',
   'large/national/dsa_bound_raw.zip', 'https://www12.statcan.gc.ca/census-recensement/2021/geo/sip-pis/boundary-limites/files-fichiers/lda_000b21a_e.zip'
 ) %>% 
   mutate(
