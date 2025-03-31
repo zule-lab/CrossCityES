@@ -1,7 +1,7 @@
 clean_roads <- function(mun_bound, road_raw){ 
   
   # select relevant columns
-  road_raw_s <- road_raw[,c("NAME", "TYPE", "DIR", "NGD_UID", "RANK", "CLASS", "geometry")]
+  road_raw_s <- road_raw[,c("NAME", "TYPE", "DIR", "NGD_UID", "CLASS", "geometry")]
   
   # rename columns to be more interpretable and reproject
   road_raw_r <- road_raw_s %>%
@@ -9,7 +9,6 @@ clean_roads <- function(mun_bound, road_raw){
            streettype = TYPE,
            streetdir = DIR,
            streetid = NGD_UID,
-           rank = RANK,
            class = CLASS) %>%
     st_transform(crs = 3347)
   
