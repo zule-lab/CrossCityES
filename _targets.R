@@ -41,16 +41,12 @@ tar_source('scripts')
 # Targets: all ------------------------------------------------------------
 # Automatically grab all the "targets" lists above
 
-# lapply(grep('targets', ls(), value = TRUE), get)
+lapply(grep('targets', ls(), value = TRUE), get)
 
-c(targets_prepare_boundaries, targets_prepare_neighbourhoods, targets_prepare_census, 
-  targets_prepare_supp, targets_prepare_trees, targets_prepare_scales, targets_prepare_buildings,
-  targets_prepare_ee, targets_building_density, targets_road_class, targets_census, targets_tree_size, 
-  targets_tree_density, targets_tree_richness)
 
 # TODO: 
 # - update join (streets? what join lol)
 # - update quarto doc
 # - add functional diversity of trees
 # - change downloaded google drive data to input folder so its accessible and add note to readme 
-# - update GEE data & implement threshold
+# - update GEE data w new roads & implement threshold
