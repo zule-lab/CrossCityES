@@ -33,11 +33,6 @@ tar_source('input/link-values.R')
 # example: dir.create(file.path('large', 'neighbourhoods'))
 
 
-# Scripts -----------------------------------------------------------------
-# tar_source('scripts')
-tar_source('scripts')
-
-
 # Targets: all ------------------------------------------------------------
 # Automatically grab all the "targets" lists above
 
@@ -50,3 +45,4 @@ lapply(grep('targets', ls(), value = TRUE), get)
 # - add functional diversity of trees
 # - change downloaded google drive data to input folder so its accessible and add note to readme 
 # - update GEE data w new roads & implement threshold
+# - change city approach? 
