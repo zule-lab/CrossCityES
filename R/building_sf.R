@@ -54,16 +54,11 @@ building_cleanup <- function(p, g, mun_bound_trees){
     geo <- st_as_sfc(g, GeoJson = TRUE) %>% 
         st_as_sf() %>%
         st_transform(crs = 3347) %>%
-        st_join(., mun_bound_trees) %>% 
-        rename(city = CMANAME)
-      
-
-      geo_build <- geo %>% 
-        filter(city %in% c("Ottawa", "Toronto")) %>%
-        select(c(geometry, city)) %>%
-        rename(x = geometry) 
+        st_intersection(., mun_bound_trees) %>% 
+        rename(city = CMANAME) %>%
+        select(c(x, city))
     
-      return(geo_build)
+      return(geo)
     
   }
   
