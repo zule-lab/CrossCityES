@@ -125,15 +125,15 @@ values_ee <- tribble(
   'large/dem/streets_bldhgt.csv', 'Data/Cross-City ES Project/DEM/streets_dem.csv',
   
   'large/pollution/cities_CO.csv', 'Data/Cross-City ES Project/SENTINEL_Pollution/CO_city.csv',
-  'large/pollution/neighbourhoods_CO.csv', 'Data/Cross-City ES Project/SENTINEL_Pollution/CO_hood.csv',
+  'large/pollution/neighbourhoods_CO.csv', 'Data/Cross-City ES Project/SENTINEL_Pollution/CO_neighbourhood.csv',
   'large/pollution/cities_NO2.csv', 'Data/Cross-City ES Project/SENTINEL_Pollution/NO2_city.csv',
-  'large/pollution/neighbourhoods_NO2.csv', 'Data/Cross-City ES Project/SENTINEL_Pollution/NO2_hood.csv',
+  'large/pollution/neighbourhoods_NO2.csv', 'Data/Cross-City ES Project/SENTINEL_Pollution/NO2_neighbourhood.csv',
   'large/pollution/cities_O3.csv', 'Data/Cross-City ES Project/SENTINEL_Pollution/O3_city.csv',
-  'large/pollution/neighbourhoods_O3.csv', 'Data/Cross-City ES Project/SENTINEL_Pollution/O3_hood.csv',
+  'large/pollution/neighbourhoods_O3.csv', 'Data/Cross-City ES Project/SENTINEL_Pollution/O3_neighbourhood.csv',
   'large/pollution/cities_SO2.csv', 'Data/Cross-City ES Project/SENTINEL_Pollution/SO2_city.csv',
-  'large/pollution/neighbourhoods_SO2.csv', 'Data/Cross-City ES Project/SENTINEL_Pollution/SO2_hood.csv',
+  'large/pollution/neighbourhoods_SO2.csv', 'Data/Cross-City ES Project/SENTINEL_Pollution/SO2_neighbourhood.csv',
   'large/pollution/cities_UV.csv', 'Data/Cross-City ES Project/SENTINEL_Pollution/UV_city.csv',
-  'large/pollution/neighbourhoods_UV.csv', 'Data/Cross-City ES Project/SENTINEL_Pollution/UV_hood.csv'
+  'large/pollution/neighbourhoods_UV.csv', 'Data/Cross-City ES Project/SENTINEL_Pollution/UV_neighbourhood.csv'
   
 ) %>% 
   mutate(
