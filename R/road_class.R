@@ -51,12 +51,12 @@ road_class <- function(mun_road, bound_area, scale){
       group_by(city, hood_id) %>%
       mutate(neighbourhood_area = set_units(hood_area, km^2),
              road_length = set_units(st_length(geometry), km)) %>%
-      summarize(prop_highway = sum(rank == "1" | rank == "2" | rank == "3")/n(),
-                prop_mjrds = sum(rank == "4")/n(),
-                prop_strts = sum(rank == "5")/n(),
+      summarize(city = first(CMANAME), 
+                prop_highway = sum(class == "10" | class == "11" | class == "12" | class == "13" | class == "25" | class == "80")/n(),
+                prop_strts = sum(class == "20" | class == "21" | class == "22" | class == "23" | class == "24" | class == "29")/n(),
                 road_length = sum(road_length),
-                neighbourhood_area = first(neighbourhood_area),
-                road_dens = road_length/neighbourhood_area)
+                city_area = first(neighbourhood_area),
+                road_dens = as.numeric(road_length)/as.numeric(neighbourhood_area)) 
     
     return(road_class_neighbourhood)
   }
