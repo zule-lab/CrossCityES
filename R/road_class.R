@@ -55,7 +55,7 @@ road_class <- function(mun_road, bound_area, scale){
                 prop_highway = sum(class == "10" | class == "11" | class == "12" | class == "13" | class == "25" | class == "80")/n(),
                 prop_strts = sum(class == "20" | class == "21" | class == "22" | class == "23" | class == "24" | class == "29")/n(),
                 road_length = sum(road_length),
-                city_area = first(neighbourhood_area),
+                neighbourhood_area = first(neighbourhood_area),
                 road_dens = as.numeric(road_length)/as.numeric(neighbourhood_area)) 
     
     return(road_class_neighbourhood)
