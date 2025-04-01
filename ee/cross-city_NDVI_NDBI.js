@@ -78,25 +78,27 @@ NDVI_NDBI_neighbourhood = NDVI_NDBI_neighbourhood.filter(ee.Filter.neq('NDVI_mea
 var NDVI_NDBI_streets = sample(indices, reducer, streets, 10);
 NDVI_NDBI_streets = NDVI_NDBI_streets.filter(ee.Filter.neq('NDVI_mean', null));
 
-print(NDVI_NDBI_city.first())
 
 // Export --------------------------------------------------------------------------------------------------
 // city scale
 Export.table.toDrive({
   collection: NDVI_NDBI_city,
-  description: 'cities'
+  description: 'cities',
+  selectors: ['CMANAME', 'date', 'NDBI_count', 'NDBI_mean', 'NDBI_median', 'NDBI_max', 'NDBI_min', 'NDBI_stdDev', 'NDVI_count', 'NDVI_mean', 'NDVI_median', 'NDVI_max', 'NDVI_min', 'NDVI_stdDev']
 })
 
 // neighbourhood scale
 Export.table.toDrive({
   collection: NDVI_NDBI_neighbourhood,
-  description: 'neighbourhoods'
+  description: 'neighbourhoods',
+  selectors: ['city', 'hood', 'hood_id', 'date', 'NDBI_count', 'NDBI_mean', 'NDBI_median', 'NDBI_max', 'NDBI_min', 'NDBI_stdDev', 'NDVI_count', 'NDVI_mean', 'NDVI_median', 'NDVI_max', 'NDVI_min', 'NDVI_stdDev']
 })
 
 // street scale
 Export.table.toDrive({
   collection: NDVI_NDBI_streets,
-  description: 'streets'
+  description: 'streets',
+  selectors: ['CMANAME', 'streetid', 'class', 'date', 'NDBI_count', 'NDBI_mean', 'NDBI_median', 'NDBI_max', 'NDBI_min', 'NDBI_stdDev', 'NDVI_count', 'NDVI_mean', 'NDVI_median', 'NDVI_max', 'NDVI_min', 'NDVI_stdDev']
 })
 
 
