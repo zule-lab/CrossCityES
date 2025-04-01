@@ -109,7 +109,7 @@ StreetLST = StreetLST.filter(ee.Filter.neq('mean', null));
 Export.table.toDrive({
   collection: StreetLST,
   description: 'streets',
-  selectors: ['CMANAME', 'streetid', 'class', 'rank', 'date', 'count', 'mean', 'median', 'max', 'min', 'stdDev']
+  selectors: ['CMANAME', 'streetid', 'class', 'date', 'count', 'mean', 'median', 'max', 'min', 'stdDev']
 });
 
 
