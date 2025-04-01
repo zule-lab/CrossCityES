@@ -21,7 +21,7 @@ clean_sat <- function(folder, file, dl_path){
     label <- ""
     
     # remove system:index and geo columns because they are not in useable format
-    df <- file %>% select(-c('system.index', '.geo')) %>% 
+    df <- file %>% 
       rename_with(., ~ paste0(.x, "_", label), .cols = all_of(c("NDBI_count", "NDBI_max",	"NDBI_mean",	"NDBI_median",
                                                                 "NDBI_min",	"NDBI_stdDev",	"NDVI_count",	"NDVI_max",
                                                                 "NDVI_mean",	"NDVI_median",	"NDVI_min",	"NDVI_stdDev")))
