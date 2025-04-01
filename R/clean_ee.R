@@ -35,7 +35,7 @@ clean_sat <- function(folder, file, dl_path){
     
     label <- "temp"
     
-    df <- file %>% select(-c('system.index', '.geo')) %>% 
+    df <- file %>% 
       rename_with(., ~ paste0(.x, "_", label), .cols = all_of(c("mean", "median", "max", "min", "count", "stdDev")))
     
     return(df)
@@ -59,7 +59,7 @@ clean_sat <- function(folder, file, dl_path){
     
     label <- basename(sans_ext(dl_path))
     
-    df <- file %>% select(-c('system.index', '.geo')) %>% 
+    df <- file %>% 
       rename_with(., ~ paste0(.x, "_", label), .cols = all_of(c("mean", "median", "max", "min", "count", "stdDev")))
     
     return(df)
