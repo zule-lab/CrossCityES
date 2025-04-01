@@ -35,7 +35,7 @@ tar_source('input/link-values.R')
 
 # Targets: all ------------------------------------------------------------
 # Automatically grab all the "targets" lists above
-
+tar_source('scripts')
 lapply(grep('targets', ls(), value = TRUE), get)
 
 
