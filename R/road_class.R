@@ -1,16 +1,29 @@
 road_class <- function(mun_road, bound_area, scale){
   
-  # proportion of highways (ranks 1-3), major streets (rank 4), local streets (rank 5)
+  # proportion of highways and streets
   # road density (road length / neighbourhood area)
   
+  # CLASS
+  # 10 	Highway
+  # 11 	Expressway
+  # 12 	Primary highway
+  # 13 	Secondary highway
+  # 20 	Road
+  # 21 	Arterial
+  # 22 	Collector
+  # 23 	Local
+  # 24 	Alley / Lane / Utility
+  # 25 	Connector / Ramp
+  # 26 	Reserve / Trail
+  # 27 	Rapid transit
+  # 28 	Planned
+  # 29 	Strata
+  # 80 	Bridge / Tunnel
+  # 87 	Winter
+  # 90 	Unknown
   
-  # RANK
-  # 1 	Trans-Canada Highway
-  # 2 	National Highway System (not rank 1)
-  # 3 	Major Highway (not rank 1 or 2)
-  # 4 	Secondary Highway, Major Street (not rank 1, 2, or 3)
-  # 5 	All other streets (not rank 1, 2, 3, or 4)
-  
+  # highways: 10, 11, 12, 13, 25, 80 
+  # regular roads: 20, 21, 22, 23, 24, 29
   
   if (scale == "city"){
     
@@ -22,9 +35,8 @@ road_class <- function(mun_road, bound_area, scale){
       mutate(city_area = set_units(city_area, km^2),
              road_length =  set_units(st_length(geometry), km)) %>%
       summarize(city = first(CMANAME), 
-                prop_highway = sum(rank == "1" | rank == "2" | rank == "3")/n(),
-                prop_majrds = sum(rank == "4")/n(),
-                prop_strts = sum(rank == "5")/n(),
+                prop_highway = sum(class == "10" | class == "11" | class == "12" | class == "13" | class == "25" | class == "80")/n(),
+                prop_strts = sum(class == "20" | class == "21" | class == "22" | class == "23" | class == "24" | class == "29")/n(),
                 road_length = sum(road_length),
                 city_area = first(city_area),
                 road_dens = as.numeric(road_length)/as.numeric(city_area)) 
