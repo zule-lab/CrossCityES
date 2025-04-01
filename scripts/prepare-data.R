@@ -131,22 +131,22 @@ targets_prepare_data <- c(
   # combine pollution for city level
   tar_target(
     cities_pollution,
-    bind_cols(cities_CO, 
-              cities_NO2 %>% select(-CMANAME), 
-              cities_O3 %>% select(-CMANAME),
-              cities_SO2 %>% select(-CMANAME),
-              cities_UV %>% select(-CMANAME)) %>%
+    rbind(cities_CO %>% pivot_longer(cols = -c(CMANAME, date), names_to = "variable"), 
+              cities_NO2 %>% pivot_longer(cols = -c(CMANAME, date), names_to = "variable"), 
+              cities_O3 %>% pivot_longer(cols = -c(CMANAME, date), names_to = "variable"),
+              cities_SO2 %>% pivot_longer(cols = -c(CMANAME, date), names_to = "variable"),
+              cities_UV %>% pivot_longer(cols = -c(CMANAME, date), names_to = "variable")) %>%
       rename(city = CMANAME)
   ),
   
   # combine pollution for neighbourhood level
   tar_target(
     neighbourhoods_pollution,
-    bind_cols(neighbourhoods_CO %>% select(-c('id')),
-              neighbourhoods_NO2 %>% select(-c('id', 'city', 'hood', 'hood_area', 'hood_id')),
-              neighbourhoods_O3 %>% select(-c('id', 'city', 'hood', 'hood_area', 'hood_id')),
-              neighbourhoods_SO2 %>% select(-c('id', 'city', 'hood', 'hood_area', 'hood_id')),
-              neighbourhoods_UV %>% select(-c('id', 'city', 'hood', 'hood_area', 'hood_id')))
+    rbind(neighbourhoods_CO %>% pivot_longer(cols = -c(city, hood, hood_id, date), names_to = "variable"),
+              neighbourhoods_NO2 %>% pivot_longer(cols = -c(city, hood, hood_id, date), names_to = "variable"),
+              neighbourhoods_O3 %>% pivot_longer(cols = -c(city, hood, hood_id, date), names_to = "variable"),
+              neighbourhoods_SO2 %>% pivot_longer(cols = -c(city, hood, hood_id, date), names_to = "variable"),
+              neighbourhoods_UV %>% pivot_longer(cols = -c(city, hood, hood_id, date), names_to = "variable"))
   ),
 
 
