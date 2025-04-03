@@ -1,4 +1,4 @@
-tree_size <- function(can_trees, scale, road_bound_trees = NA){
+tree_size <- function(can_trees, scale, road_bound_trees = NULL){
   
   
   all_tree_in <- can_trees %>% 
