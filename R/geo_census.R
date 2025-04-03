@@ -62,8 +62,10 @@ geo_census <- function(can_bound, census_da_clean, scale){
     
     # population weighted mean
     hood_cen <- hood_cen_i %>%
-      group_by(hood) %>%   
-      summarize(DSAcount = n(),
+      group_by(hood_id) %>%   
+      summarize(city = first(city),
+                hood = first(hood), 
+                DSAcount = n(),
              area = sum(area),
              da = list(da),
              geometry = st_union(geometry),
@@ -84,10 +86,10 @@ geo_census <- function(can_bound, census_da_clean, scale){
              edubacp = weighted.mean(as.numeric(edubacp), as.numeric(popwithin)),
              popwithin = sum(as.numeric(popwithin))
       ) %>%
-      distinct(hood, .keep_all = TRUE)
+      distinct(hood_id, .keep_all = TRUE)
     
-    hood_cen_onep <- bind_cols(hood_cen %>% select(c(hood, area, da, geometry)),
-                               hood_cen %>% st_set_geometry(NULL) %>% select(-c(hood, area, da)) %>% select_if(~any(. > 0.01)))
+    hood_cen_onep <- bind_cols(hood_cen %>% select(c(city, hood, hood_id, area, da, geometry)),
+                               hood_cen %>% st_set_geometry(NULL) %>% select(-c(city, hood, hood_id, area, da)) %>% select_if(~any(. > 0.01)))
     
     
     return(hood_cen_onep)
