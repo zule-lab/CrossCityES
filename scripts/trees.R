@@ -16,7 +16,7 @@ targets_trees <- c(
   
   tar_target(
     road_treedensity,
-    tree_density(can_trees, 'road', road_treesize, build_dens_road)
+    tree_density(can_trees, 'road', road_treesize, build_dens_road, road_bound_trees)
   ),
   
 
