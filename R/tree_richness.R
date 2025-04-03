@@ -1,7 +1,7 @@
-tree_richness <- function(can_trees, scale, road_bound_trees = NA){
+tree_richness <- function(can_trees, scale, road_bound_trees = NULL){
   
   # format data for vegan
-  matrix <- format_vegan(can_trees, scale)
+  matrix <- format_vegan(can_trees, scale, road_bound_trees)
   
   # use vegan to calculate species richness and Shannon diversity
   sr <- as_tibble(specnumber(matrix), rownames = scale) %>%
@@ -12,7 +12,7 @@ tree_richness <- function(can_trees, scale, road_bound_trees = NA){
   
 }
 
-format_vegan <- function(can_trees, scale){
+format_vegan <- function(can_trees, scale, road_bound_trees = NULL){
   
   if (scale == 'city'){
     
