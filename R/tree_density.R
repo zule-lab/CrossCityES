@@ -1,4 +1,4 @@
-tree_density <- function(can_trees, scale, treesize, builddens){
+tree_density <- function(can_trees, scale, treesize, builddens, road_bound_trees = NULL){
   
   if (scale == 'city'){
     
@@ -43,8 +43,6 @@ tree_density <- function(can_trees, scale, treesize, builddens){
   }
   
   else if (scale == 'road'){
-    
-    road_bound_trees <- tar_read(road_bound_trees)
     
     can_trees_i <- st_intersection(can_trees, road_bound_trees)
     
