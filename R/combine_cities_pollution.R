@@ -1,5 +1,6 @@
-combine_cities_pollution <- function(cities_pollution, mun_bound_trees, cities_treedensity, cities_treerichness, 
-                                     cities_treesize, build_dens_city, cities_roadclass, census_city, cities_ndvi_ndbi){
+combine_cities_pollution <- function(cities_pollution, mun_bound_trees, census_city,
+                                     cities_treedensity, cities_treerichness, cities_treesize, 
+                                     build_dens_city, cities_roadclass, cities_ndvi_ndbi){
   
   
   # filter images -----------------------------------------------------------
@@ -13,8 +14,7 @@ combine_cities_pollution <- function(cities_pollution, mun_bound_trees, cities_t
     # resolution is 1113.2 m
     mutate(coverage = round((value*1239214.24)/(drop_units(st_area(geometry)))*100, 3)) %>%
     # image covers minimum 75% of the city area
-    filter(coverage > 50) %>% 
-    select(-geometry)
+    filter(coverage > 50) 
   
   filt_ndvi <- cities_ndvi_ndbi %>% 
     inner_join(., mun_bound_trees) %>% 
@@ -27,7 +27,6 @@ combine_cities_pollution <- function(cities_pollution, mun_bound_trees, cities_t
   # join data ---------------------------------------------------------------
   
   join <- filt %>%
-    rename(city = CMANAME) %>%
     left_join(., cities_treedensity, by = "city") %>%
     left_join(., cities_treerichness, by = "city") %>%
     left_join(., cities_treesize %>% st_set_geometry(NULL), by = "city") %>%

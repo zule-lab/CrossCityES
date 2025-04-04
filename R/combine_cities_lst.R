@@ -1,5 +1,6 @@
-combine_cities_lst <- function(cities_lst, mun_bound_trees, cities_treedensity, cities_treerichness, 
-                               cities_treesize, build_dens_city, cities_roadclass, census_city, cities_ndvi_ndbi){
+combine_cities_lst <- function(cities_lst, mun_bound_trees, census_city,
+                               cities_treedensity, cities_treerichness, cities_treesize, 
+                               build_dens_city, cities_roadclass, cities_ndvi_ndbi){
   
 
 # filter images -----------------------------------------------------------
