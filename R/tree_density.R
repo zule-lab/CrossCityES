@@ -55,8 +55,8 @@ tree_density <- function(can_trees, scale, treesize, builddens, road_bound_trees
       summarize(nTrees = n()) %>%
       filter(nTrees > 1) %>%
       mutate(streetid = as.character(streetid)) %>%
-      inner_join(., as.data.frame(treesize), by = c("city", "hood", "streetid"), suffix = c("", ".x")) %>% 
-      inner_join(., as.data.frame(builddens), by = c("city", "streetid"), suffix = c("", ".y")) %>%
+      inner_join(., as.data.frame(treesize), by = c("streetid"), suffix = c("", ".x")) %>% 
+      inner_join(., as.data.frame(builddens), by = c("streetid"), suffix = c("", ".y")) %>%
       group_by(streetid) %>%
       summarize(city = first(city),
                 streetid = streetid,
