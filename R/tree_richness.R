@@ -68,7 +68,7 @@ format_vegan <- function(can_trees, scale, road_bound_trees = NULL){
       select(c(streetid, fullname, n)) %>% 
       st_set_geometry(NULL) %>%
       pivot_wider(names_from = 'fullname', values_from = 'n', values_fill = 0, values_fn = first) %>%
-      column_to_rownames(var='hood_streetid')
+      column_to_rownames(var='streetid')
     
     return(matrix)
     
