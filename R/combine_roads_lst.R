@@ -53,7 +53,7 @@ combine_roads_lst <- function(streets_lst, road_bound_trees, census_road,
            city = city.x) %>% 
     select(-c(CMANAME, CMANAME.x.x, class.y.x, CMANAME.y.x, id.x, street.y, streettype.y, streetdir.y, street.x.x, id.y,
               CMANAME.x.y, class.x.y, street.y.y, streettype.x, streetdir.x, CMANAME.y.y, road_class.y, mean_ba.y, city.y, 
-              class.y.y)) %>% 
+              class.y.y, rank, geometry)) %>% 
     separate(date, c('date', 'time'), sep = 'T') %>% 
     separate(date_ndvi, c("date_ndvi", "time_ndvi"), sep = "T") %>% 
     mutate(date = as.Date(date),
