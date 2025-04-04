@@ -274,12 +274,7 @@ tar_target(
     roads_lst_full,
     combine_roads_lst(streets_lst, road_bound_trees, census_road, 
                       road_treedensity, road_treerichness, road_treesize, 
-                      build_dens_road, neighbourhoods_ndvi_ndbi)
-  ),
-
-  tar_target(
-    roads_pollution_full,
-    combine_roads_pollution()
+                      build_dens_road, streets_ndvi_ndbi)
   )
-  
+
 )
