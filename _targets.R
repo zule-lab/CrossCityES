@@ -40,7 +40,6 @@ lapply(grep('targets', ls(), value = TRUE), get)
 
 
 # TODO: 
-# - add street level census & joins
-# - filter duplicate images / bad times 
+# - filter temperature image times 
 # - add functional diversity of trees
 # - update quarto doc
