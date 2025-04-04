@@ -1,6 +1,6 @@
 combine_roads_lst <- function(streets_lst, road_bound_trees, census_road, 
                               road_treedensity, road_treerichness, road_treesize, 
-                              build_dens_road, neighbourhoods_ndvi_ndbi){
+                              build_dens_road, streets_ndvi_ndbi){
   
 
 # classify roads ----------------------------------------------------------
@@ -40,18 +40,20 @@ combine_roads_lst <- function(streets_lst, road_bound_trees, census_road,
   
 # join data ---------------------------------------------------------------
   
-  join <- filt[1:10000,] %>%
+  join <- filt %>%
     left_join(., road_treedensity, by = c("streetid")) %>%
-    left_join(., neighbourhood_treerichness, by = c("streetid")) %>%
-    left_join(., road_treesize %>% st_set_geometry(NULL), by = c("streetid")) 
+    left_join(., road_treerichness, by = join_by("streetid" == "road")) %>% 
+    left_join(., road_treesize %>% st_set_geometry(NULL), by = c("streetid")) %>% 
     left_join(., build_dens_road %>% st_set_geometry(NULL), by = c("streetid")) %>% 
     left_join(., census_road %>% mutate(id = as.character(id)), by = "streetid") %>% 
     full_join(., filt_ndvi %>% rename(date_ndvi = date), by = c("streetid")) %>% 
     rename(class = class.x.x,
            street = street.x,
-           road_class = road_class.x) %>% 
+           road_class = road_class.x,
+           city = city.x) %>% 
     select(-c(CMANAME, CMANAME.x.x, class.y.x, CMANAME.y.x, id.x, street.y, streettype.y, streetdir.y, street.x.x, id.y,
-              CMANAME.x.y, class.x.y, street.y.y, streettype.x, streetdir.x, CMANAME.y.y, road_class.y)) %>% 
+              CMANAME.x.y, class.x.y, street.y.y, streettype.x, streetdir.x, CMANAME.y.y, road_class.y, mean_ba.y, city.y, 
+              class.y.y)) %>% 
     separate(date, c('date', 'time'), sep = 'T') %>% 
     separate(date_ndvi, c("date_ndvi", "time_ndvi"), sep = "T") %>% 
     mutate(date = as.Date(date),
