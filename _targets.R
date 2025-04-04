@@ -40,9 +40,7 @@ lapply(grep('targets', ls(), value = TRUE), get)
 
 
 # TODO: 
-# - update full dataset join 
-# - check street stuff
-# - update quarto doc
+# - add street level census & joins
+# - filter duplicate images / bad times 
 # - add functional diversity of trees
-# - update GEE data w new roads & implement threshold
-# - change city approach? 
+# - update quarto doc
