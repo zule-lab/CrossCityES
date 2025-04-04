@@ -56,17 +56,16 @@ format_vegan <- function(can_trees, scale, road_bound_trees = NULL){
     
     # include streets that have more than 1 tree
     cutoff <- can_trees_i %>%
-      group_by(city, hood, streetid) %>% 
+      group_by(streetid) %>% 
       mutate(nTrees = n()) %>% 
       filter(nTrees > 1)
     
     
     matrix <- cutoff %>% 
       drop_na(species) %>%
-      group_by(city, hood, streetid, fullname) %>%
-      mutate(n = n(),
-             hood_streetid = paste0(city, "_", hood, "_", streetid)) %>%
-      select(c(hood_streetid, fullname, n)) %>% 
+      group_by(streetid, fullname) %>%
+      mutate(n = n()) %>%
+      select(c(streetid, fullname, n)) %>% 
       st_set_geometry(NULL) %>%
       pivot_wider(names_from = 'fullname', values_from = 'n', values_fill = 0, values_fn = first) %>%
       column_to_rownames(var='hood_streetid')

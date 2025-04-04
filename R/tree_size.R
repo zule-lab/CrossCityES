@@ -28,7 +28,7 @@ tree_size <- function(can_trees, scale, road_bound_trees = NULL){
     can_trees_i <- st_intersection(all_tree_in, road_bound_trees)
    
     grouped <- can_trees_i %>%
-      group_by(city, hood, streetid) %>% 
+      group_by(streetid) %>% 
       mutate(nTrees = n()) %>% 
       filter(nTrees > 1) %>%
       select(-nTrees)
