@@ -40,6 +40,6 @@ lapply(grep('targets', ls(), value = TRUE), get)
 
 
 # TODO: 
-# - filter temperature image times 
 # - add functional diversity of trees
 # - update quarto doc
+# - deal with missing functional data 
