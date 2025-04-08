@@ -40,6 +40,31 @@ targets_prepare_data <- c(
     read.csv(!!.x)
   ),
   
+
+# functional data ---------------------------------------------------------
+  tar_file_read(
+    TTTF_1.3,
+    'input/functional/Tree_Trait_Task_Force_BDD_1.3.txt', 
+    read.csv(!!.x, sep = ';')
+  ),
+
+  tar_file_read(
+    seed_mass,
+    'input/functional/Seed_mass_new_data.csv', 
+    read.csv(!!.x)
+  ),
+
+  tar_file_read(
+    TTTF_newlit,
+    'input/functional/TTTF_traits_nouvelle_litterature.csv', 
+    read.csv(!!.x)
+  ),
+
+  tar_file_read(
+    ZULE_traits,
+    'input/functional/ZULE_TraitDatabase.csv', 
+    read.csv(!!.x)
+  ),
   
 # boundaries --------------------------------------------------------------
 
