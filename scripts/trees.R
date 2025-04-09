@@ -24,17 +24,22 @@ targets_trees <- c(
 
   tar_target(
     cities_treerichness,
-    tree_richness(can_trees, 'city', TTTF_1.3, seed_mass, TTTF_newlit, ZULE_traits)
+    tree_richness(can_trees, 'city')
   ),
   
   tar_target(
     neighbourhood_treerichness,
-    tree_richness(can_trees, 'neighbourhood', TTTF_1.3, seed_mass, TTTF_newlit, ZULE_traits)
+    tree_richness(can_trees, 'neighbourhood')
   ),
   
   tar_target(
     road_treerichness,
-    tree_richness(can_trees, 'road', road_bound_trees, TTTF_1.3, seed_mass, TTTF_newlit, ZULE_traits)
+    tree_richness(can_trees, 'road', road_bound_trees)
+  ),
+
+  tar_target(
+    func_groups, 
+    create_func_groups(TTTF_1.3, seed_mass, TTTF_newlit, ZULE_traits)
   ),
 
 

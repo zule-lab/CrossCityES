@@ -1,5 +1,6 @@
 tree_richness <- function(can_trees, scale, road_bound_trees = NULL){
   
+  
   # format data for vegan
   matrix <- format_vegan(can_trees, scale, road_bound_trees)
   
