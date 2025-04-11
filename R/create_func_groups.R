@@ -1,5 +1,8 @@
 create_func_groups <- function(can_trees, TTTF_1.3, seed_mass, TTTF_newlit, ZULE_traits){
   
+  
+  set.seed(1234)
+  
   # clean functional trait databases
   seed_mass_c <- seed_mass %>% 
     rename(StdValue = SM..mg.or.g.for.1000seeds.) %>% 
@@ -285,7 +288,7 @@ create_func_groups <- function(can_trees, TTTF_1.3, seed_mass, TTTF_newlit, ZULE
   
   res <- t(apply(as.data.frame(t(sapply(seq_along(i),FUN="comp"))), 1, unlist))
   
-  grouptokeep <- c('1', '2', '3', '4', '5', '6')
+  grouptokeep <- seq(1:nclusters)
   
   FG_assigned <- as.data.frame(bind_cols( as.data.frame(res[,1]), as.data.frame(res[,2]), as.data.frame(res[,3]))) %>%
     transmute(Fgroup=res[,1],CodeSp=res[,2],cosimil=res[,3]) %>%
