@@ -1,15 +1,57 @@
-tree_richness <- function(can_trees, scale, road_bound_trees = NULL){
+tree_richness <- function(can_trees, scale, func_groups, road_bound_trees = NULL){
+  
+  # correct species names 
+  species_corr <- can_trees %>% 
+    mutate(fullname = str_replace(fullname, ' sp.', ' sp'),
+           fullname = case_when(fullname == "Acer spcatum" ~ "Acer spicatum",
+                                fullname == "Amelanchier x grandiflora" ~ "Amelanchier grandiflora",
+                                fullname == "Carpinus carolina" ~ "Carpinus caroliniana",
+                                fullname == "Cupressocyparis   X leylandii" ~ "Cupressocyparis x leylandii",
+                                fullname == "Euonymus europea" ~ "Euonymus europaeus",
+                                fullname == "Fraxinus oxycarpa" ~ "Fraxinus angustifolia subsp. oxycarpa",
+                                fullname == "Ginkgo b.the" | fullname == "Gingko sp" ~ "Ginkgo biloba",
+                                fullname == "Juglans ailantifolia" ~ "Juglans ailanthifolia",
+                                fullname == "Magnolia soulangeana  x" | fullname == "Magnolia soulangiana" ~ "Magnolia x soulangeana",
+                                fullname == "Magnolia spengeri" ~ "Magnolia sprengeri",
+                                fullname == "Malus micromalus   x" ~ "Malus x micromalus",
+                                fullname == "Malus zumi" ~ "Malus x zumi",
+                                fullname == "Populus canescens" ~ "Populus x canescens",
+                                fullname == "Prunus américain" ~ "Prunus americana",
+                                fullname == "Prunus virginianna" ~ "Prunus virginiana",
+                                fullname == "Pyrus usseriensis" ~ "Pyrus ussuriensis",
+                                fullname == "Sorbus acuparia" ~ "Sorbus aucuparia",
+                                fullname == "Sorbus hybrida x" ~ "Sorbus x hybrida",
+                                fullname == "Tilia europaea" ~ "Tilia x europaea",
+                                fullname == "Catalpa spciosa" ~ "Catalpa speciosa",
+                                fullname == "Aesculus octandra" ~ "Aesculus flava",
+                                fullname == "Alnus rugosa" ~ "Alnus incana",
+                                fullname == "Aralia spnosa" ~ "Aralia spinosa",
+                                fullname == "Carya tomentosa" ~ "Carya alba",
+                                fullname == "Salix matsudana" ~ "Salix babylonica var. matsudana",
+                                fullname == "Malux x thunder" ~ "Malus x thunder", 
+                                .default = fullname)) %>% 
+    filter(!str_detect(fullname, "Unknown|Unidentified|Stump"))
+  
+  
+  # calculate functional diversity
+  func <- func_diversity(species_corr, scale, func_groups, road_bound_trees)  
   
   
   # format data for vegan
-  matrix <- format_vegan(can_trees, scale, road_bound_trees)
+  matrix <- format_vegan(species_corr, scale, road_bound_trees)
+  
   
   # use vegan to calculate species richness and Shannon diversity
   sr <- as_tibble(specnumber(matrix), rownames = scale) %>%
     rename(SpeciesRichness = value) %>%
     mutate(Shannon = diversity(matrix))
   
-  return(sr)
+  
+  # combine two datasets 
+  full <- inner_join(sr, func)
+  
+  
+  return(full)
   
 }
 
@@ -77,4 +119,65 @@ format_vegan <- function(can_trees, scale, road_bound_trees = NULL){
   
   else { print("error: no scales matched") }
   
+  
+}
+
+
+func_diversity <- function(species_corr, scale, func_groups, road_bound_trees = NULL){
+  
+  if (scale == 'city'){
+    
+    df <- species_corr %>% 
+      st_drop_geometry() %>% 
+      inner_join(., func_groups, by = 'fullname') %>% 
+      group_by(city, FG) %>% 
+      tally() %>%
+      filter(!is.na(FG)) %>% 
+      group_by(city) %>% 
+      summarize(nFG = length(city))
+  }
+  
+  else if (scale == 'neighbourhood'){
+    
+    cutoff <- species_corr %>%
+      group_by(city, hood) %>% 
+      mutate(nTrees = n()) %>% 
+      filter(nTrees > 50)
+    
+    df <- cutoff %>% 
+      st_drop_geometry() %>% 
+      inner_join(., func_groups, by = 'fullname') %>% 
+      group_by(city, hood, FG) %>% 
+      tally() %>%
+      filter(!is.na(FG)) %>% 
+      group_by(city, hood) %>% 
+      summarize(nFG = length(c(hood)))
+    
+  }
+  
+  else if (scale == 'road') {
+    
+    can_trees_i <- st_intersection(species_corr, road_bound_trees)
+    
+    # include streets that have more than 1 tree
+    cutoff <- can_trees_i %>%
+      group_by(streetid) %>% 
+      mutate(nTrees = n()) %>% 
+      filter(nTrees > 1)
+    
+    
+    
+    df <- cutoff %>% 
+      inner_join(., func_groups, by = 'fullname') %>% 
+      group_by(streetid, FG) %>% 
+      tally() %>%
+      filter(!is.na(FG)) %>% 
+      group_by(streetid) %>% 
+      st_drop_geometry() %>% 
+      summarize(nFG = length(c(streetid)))
+  
+    
+  }
+  
+  else { print("error: no scales matched") }
 }
