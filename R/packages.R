@@ -40,6 +40,10 @@ suppressPackageStartupMessages({
   
   library(vegan)
   
+  library(mice)
+  library(cluster)
+  conflicts_prefer(dplyr::filter)
+  
   library(xfun)
   
   library(googledrive)

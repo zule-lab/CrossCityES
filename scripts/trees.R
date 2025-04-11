@@ -39,7 +39,7 @@ targets_trees <- c(
 
   tar_target(
     func_groups, 
-    create_func_groups(TTTF_1.3, seed_mass, TTTF_newlit, ZULE_traits)
+    create_func_groups(can_trees, TTTF_1.3, seed_mass, TTTF_newlit, ZULE_traits)
   ),
 
 

@@ -1,4 +1,4 @@
-create_func_groups <- function(TTTF_1.3, seed_mass, TTTF_newlit, ZULE_traits){
+create_func_groups <- function(can_trees, TTTF_1.3, seed_mass, TTTF_newlit, ZULE_traits){
   
   # clean functional trait databases
   seed_mass_c <- seed_mass %>% 
@@ -123,14 +123,219 @@ create_func_groups <- function(TTTF_1.3, seed_mass, TTTF_newlit, ZULE_traits){
                                 TraitAccID == 5 ~ 'SLA', 
                                 TraitAccID == 6 ~ 'SM',
                                 TraitAccID == 8 ~ 'WD')) %>% 
-    drop_na(TraitAcc)
-  
-  # assign functional groups to each based on traits 
-  
+    drop_na(TraitAcc) %>% 
+    pivot_wider(id_cols = FinalName, names_from = TraitAcc, values_from = mean)
   
   # join with species list 
+  species_traits <- can_trees %>% 
+    st_drop_geometry() %>% 
+    group_by(fullname) %>% 
+    tally() %>%
+    mutate(fullname = str_replace(fullname, ' sp.', ' sp'),
+           fullname = case_when(fullname == "Acer spcatum" ~ "Acer spicatum",
+                                fullname == "Amelanchier x grandiflora" ~ "Amelanchier grandiflora",
+                                fullname == "Carpinus carolina" ~ "Carpinus caroliniana",
+                                fullname == "Cupressocyparis   X leylandii" ~ "Cupressocyparis x leylandii",
+                                fullname == "Euonymus europea" ~ "Euonymus europaeus",
+                                fullname == "Fraxinus oxycarpa" ~ "Fraxinus angustifolia subsp. oxycarpa",
+                                fullname == "Ginkgo b.the" | fullname == "Gingko sp" ~ "Ginkgo biloba",
+                                fullname == "Juglans ailantifolia" ~ "Juglans ailanthifolia",
+                                fullname == "Magnolia soulangeana  x" | fullname == "Magnolia soulangiana" ~ "Magnolia x soulangeana",
+                                fullname == "Magnolia spengeri" ~ "Magnolia sprengeri",
+                                fullname == "Malus micromalus   x" ~ "Malus x micromalus",
+                                fullname == "Malus zumi" ~ "Malus x zumi",
+                                fullname == "Populus canescens" ~ "Populus x canescens",
+                                fullname == "Prunus américain" ~ "Prunus americana",
+                                fullname == "Prunus sp" ~ "Prunus sp.",
+                                fullname == "Prunus virginianna" ~ "Prunus virginiana",
+                                fullname == "Pyrus usseriensis" ~ "Pyrus ussuriensis",
+                                fullname == "Salix sp" ~ "Salix sp.",
+                                fullname == "Sorbus acuparia" ~ "Sorbus aucuparia",
+                                fullname == "Sorbus hybrida x" ~ "Sorbus x hybrida",
+                                fullname == "Tilia europaea" ~ "Tilia x europaea",
+                                fullname == "Catalpa spciosa" ~ "Catalpa speciosa",
+                                fullname == "Aesculus octandra" ~ "Aesculus flava",
+                                fullname == "Alnus rugosa" ~ "Alnus incana",
+                                fullname == "Aralia spnosa" ~ "Aralia spinosa",
+                                fullname == "Carya tomentosa" ~ "Carya alba",
+                                fullname == "Salix matsudana" ~ "Salix babylonica var. matsudana",
+                                fullname == "Malux x thunder" ~ "Malus x thunder", 
+                                .default = fullname)) %>% 
+    left_join(., traits_avg, by = join_by(fullname == FinalName)) %>% 
+    filter(!str_detect(fullname, "Unknown|Unidentified|Stump"))
+  
+  # identify the genuses with missing traits 
+  genus_level <- species_traits %>% 
+    filter(str_detect(fullname, "\\bsp\\b") & if_any(c(Nmass, SLA, SM, WD), is.na)) %>% 
+    separate(fullname, c('genus', 'species', 'hybrid'), sep = " ") %>% 
+    left_join(., traits_avg %>% separate(FinalName, c('genus', 'species', 'hybrid'), sep = " "), by = 'genus', suffix = c('', '_sp')) %>% 
+    group_by(genus) %>%
+    summarize(species = 'sp',
+              Nmass = if_else(is.na(Nmass), mean(Nmass_sp, na.rm= T), Nmass),
+              SLA = if_else(is.na(SLA), mean(SLA_sp, na.rm= T), SLA),
+              SM = if_else(is.na(SM), mean(SM_sp, na.rm= T), SM),
+              WD = if_else(is.na(WD), mean(WD_sp, na.rm= T), WD)) %>% 
+    distinct() %>% 
+    unite(fullname, c("genus", "species"), sep = " ")
+  
+  species_traits_g <- species_traits %>% 
+    filter(!str_detect(fullname, "\\bsp\\b") | !if_any(c(Nmass, SLA, SM, WD), is.na)) %>%  
+    bind_rows(genus_level)
+  
+  # average seed mass by genus for missing seed mass values 
+  seed_mass <- species_traits_g %>% 
+    filter(is.na(SM)) %>% 
+    separate(fullname, c('genus', 'species', 'hybrid', "cultivar"), sep = " ") %>% 
+    left_join(., traits_avg %>% separate(FinalName, c('genus', 'species', 'hybrid'), sep = " "), by = 'genus', suffix = c('', '_sp')) %>%
+    mutate(fullname = paste0(genus, " ", species, " ", hybrid, " ", cultivar),
+           fullname = str_replace_all(fullname, " NA", "")) %>%
+    group_by(fullname) %>%
+    summarize(Nmass = first(Nmass),
+              SLA = first(SLA),
+              SM = mean(SM_sp, na.rm= T),
+              WD = first(WD)) 
+  
+  species_traits_sm <- species_traits_g %>% 
+    filter(!is.na(SM)) %>% 
+    bind_rows(seed_mass)
+  
+  # impute missing values for species missing only one trait - code from Paquette et al 2021
+  # dataset includes species with all trait data and species with 1 missing trait
+  onetrait_na <- species_traits_sm %>% 
+    filter( (!if_any(c(SM, SLA, WD, Nmass), is.na)) | (!is.na(SM) & !is.na(SLA) & !is.na(WD) & is.na(Nmass)) | (is.na(SM) & !is.na(SLA) & !is.na(WD) & !is.na(Nmass)) | 
+             (!is.na(SM) & is.na(SLA) & !is.na(WD) & !is.na(Nmass)) | (!is.na(SM) & !is.na(SLA) & is.na(WD) & !is.na(Nmass))) %>% 
+    select(-c(n)) %>% 
+    distinct()
+  
+  # impute with random forest 
+  onetrait_imp <- mice(data = onetrait_na, m = 100, maxit = 500, inc = T, method = "rf")
+  onetrait_full <-complete(onetrait_imp)
+  
+  # assign functional groups to each based on dissimilarity matrix and hierarchical clustering - code from Paquette et al 2021
+  rownames(onetrait_full) <- onetrait_full$fullname
+  
+  # gower distance matrix 
+  gow <- daisy(onetrait_full %>% select(-fullname), metric="gower") 
+  # hierarchical clustering 
+  groups <- agnes(gow, diss=TRUE, method = "ward") 
+  # clusters 
+  FG <- as.data.frame(cutree(groups, k=c(3:10)))
+  rownames(FG) <- onetrait_full$fullname
+  
+  # The highest value of Silhouette Width should be the preferred number of clusters.
+  sil_width <- c(NA) ;for(i in 3:10) {
+    pam_fit <- pam(gow, diss = TRUE, k = i)
+    sil_width [i] <- pam_fit$silinfo$avg.width
+  }
+  
+  # identify cluster number with max Silhouette Width
+  nclusters <- (as_tibble(sil_width) %>% 
+    mutate(clusters = row_number()) %>% 
+    filter(value == max(value, na.rm = T)))$clusters
+  
+  # make dataset with functional group assigments 
+  FG_final <- FG %>% 
+    select(matches(paste0('\\b',as.character(nclusters), '\\b'))) %>% 
+    rename(cluster = 1) %>% 
+    rownames_to_column('fullname') %>% 
+    inner_join(., onetrait_full, by = 'fullname')
+  
+  # plot dendogram 
+  cols <- c("#440154FF", "#433E85FF", "#2D708EFF", "#2BB07FFF", "#85D54AFF", "#FDE725FF")
+  dend <- fviz_dend(groups, k = nclusters, rect = T, palette = cols ) 
+  ggsave('output/dendrogram.png', dend, width = 45, height = 15, units = 'in')
+  
+  # assign species missing multiple trait values to functional group
+  twotraits_na <- species_traits_sm %>% 
+    filter(if_all(c(SM, SLA, WD), is.na) | 
+             if_all(c(SM, SLA, Nmass), is.na) |
+             if_all(c(SLA, WD, Nmass), is.na) |
+             if_all(c(SM, WD, Nmass), is.na) |
+             if_all(c(SM, SLA), is.na) | 
+             if_all(c(SM, WD), is.na) | 
+             if_all(c(SM, Nmass), is.na) | 
+             if_all(c(SLA, WD), is.na) |
+             if_all(c(SLA, Nmass), is.na) | 
+             if_all(c(WD, Nmass), is.na) ) %>% 
+    select(-c(n)) %>% 
+    distinct() %>% 
+    # remove completely blank species
+    filter(!if_all(c(SM, SLA, WD, Nmass), is.na)) %>% 
+    rename(group = fullname)
+  
+  FG_groups <- FG_final %>% 
+    group_by(cluster) %>% 
+    summarize(across(c(SM, SLA, WD, Nmass), mean)) %>% 
+    rename(group = cluster) %>% 
+    mutate(group = as.character(group)) %>% 
+    bind_rows(twotraits_na)
+  
+  FG_long <- FG_groups %>% 
+    pivot_longer(!group, names_to = 'trait', values_to = 'value')
+  
+  i <- outer(unique(FG_long$group),unique(FG_long$group),FUN=function(i,j) i)
+  j <- outer(unique(FG_long$group),unique(FG_long$group),FUN=function(i,j) j)
+  i <- i[!lower.tri(i)] ; j <- j[!lower.tri(j)]
+  
+  # Define function (comp) that perform the pairwise comparisons between all species and functional groups (or sub-groups) - Paquette et al 2021
+  comp <- function(ind){
+    res <- cosine_na2(FG_long$value[FG_long$group==i[ind]], FG_long$value[FG_long$group==j[ind]])[1,2]
+    list(No1=as.character(i[ind]),No2=as.character(j[ind]),CosSim=res)
+  }
+  
+  res <- t(apply(as.data.frame(t(sapply(seq_along(i),FUN="comp"))), 1, unlist))
+  
+  grouptokeep <- c('1', '2', '3', '4', '5', '6')
+  
+  FG_assigned <- as.data.frame(bind_cols( as.data.frame(res[,1]), as.data.frame(res[,2]), as.data.frame(res[,3]))) %>%
+    transmute(Fgroup=res[,1],CodeSp=res[,2],cosimil=res[,3]) %>%
+    filter(Fgroup %in% grouptokeep) %>%
+    subset(!(CodeSp %in% grouptokeep)) %>% 
+    mutate(Fgroup = as.factor(Fgroup), CodeSp = as.factor(CodeSp), cosimil=as.numeric(cosimil)) %>% 
+    group_by(CodeSp) %>% 
+    # remove 1s, not enough data for group selection
+    filter(cosimil == max(cosimil) & cosimil != 1) %>% 
+    rename(cluster = Fgroup,
+           fullname = CodeSp,
+           similarity = cosimil) %>% 
+    left_join(., FG_groups, by = join_by(fullname == group))
+    
+  # put all data together 
+  empty <- species_traits_sm %>% 
+    filter(if_all(c(SM, SLA, WD, Nmass), is.na))
+  
+  full <- bind_rows(FG_final %>% mutate(cluster = as.character(cluster)), FG_assigned, empty) %>% 
+    full_join(species_traits_sm %>% select(-n) %>% distinct, by = 'fullname', suffix = c("", "_s")) %>% 
+    mutate(SM = case_when(is.na(SM) ~ SM_s, .default = SM),
+           SLA = case_when(is.na(SLA) ~ SLA_s, .default = SLA),
+           WD = case_when(is.na(WD) ~ WD_s, .default = WD), 
+           Nmass = case_when(is.na(Nmass) ~ Nmass_s, .default = Nmass)) %>% 
+    rename(FG = cluster) %>% 
+    select(c(fullname, FG, SM, WD, SLA, Nmass, similarity))
   
   
-  return(traits)
+  return(full)
   
 }
+
+# cosine similarity function from Paquette et al 2021
+cosine_na <- function( x, y=NULL ) {
+  
+  if ( is.matrix(x) && is.null(y) ) {
+    co = array(0,c(ncol(x),ncol(x)))
+    f = colnames( x )
+    dimnames(co) = list(f,f)
+    for (i in 2:ncol(x)) {
+      for (j in 1:(i-1)) {
+      co[i,j] = cosine_na(x[,i], x[,j])}}
+    co = co + t(co)
+    diag(co) = 1
+    return (as.matrix(co)) } 
+  
+  else if ( is.vector(x) && is.vector(y) ) {
+  return ( crossprod(x,y) / sqrt( crossprod(x)*crossprod(y) ) )} 
+  else {stop("argument mismatch. Either one matrix or two vectors needed as input.")}
+  }
+
+cosine_na2 <- function(x,y) cosine_na(na.omit(cbind(x,y)))
+
