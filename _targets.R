@@ -40,6 +40,5 @@ lapply(grep('targets', ls(), value = TRUE), get)
 
 
 # TODO: 
-# - add functional diversity of trees
-# - update quarto doc
 # - deal with missing functional data 
+# - update quarto doc
