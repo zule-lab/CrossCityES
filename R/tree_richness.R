@@ -151,7 +151,8 @@ func_diversity <- function(species_corr, scale, func_groups, road_bound_trees = 
       tally() %>%
       filter(!is.na(FG)) %>% 
       group_by(city, hood) %>% 
-      summarize(nFG = length(c(hood)))
+      summarize(nFG = length(c(hood))) %>% 
+      unite("neighbourhood", c(city, hood), sep = "_")
     
   }
   
@@ -174,7 +175,8 @@ func_diversity <- function(species_corr, scale, func_groups, road_bound_trees = 
       filter(!is.na(FG)) %>% 
       group_by(streetid) %>% 
       st_drop_geometry() %>% 
-      summarize(nFG = length(c(streetid)))
+      summarize(nFG = length(c(streetid))) %>% 
+      rename(road = streetid)
   
     
   }
