@@ -20,8 +20,8 @@ combine_neighbourhoods_pollution <- function(neighbourhoods_pollution, neighbour
   filt_ndvi <- neighbourhoods_ndvi_ndbi %>% 
     inner_join(., neighbourhood_bound_trees) %>% 
     mutate(coverage = round((NDBI_count_*100)/(drop_units(st_area(geometry)))*100, 3)) %>% 
-    # image covers minimum 100% of the neighbourhood area
-    filter(coverage > 100) %>% 
+    # image covers minimum 50% of the neighbourhood area
+    filter(coverage > 50) %>% 
     select(-c(geometry, coverage))
   
   
