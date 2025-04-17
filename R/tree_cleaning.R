@@ -202,7 +202,7 @@ clean_trees <- function(trees_raw, citylabel){
       drop_na(c(lat,long)) %>%
       st_as_sf(coords = c("long", "lat"), crs = 4326, na.fail = FALSE, remove = FALSE)
     
-    tree <- assign_sp_tor(tree_s, read.csv('input/tor_tree_spcode.csv')) # species codes may be an issue
+    tree <- assign_sp_tor(tree_s, read.csv('input/tor_tree_spcode.csv')) 
     
     tree
   
