@@ -10,11 +10,10 @@ tree_density <- function(can_trees, scale, treesize, builddens, road_bound_trees
       inner_join(., as.data.frame(builddens), by = "city") %>%
       summarize(city = city,
                 nTrees = nTrees,
-                mean_ba = mean_ba, # sq ft
+                ba_per_m2 = ba_per_m2, # m2/m2
                 cityarea = city_area, # km2
                 stemdens = nTrees/cityarea, # trees/km2
-                stemdens_acre = stemdens/247.105, # conversion from num trees/km2 to num trees/acre
-                basaldens = mean_ba*stemdens_acre) # sq ft/acre
+                stemdens_acre = stemdens/247.105) 
     
     return(treedensity_city)
     
@@ -32,11 +31,10 @@ tree_density <- function(can_trees, scale, treesize, builddens, road_bound_trees
       summarize(city = city,
                 hood = hood,
                 nTrees = nTrees,
-                mean_ba = mean_ba,
+                ba_per_m2 = ba_per_m2,
                 hoodarea = hood_area,
                 stemdens = nTrees/hoodarea,
-                stemdens_acre = stemdens/247.105,
-                basaldens = mean_ba*stemdens_acre)
+                stemdens_acre = stemdens/247.105)
     
     return(treedensity_neighbourhood)
     
@@ -61,11 +59,10 @@ tree_density <- function(can_trees, scale, treesize, builddens, road_bound_trees
       summarize(city = first(city),
                 streetid = streetid,
                 nTrees = nTrees,
-                mean_ba = mean_ba,
+                ba_per_m2 = ba_per_m2,
                 roadarea = road_area,
                 stemdens = nTrees/roadarea,
-                stemdens_acre = stemdens/247.105,
-                basaldens = mean_ba*stemdens_acre)
+                stemdens_acre = stemdens/247.105)
     
   }
   
