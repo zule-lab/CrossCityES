@@ -6,14 +6,7 @@ create_study_map <- function(){
   watercol <- '#99acc3'
   
   # Land
-  montrealcol <- '#ceb99b'
   canadacol <- '#ddc48d'
-  
-  # Anthro
-  citycol <- "#8C6D54"
-  nhoodcol <- "#73776F"
-  parkcol <- '#678d58'
-  
   
   # Map etc
   gridcol1 <- '#323232'
@@ -62,25 +55,25 @@ create_study_map <- function(){
 
   
   ## main map
-  thememain <- theme(panel.border = element_rect(size = 1, fill = NA),
+  thememain <- theme(panel.border = element_rect(linewidth = 1, fill = NA),
                      panel.background = element_rect(fill = watercol),
-                     panel.grid = element_line(color = gridcol1, size = 0.2),
+                     panel.grid = element_line(color = gridcol1, linewidth = 0.2),
                      axis.text = element_text(size = 11, color = 'black'),
-                     axis.title = element_blank(), 
+                     axis.title = element_blank() 
                      #plot.background = element_rect(fill = NA, colour = NA)
   )
 
   
   
-    # bbox for larger Canada map 
+  # bbox for larger Canada map 
   can <- bounds[bounds$admin == 'Canada',]
   bb <- st_bbox(st_buffer(can, 2.5))
   
   
   main <- ggplot() +
     geom_sf(fill = canadacol, color = 'grey32', size = 0.1, data = bounds) +
-    geom_sf(color = 'black', size = 4.5, data = cities) +
-    geom_label_repel(data = cities, aes(label = city, geometry = geom), stat = "sf_coordinates", 
+    geom_sf(color = citycol, size = 4.5, data = cities) +
+    geom_label_repel(data = cities, aes(label = city, geometry = geometry), stat = "sf_coordinates", 
                       min.segment.length = 0, colour = citycol, segment.colour = citycol) + 
     coord_sf(xlim = c(bb['xmin'], bb['xmax'] + 2.5),
              ylim = c(bb['ymin'], bb['ymax'])) +
@@ -91,6 +84,7 @@ create_study_map <- function(){
   
   ggsave(
     'graphics/study-system.png',
+    main,
     width = 10,
     height = 10,
     dpi = 450
