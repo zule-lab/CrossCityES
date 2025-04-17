@@ -1,31 +1,41 @@
-tree_size <- function(can_trees, scale, road_bound_trees = NULL){
+tree_size <- function(can_trees, boundary, scale){
   
   
-  all_tree_in <- can_trees %>% 
+  all_tree_basal <- can_trees %>% 
     drop_na(dbh) %>%
-    mutate(dbh_in = dbh*2.54,
-           basal_area = ((dbh_in)^2 * 0.005454))
+    mutate(basal_area = (pi*dbh^2)/40000 ) # m2
   
   if (scale == 'city'){
     
-    grouped <- all_tree_in %>%
-      group_by(city)
+    city_area <- boundary %>% 
+      mutate(area = st_area(geometry)) %>% 
+      st_drop_geometry()
+    
+    grouped <- all_tree_basal %>%
+      group_by(city) %>% 
+      left_join(., city_area, by = c('city' = 'CMANAME'))
     
   }
   
   else if (scale == 'neighbourhood'){
     
-    grouped <- all_tree_in %>%
+    nhood_area <- boundary %>% 
+      st_drop_geometry() %>% 
+      select(city, hood, hood_area) %>% 
+      rename(area = hood_area)
+    
+    grouped <- all_tree_basal %>%
       group_by(city, hood) %>%
       mutate(nTrees = n()) %>% 
       filter(nTrees > 50) %>%
-      select(-nTrees)
+      select(-nTrees) %>% 
+      left_join(., nhood_area, by = c('city', 'hood'))
     
   }
   
   else if (scale == 'road'){
     
-    can_trees_i <- st_intersection(all_tree_in, road_bound_trees)
+    can_trees_i <- st_intersection(all_tree_basal, boundary %>% mutate(area = st_area(geometry)))
    
     grouped <- can_trees_i %>%
       group_by(streetid) %>% 
@@ -41,14 +51,15 @@ tree_size <- function(can_trees, scale, road_bound_trees = NULL){
 
   
   size <- grouped %>%
-    summarize(mean_ba = mean(basal_area),
-              sd_ba = sd(basal_area),
-              mean_dbh = mean(dbh_in),
-              sd_dbh = mean(dbh_in)) %>%
-    mutate(mean_ba = set_units(mean_ba, "ft2"),
-           sd_ba = set_units(sd_ba, "ft2"),
-           mean_dbh = set_units(mean_dbh, "in"),
-           sd_dbh = set_units(sd_dbh, "in"))
+    summarize(area = first(area),
+              total_ba = sum(basal_area),
+              mean_dbh = mean(dbh),
+              sd_dbh = sd(dbh)) %>%
+    mutate(ba_per_m2 = total_ba/area,
+           mean_dbh = set_units(mean_dbh, "cm"),
+           sd_dbh = set_units(sd_dbh, "cm")) %>% 
+    st_drop_geometry() %>% 
+    select(-area)
 
   return(size)
   
