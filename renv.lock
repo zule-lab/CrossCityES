@@ -354,6 +354,45 @@
       "NeedsCompilation": "no",
       "Repository": "CRAN"
     },
+    "PROJ": {
+      "Package": "PROJ",
+      "Version": "0.6.0",
+      "Source": "Repository",
+      "Title": "Generic Coordinate System Transformations Using 'PROJ'",
+      "Authors@R": "c(person(given = \"Michael D.\", family = \"Sumner\", role = c(\"aut\", \"cre\"), email = \"mdsumner@gmail.com\", comment = c(ORCID = \"0000-0002-2471-7511\")), person(\"Jeroen\", \"Ooms\", role = c(\"ctb\"), comment = \"provided PROJ library support on Windows, and assistance with Windows configuration\"), person(\"Simon\", \"Urbanek\", role = c(\"cph\", \"ctb\"), comment = \"wrote original code versions for PROJ version 6\"), person(\"Dewey\", \"Dunnington\", role = c(\"ctb\"), comment = \"key code contributions\"),  person(\"Anthony\", \"North\", role = c(\"ctb\") ) )",
+      "Description": "A wrapper around the generic coordinate transformation software 'PROJ' that transforms coordinates from one coordinate reference system ('CRS') to another. This includes cartographic projections as well as geodetic transformations.  The intention is for this package to be used by user-packages such as 'reproj', and that the older 'PROJ.4' and version 5 pathways be provided by the 'proj4' package.",
+      "Depends": [
+        "R (>= 3.0.2)"
+      ],
+      "License": "GPL-3",
+      "Encoding": "UTF-8",
+      "LazyData": "true",
+      "Imports": [
+        "lifecycle",
+        "wk"
+      ],
+      "LinkingTo": [
+        "wk"
+      ],
+      "Suggests": [
+        "testthat (>= 3.0.0)",
+        "spelling",
+        "knitr",
+        "rmarkdown",
+        "sf"
+      ],
+      "URL": "https://github.com/hypertidy/PROJ, https://hypertidy.github.io/PROJ/",
+      "BugReports": "https://github.com/hypertidy/PROJ/issues",
+      "Language": "en-US",
+      "VignetteBuilder": "knitr",
+      "SystemRequirements": "PROJ (>= 6.3.1)",
+      "RoxygenNote": "7.3.2",
+      "Config/testthat/edition": "3",
+      "NeedsCompilation": "yes",
+      "Author": "Michael D. Sumner [aut, cre] (<https://orcid.org/0000-0002-2471-7511>), Jeroen Ooms [ctb] (provided PROJ library support on Windows, and assistance with Windows configuration), Simon Urbanek [cph, ctb] (wrote original code versions for PROJ version 6), Dewey Dunnington [ctb] (key code contributions), Anthony North [ctb]",
+      "Maintainer": "Michael D. Sumner <mdsumner@gmail.com>",
+      "Repository": "CRAN"
+    },
     "R6": {
       "Package": "R6",
       "Version": "2.6.1",
@@ -1635,6 +1674,35 @@
       "NeedsCompilation": "no",
       "Author": "Joe Cheng [aut], Carson Sievert [aut, cre] (<https://orcid.org/0000-0002-4958-2844>), Posit Software, PBC [cph, fnd], jQuery Foundation [cph] (jQuery library and jQuery UI library), jQuery contributors [ctb, cph] (jQuery library; authors listed in inst/www/shared/jquery-AUTHORS.txt), Mark Otto [ctb] (Bootstrap library), Jacob Thornton [ctb] (Bootstrap library), Bootstrap contributors [ctb] (Bootstrap library), Twitter, Inc [cph] (Bootstrap library), Brian Reavis [ctb, cph] (selectize.js library), Kristopher Michael Kowal [ctb, cph] (es5-shim library), es5-shim contributors [ctb, cph] (es5-shim library), Denis Ineshin [ctb, cph] (ion.rangeSlider library), Sami Samhuri [ctb, cph] (Javascript strftime library)",
       "Maintainer": "Carson Sievert <carson@posit.co>",
+      "Repository": "CRAN"
+    },
+    "crsmeta": {
+      "Package": "crsmeta",
+      "Version": "0.3.0",
+      "Source": "Repository",
+      "Title": "Extract Coordinate System Metadata",
+      "Authors@R": "person(given = \"Michael\", family = \"Sumner\", role = c(\"aut\", \"cre\"), email = \"mdsumner@gmail.com\", comment = c(ORCID = \"0000-0002-2471-7511\"))",
+      "Description": "Obtain coordinate system metadata from various data formats. There  are functions to extract a 'CRS' (coordinate reference system,  <https://en.wikipedia.org/wiki/Spatial_reference_system>) in 'EPSG' (European  Petroleum Survey Group, <http://www.epsg.org/>), 'PROJ4' <https://proj.org/>,  or 'WKT2' (Well-Known Text 2,  <http://docs.opengeospatial.org/is/12-063r5/12-063r5.html>) forms. This is  purely for getting simple metadata from in-memory formats, please use other  tools for out of memory data sources.",
+      "License": "GPL-3",
+      "Encoding": "UTF-8",
+      "LazyData": "true",
+      "RoxygenNote": "7.1.0",
+      "Depends": [
+        "R (>= 3.5.0)"
+      ],
+      "Suggests": [
+        "testthat (>= 2.1.0)",
+        "spelling"
+      ],
+      "Imports": [
+        "methods"
+      ],
+      "URL": "https://github.com/hypertidy/crsmeta",
+      "BugReports": "https://github.com/hypertidy/crsmeta/issues",
+      "Language": "en-US",
+      "NeedsCompilation": "no",
+      "Author": "Michael Sumner [aut, cre] (<https://orcid.org/0000-0002-2471-7511>)",
+      "Maintainer": "Michael Sumner <mdsumner@gmail.com>",
       "Repository": "CRAN"
     },
     "crul": {
@@ -3431,6 +3499,64 @@
       "Maintainer": "Hadley Wickham <hadley@posit.co>",
       "Repository": "CRAN"
     },
+    "httr2": {
+      "Package": "httr2",
+      "Version": "1.1.2",
+      "Source": "Repository",
+      "Title": "Perform HTTP Requests and Process the Responses",
+      "Authors@R": "c( person(\"Hadley\", \"Wickham\", , \"hadley@posit.co\", role = c(\"aut\", \"cre\")), person(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\")), person(\"Maximilian\", \"Girlich\", role = \"ctb\") )",
+      "Description": "Tools for creating and modifying HTTP requests, then performing them and processing the results. 'httr2' is a modern re-imagining of 'httr' that uses a pipe-based interface and solves more of the problems that API wrapping packages face.",
+      "License": "MIT + file LICENSE",
+      "URL": "https://httr2.r-lib.org, https://github.com/r-lib/httr2",
+      "BugReports": "https://github.com/r-lib/httr2/issues",
+      "Depends": [
+        "R (>= 4.0)"
+      ],
+      "Imports": [
+        "cli (>= 3.0.0)",
+        "curl (>= 6.2.1)",
+        "glue",
+        "lifecycle",
+        "magrittr",
+        "openssl",
+        "R6",
+        "rappdirs",
+        "rlang (>= 1.1.0)",
+        "vctrs (>= 0.6.3)",
+        "withr"
+      ],
+      "Suggests": [
+        "askpass",
+        "bench",
+        "clipr",
+        "covr",
+        "docopt",
+        "httpuv",
+        "jose",
+        "jsonlite",
+        "knitr",
+        "later (>= 1.4.0)",
+        "nanonext",
+        "paws.common",
+        "promises",
+        "rmarkdown",
+        "testthat (>= 3.1.8)",
+        "tibble",
+        "webfakes",
+        "xml2"
+      ],
+      "VignetteBuilder": "knitr",
+      "Config/Needs/website": "tidyverse/tidytemplate",
+      "Config/testthat/edition": "3",
+      "Config/testthat/parallel": "true",
+      "Config/testthat/start-first": "multi-req, resp-stream, req-perform",
+      "Encoding": "UTF-8",
+      "RoxygenNote": "7.3.2",
+      "NeedsCompilation": "no",
+      "Author": "Hadley Wickham [aut, cre], Posit Software, PBC [cph, fnd], Maximilian Girlich [ctb]",
+      "Maintainer": "Hadley Wickham <hadley@posit.co>",
+      "Repository": "CRAN"
+    },
     "igraph": {
       "Package": "igraph",
       "Version": "2.1.4",
@@ -3999,6 +4125,52 @@
       "Maintainer": "Ben Bolker <bbolker+lme4@gmail.com>",
       "Repository": "CRAN"
     },
+    "lubridate": {
+      "Package": "lubridate",
+      "Version": "1.9.4",
+      "Source": "Repository",
+      "Type": "Package",
+      "Title": "Make Dealing with Dates a Little Easier",
+      "Authors@R": "c( person(\"Vitalie\", \"Spinu\", , \"spinuvit@gmail.com\", role = c(\"aut\", \"cre\")), person(\"Garrett\", \"Grolemund\", role = \"aut\"), person(\"Hadley\", \"Wickham\", role = \"aut\"), person(\"Davis\", \"Vaughan\", role = \"ctb\"), person(\"Ian\", \"Lyttle\", role = \"ctb\"), person(\"Imanuel\", \"Costigan\", role = \"ctb\"), person(\"Jason\", \"Law\", role = \"ctb\"), person(\"Doug\", \"Mitarotonda\", role = \"ctb\"), person(\"Joseph\", \"Larmarange\", role = \"ctb\"), person(\"Jonathan\", \"Boiser\", role = \"ctb\"), person(\"Chel Hee\", \"Lee\", role = \"ctb\") )",
+      "Maintainer": "Vitalie Spinu <spinuvit@gmail.com>",
+      "Description": "Functions to work with date-times and time-spans: fast and user friendly parsing of date-time data, extraction and updating of components of a date-time (years, months, days, hours, minutes, and seconds), algebraic manipulation on date-time and time-span objects. The 'lubridate' package has a consistent and memorable syntax that makes working with dates easy and fun.",
+      "License": "GPL (>= 2)",
+      "URL": "https://lubridate.tidyverse.org, https://github.com/tidyverse/lubridate",
+      "BugReports": "https://github.com/tidyverse/lubridate/issues",
+      "Depends": [
+        "methods",
+        "R (>= 3.2)"
+      ],
+      "Imports": [
+        "generics",
+        "timechange (>= 0.3.0)"
+      ],
+      "Suggests": [
+        "covr",
+        "knitr",
+        "rmarkdown",
+        "testthat (>= 2.1.0)",
+        "vctrs (>= 0.6.5)"
+      ],
+      "Enhances": [
+        "chron",
+        "data.table",
+        "timeDate",
+        "tis",
+        "zoo"
+      ],
+      "VignetteBuilder": "knitr",
+      "Config/Needs/website": "tidyverse/tidytemplate",
+      "Config/testthat/edition": "3",
+      "Encoding": "UTF-8",
+      "LazyData": "true",
+      "RoxygenNote": "7.2.3",
+      "SystemRequirements": "C++11, A system with zoneinfo data (e.g. /usr/share/zoneinfo). On Windows the zoneinfo included with R is used.",
+      "Collate": "'Dates.r' 'POSIXt.r' 'util.r' 'parse.r' 'timespans.r' 'intervals.r' 'difftimes.r' 'durations.r' 'periods.r' 'accessors-date.R' 'accessors-day.r' 'accessors-dst.r' 'accessors-hour.r' 'accessors-minute.r' 'accessors-month.r' 'accessors-quarter.r' 'accessors-second.r' 'accessors-tz.r' 'accessors-week.r' 'accessors-year.r' 'am-pm.r' 'time-zones.r' 'numeric.r' 'coercion.r' 'constants.r' 'cyclic_encoding.r' 'data.r' 'decimal-dates.r' 'deprecated.r' 'format_ISO8601.r' 'guess.r' 'hidden.r' 'instants.r' 'leap-years.r' 'ops-addition.r' 'ops-compare.r' 'ops-division.r' 'ops-integer-division.r' 'ops-m+.r' 'ops-modulo.r' 'ops-multiplication.r' 'ops-subtraction.r' 'package.r' 'pretty.r' 'round.r' 'stamp.r' 'tzdir.R' 'update.r' 'vctrs.R' 'zzz.R'",
+      "NeedsCompilation": "yes",
+      "Author": "Vitalie Spinu [aut, cre], Garrett Grolemund [aut], Hadley Wickham [aut], Davis Vaughan [ctb], Ian Lyttle [ctb], Imanuel Costigan [ctb], Jason Law [ctb], Doug Mitarotonda [ctb], Joseph Larmarange [ctb], Jonathan Boiser [ctb], Chel Hee Lee [ctb]",
+      "Repository": "CRAN"
+    },
     "magrittr": {
       "Package": "magrittr",
       "Version": "2.0.3",
@@ -4556,6 +4728,57 @@
       "Maintainer": "Rune Haubo Bojesen Christensen <rune.haubo@gmail.com>",
       "Repository": "CRAN"
     },
+    "osmdata": {
+      "Package": "osmdata",
+      "Version": "0.2.5",
+      "Source": "Repository",
+      "Title": "Import 'OpenStreetMap' Data as Simple Features or Spatial Objects",
+      "Authors@R": "c( person(\"Mark\", \"Padgham\", , \"mark.padgham@email.com\", role = c(\"aut\", \"cre\")), person(\"Bob\", \"Rudis\", role = \"aut\"), person(\"Robin\", \"Lovelace\", role = \"aut\"), person(\"Maëlle\", \"Salmon\", role = \"aut\"), person(\"Joan\", \"Maspons\", role = \"aut\", comment = c(ORCID=\"0000-0003-2286-8727\")), person(\"Andrew\", \"Smith\", role = \"ctb\"), person(\"James\", \"Smith\", role = \"ctb\"), person(\"Andrea\", \"Gilardi\", role = \"ctb\"), person(\"Enrico\", \"Spinielli\", role = \"ctb\"), person(\"Anthony\", \"North\", role = \"ctb\"), person(\"Martin\", \"Machyna\", role = \"ctb\"), person(\"Marcin\", \"Kalicinski\", role = c(\"ctb\", \"cph\"), comment = \"Author of included RapidXML code\"), person(\"Eli\", \"Pousson\", , \"eli.pousson@gmail.com\", role = c(\"ctb\"), comment = c(ORCID = \"0000-0001-8280-1706\")) )",
+      "Maintainer": "Mark Padgham <mark.padgham@email.com>",
+      "Description": "Download and import of 'OpenStreetMap' ('OSM') data as 'sf' or 'sp' objects.  'OSM' data are extracted from the 'Overpass' web server (<https://overpass-api.de/>) and processed with very fast 'C++' routines for return to 'R'.",
+      "License": "GPL-3",
+      "URL": "https://docs.ropensci.org/osmdata/ (website) https://github.com/ropensci/osmdata/ (devel)",
+      "BugReports": "https://github.com/ropensci/osmdata/issues",
+      "Depends": [
+        "R (>= 3.2.4)"
+      ],
+      "Imports": [
+        "curl",
+        "httr2",
+        "lubridate",
+        "magrittr",
+        "methods",
+        "Rcpp (>= 0.12.4)",
+        "reproj",
+        "rvest",
+        "tibble",
+        "utils",
+        "xml2"
+      ],
+      "Suggests": [
+        "httptest2",
+        "jsonlite",
+        "knitr",
+        "markdown",
+        "raster",
+        "rmarkdown",
+        "sf",
+        "sp",
+        "testthat"
+      ],
+      "LinkingTo": [
+        "Rcpp"
+      ],
+      "VignetteBuilder": "knitr",
+      "Encoding": "UTF-8",
+      "NeedsCompilation": "yes",
+      "RoxygenNote": "7.2.3",
+      "X-schema.org-applicationCategory": "Data Access",
+      "X-schema.org-isPartOf": "https://ropensci.org",
+      "X-schema.org-keywords": "open0street0map, openstreetmap, overpass0API, OSM",
+      "Author": "Mark Padgham [aut, cre], Bob Rudis [aut], Robin Lovelace [aut], Maëlle Salmon [aut], Joan Maspons [aut] (<https://orcid.org/0000-0003-2286-8727>), Andrew Smith [ctb], James Smith [ctb], Andrea Gilardi [ctb], Enrico Spinielli [ctb], Anthony North [ctb], Martin Machyna [ctb], Marcin Kalicinski [ctb, cph] (Author of included RapidXML code), Eli Pousson [ctb] (<https://orcid.org/0000-0001-8280-1706>)",
+      "Repository": "CRAN"
+    },
     "pan": {
       "Package": "pan",
       "Version": "1.9",
@@ -4884,6 +5107,25 @@
       "NeedsCompilation": "no",
       "Author": "Gábor Csárdi [aut, cre], Rich FitzJohn [aut], Posit Software, PBC [cph, fnd]",
       "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
+      "Repository": "CRAN"
+    },
+    "proj4": {
+      "Package": "proj4",
+      "Version": "1.0-15",
+      "Source": "Repository",
+      "Title": "A simple interface to the PROJ.4 cartographic projections library",
+      "Depends": [
+        "R (>= 2.0.0)"
+      ],
+      "Author": "Simon Urbanek [aut, cre, cph] (https://urbanek.org, <https://orcid.org/0000-0003-2297-1732>)",
+      "Authors@R": "person(\"Simon\", \"Urbanek\", role=c(\"aut\",\"cre\",\"cph\"), email=\"simon.urbanek@r-project.org\", comment=c(\"https://urbanek.org\", ORCID=\"0000-0003-2297-1732\"))",
+      "Maintainer": "Simon Urbanek <simon.urbanek@r-project.org>",
+      "Description": "A simple interface to lat/long projection and datum transformation of the PROJ.4 cartographic projections library. It allows transformation of geographic coordinates from one projection and/or datum to another.",
+      "SystemRequirements": "proj 4.4.6 or higher (https://proj.org/)",
+      "License": "GPL-2",
+      "URL": "https://www.rforge.net/proj4/",
+      "BugReports": "https://github.com/s-u/proj4/issues",
+      "NeedsCompilation": "yes",
       "Repository": "CRAN"
     },
     "promises": {
@@ -5409,6 +5651,37 @@
       "Maintainer": "Kevin Ushey <kevin@rstudio.com>",
       "Repository": "CRAN"
     },
+    "reproj": {
+      "Package": "reproj",
+      "Version": "0.7.0",
+      "Source": "Repository",
+      "Type": "Package",
+      "Title": "Coordinate System Transformations for Generic Map Data",
+      "Authors@R": "person(\"Michael D.\",\"Sumner\", role = c(\"aut\", \"cre\"), email = \"mdsumner@gmail.com\", comment=c(ORCID = \"0000-0002-2471-7511\"))",
+      "Description": "Transform coordinates from a specified source to a specified  target map projection. This uses the 'PROJ' library directly, by wrapping the  'PROJ' package which leverages 'libproj', otherwise the 'proj4' package. The 'reproj()'  function is generic, methods may be added to remove the need for an explicit  source definition. If 'proj4' is in use 'reproj()' handles the requirement for  conversion of angular units where necessary. This is for use primarily to  transform generic data formats and direct leverage of the underlying 'PROJ' library. (There are transformations that aren't possible with 'PROJ' and that are provided by the 'GDAL' library, a limitation which users of this  package should be aware of.) The 'PROJ' library is available at  <https://proj.org/>.",
+      "License": "GPL-3",
+      "Depends": [
+        "R (>= 3.2.5)"
+      ],
+      "Imports": [
+        "proj4",
+        "crsmeta (>= 0.3.0)",
+        "PROJ (>= 0.4.5)"
+      ],
+      "Suggests": [
+        "testthat",
+        "covr"
+      ],
+      "RoxygenNote": "7.3.1",
+      "Encoding": "UTF-8",
+      "SystemRequirements": "PROJ (>= 4.4.6)",
+      "BugReports": "https://github.com/hypertidy/reproj/issues",
+      "URL": "https://github.com/hypertidy/reproj, https://hypertidy.github.io/reproj/",
+      "NeedsCompilation": "no",
+      "Author": "Michael D. Sumner [aut, cre] (<https://orcid.org/0000-0002-2471-7511>)",
+      "Maintainer": "Michael D. Sumner <mdsumner@gmail.com>",
+      "Repository": "CRAN"
+    },
     "reshape2": {
       "Package": "reshape2",
       "Version": "1.4.4",
@@ -5546,6 +5819,54 @@
       "Maintainer": "Yihui Xie <xie@yihui.name>",
       "Repository": "CRAN"
     },
+    "rnaturalearth": {
+      "Package": "rnaturalearth",
+      "Version": "1.0.1",
+      "Source": "Repository",
+      "Title": "World Map Data from Natural Earth",
+      "Authors@R": "c( person( family = \"Massicotte\", given = \"Philippe\", email = \"pmassicotte@hotmail.com\", role = c(\"aut\", \"cre\"), comment = c(ORCID = \"0000-0002-5919-4116\") ), person( family = \"South\", given = \"Andy\", email = \"southandy@gmail.com\", role = c(\"aut\") ), person( family = \"Hufkens\", given = \"Koen\", email = \"koen.hufkens@gmail.com\", role = c(\"ctb\"), comment = c(ORCID = \"0000-0002-5070-8109\") ))",
+      "Description": "Facilitates mapping by making natural earth map data from <https://www.naturalearthdata.com/> more easily available to R users.",
+      "License": "MIT + file LICENSE",
+      "LazyData": "true",
+      "LazyDataCompression": "xz",
+      "Encoding": "UTF-8",
+      "URL": "https://docs.ropensci.org/rnaturalearth/, https://github.com/ropensci/rnaturalearth, https://docs.ropensci.org/rnaturalearthhires/",
+      "BugReports": "https://github.com/ropensci/rnaturalearth/issues",
+      "Additional_repositories": "http://packages.ropensci.org",
+      "Depends": [
+        "R (>= 3.1.1)"
+      ],
+      "Imports": [
+        "httr (>= 1.1.0)",
+        "jsonlite",
+        "sf (>= 0.3-4)",
+        "terra",
+        "utils (>= 3.2.3)"
+      ],
+      "Suggests": [
+        "devtools (>= 1.10.0)",
+        "dplyr",
+        "ggplot2",
+        "ggrepel",
+        "knitr (>= 1.12.3)",
+        "lifecycle (>= 1.0.3)",
+        "pbapply",
+        "purrr",
+        "rlang",
+        "rmarkdown",
+        "rnaturalearthdata (>= 0.1.0)",
+        "rnaturalearthhires (>= 0.1.0)",
+        "testthat (>= 0.9.1)",
+        "tmap"
+      ],
+      "Config/Needs/website": "ropensci/rnaturalearthhires",
+      "VignetteBuilder": "knitr",
+      "RoxygenNote": "7.2.3",
+      "NeedsCompilation": "no",
+      "Author": "Philippe Massicotte [aut, cre] (<https://orcid.org/0000-0002-5919-4116>), Andy South [aut], Koen Hufkens [ctb] (<https://orcid.org/0000-0002-5070-8109>)",
+      "Maintainer": "Philippe Massicotte <pmassicotte@hotmail.com>",
+      "Repository": "CRAN"
+    },
     "rpart": {
       "Package": "rpart",
       "Version": "4.1.24",
@@ -5646,6 +5967,55 @@
       "Encoding": "UTF-8",
       "NeedsCompilation": "no",
       "Author": "Kevin Ushey [aut, cre], JJ Allaire [aut], Hadley Wickham [aut], Gary Ritchie [aut], RStudio [cph]",
+      "Repository": "CRAN"
+    },
+    "rvest": {
+      "Package": "rvest",
+      "Version": "1.0.4",
+      "Source": "Repository",
+      "Title": "Easily Harvest (Scrape) Web Pages",
+      "Authors@R": "c( person(\"Hadley\", \"Wickham\", , \"hadley@posit.co\", role = c(\"aut\", \"cre\")), person(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\")) )",
+      "Description": "Wrappers around the 'xml2' and 'httr' packages to make it easy to download, then manipulate, HTML and XML.",
+      "License": "MIT + file LICENSE",
+      "URL": "https://rvest.tidyverse.org/, https://github.com/tidyverse/rvest",
+      "BugReports": "https://github.com/tidyverse/rvest/issues",
+      "Depends": [
+        "R (>= 3.6)"
+      ],
+      "Imports": [
+        "cli",
+        "glue",
+        "httr (>= 0.5)",
+        "lifecycle (>= 1.0.3)",
+        "magrittr",
+        "rlang (>= 1.1.0)",
+        "selectr",
+        "tibble",
+        "xml2 (>= 1.3)"
+      ],
+      "Suggests": [
+        "chromote",
+        "covr",
+        "knitr",
+        "R6",
+        "readr",
+        "repurrrsive",
+        "rmarkdown",
+        "spelling",
+        "stringi (>= 0.3.1)",
+        "testthat (>= 3.0.2)",
+        "webfakes"
+      ],
+      "VignetteBuilder": "knitr",
+      "Config/Needs/website": "tidyverse/tidytemplate",
+      "Config/testthat/edition": "3",
+      "Config/testthat/parallel": "true",
+      "Encoding": "UTF-8",
+      "Language": "en-US",
+      "RoxygenNote": "7.3.1",
+      "NeedsCompilation": "no",
+      "Author": "Hadley Wickham [aut, cre], Posit Software, PBC [cph, fnd]",
+      "Maintainer": "Hadley Wickham <hadley@posit.co>",
       "Repository": "CRAN"
     },
     "s2": {
@@ -5806,6 +6176,36 @@
       "NeedsCompilation": "yes",
       "Author": "Charlie Gao [aut, cre] (<https://orcid.org/0000-0002-0750-061X>), Hibiki AI Limited [cph]",
       "Maintainer": "Charlie Gao <charlie.gao@shikokuchuo.net>",
+      "Repository": "CRAN"
+    },
+    "selectr": {
+      "Package": "selectr",
+      "Version": "0.4-2",
+      "Source": "Repository",
+      "Type": "Package",
+      "Title": "Translate CSS Selectors to XPath Expressions",
+      "Date": "2019-11-20",
+      "Authors@R": "c(person(\"Simon\", \"Potter\", role = c(\"aut\", \"trl\", \"cre\"), email = \"simon@sjp.co.nz\"), person(\"Simon\", \"Sapin\", role = \"aut\"), person(\"Ian\", \"Bicking\", role = \"aut\"))",
+      "License": "BSD_3_clause + file LICENCE",
+      "Depends": [
+        "R (>= 3.0)"
+      ],
+      "Imports": [
+        "methods",
+        "stringr",
+        "R6"
+      ],
+      "Suggests": [
+        "testthat",
+        "XML",
+        "xml2"
+      ],
+      "URL": "https://sjp.co.nz/projects/selectr",
+      "BugReports": "https://github.com/sjp/selectr/issues",
+      "Description": "Translates a CSS3 selector into an equivalent XPath expression. This allows us to use CSS selectors when working with the XML package as it can only evaluate XPath expressions. Also provided are convenience functions useful for using CSS selectors on XML nodes. This package is a port of the Python package 'cssselect' (<https://cssselect.readthedocs.io/>).",
+      "NeedsCompilation": "no",
+      "Author": "Simon Potter [aut, trl, cre], Simon Sapin [aut], Ian Bicking [aut]",
+      "Maintainer": "Simon Potter <simon@sjp.co.nz>",
       "Repository": "CRAN"
     },
     "sf": {
@@ -6354,6 +6754,47 @@
       "Maintainer": "William Michael Landau <will.landau.oss@gmail.com>",
       "Repository": "CRAN"
     },
+    "terra": {
+      "Package": "terra",
+      "Version": "1.8-29",
+      "Source": "Repository",
+      "Type": "Package",
+      "Title": "Spatial Data Analysis",
+      "Date": "2025-02-25",
+      "Depends": [
+        "R (>= 3.5.0)"
+      ],
+      "Suggests": [
+        "parallel",
+        "tinytest",
+        "ncdf4",
+        "sf (>= 0.9-8)",
+        "deldir",
+        "XML",
+        "leaflet (>= 2.2.1)",
+        "htmlwidgets"
+      ],
+      "LinkingTo": [
+        "Rcpp"
+      ],
+      "Imports": [
+        "methods",
+        "Rcpp (>= 1.0-10)"
+      ],
+      "SystemRequirements": "C++17, GDAL (>= 2.2.3), GEOS (>= 3.4.0), PROJ (>= 4.9.3), sqlite3",
+      "Encoding": "UTF-8",
+      "Language": "en-US",
+      "Maintainer": "Robert J. Hijmans <r.hijmans@gmail.com>",
+      "Description": "Methods for spatial data analysis with vector (points, lines, polygons) and raster (grid) data. Methods for vector data include geometric operations such as intersect and buffer. Raster methods include local, focal, global, zonal and geometric operations. The predict and interpolate methods facilitate the use of regression type (interpolation, machine learning) models for spatial prediction, including with satellite remote sensing data. Processing of very large files is supported. See the manual and tutorials on <https://rspatial.org/> to get started. 'terra' replaces the 'raster' package ('terra' can do more, and it is faster and easier to use).",
+      "License": "GPL (>= 3)",
+      "URL": "https://rspatial.org/, https://rspatial.github.io/terra/",
+      "BugReports": "https://github.com/rspatial/terra/issues/",
+      "LazyLoad": "yes",
+      "Authors@R": "c( person(\"Robert J.\", \"Hijmans\", role=c(\"cre\", \"aut\"),   email=\"r.hijmans@gmail.com\", comment=c(ORCID=\"0000-0001-5872-2872\")),\t\t\t person(\"Márcia\", \"Barbosa\", role=\"ctb\"), person(\"Roger\", \"Bivand\", role=\"ctb\", comment=c(ORCID=\"0000-0003-2392-6140\")), person(\"Andrew\", \"Brown\", role=\"ctb\"), person(\"Michael\", \"Chirico\", role=\"ctb\"), person(\"Emanuele\", \"Cordano\", role=\"ctb\",comment=c(ORCID=\"0000-0002-3508-5898\")), person(\"Krzysztof\", \"Dyba\", role=\"ctb\", comment=c(ORCID=\"0000-0002-8614-3816\")), person(\"Edzer\", \"Pebesma\", role=\"ctb\", comment=c(ORCID=\"0000-0001-8049-7069\")), person(\"Barry\", \"Rowlingson\", role=\"ctb\"), person(\"Michael D.\", \"Sumner\", role=\"ctb\"))",
+      "NeedsCompilation": "yes",
+      "Author": "Robert J. Hijmans [cre, aut] (<https://orcid.org/0000-0001-5872-2872>), Márcia Barbosa [ctb], Roger Bivand [ctb] (<https://orcid.org/0000-0003-2392-6140>), Andrew Brown [ctb], Michael Chirico [ctb], Emanuele Cordano [ctb] (<https://orcid.org/0000-0002-3508-5898>), Krzysztof Dyba [ctb] (<https://orcid.org/0000-0002-8614-3816>), Edzer Pebesma [ctb] (<https://orcid.org/0000-0001-8049-7069>), Barry Rowlingson [ctb], Michael D. Sumner [ctb]",
+      "Repository": "CRAN"
+    },
     "tibble": {
       "Package": "tibble",
       "Version": "3.2.1",
@@ -6514,6 +6955,34 @@
       "NeedsCompilation": "yes",
       "Author": "Lionel Henry [aut, cre], Hadley Wickham [aut], Posit Software, PBC [cph, fnd]",
       "Maintainer": "Lionel Henry <lionel@posit.co>",
+      "Repository": "CRAN"
+    },
+    "timechange": {
+      "Package": "timechange",
+      "Version": "0.3.0",
+      "Source": "Repository",
+      "Title": "Efficient Manipulation of Date-Times",
+      "Authors@R": "c(person(\"Vitalie\", \"Spinu\", email = \"spinuvit@gmail.com\", role = c(\"aut\", \"cre\")), person(\"Google Inc.\", role = c(\"ctb\", \"cph\")))",
+      "Description": "Efficient routines for manipulation of date-time objects while accounting for time-zones and daylight saving times. The package includes utilities for updating of date-time components (year, month, day etc.), modification of time-zones, rounding of date-times, period addition and subtraction etc. Parts of the 'CCTZ' source code, released under the Apache 2.0 License, are included in this package. See <https://github.com/google/cctz> for more details.",
+      "Depends": [
+        "R (>= 3.3)"
+      ],
+      "License": "GPL (>= 3)",
+      "Encoding": "UTF-8",
+      "LinkingTo": [
+        "cpp11 (>= 0.2.7)"
+      ],
+      "Suggests": [
+        "testthat (>= 0.7.1.99)",
+        "knitr"
+      ],
+      "SystemRequirements": "A system with zoneinfo data (e.g. /usr/share/zoneinfo) as well as a recent-enough C++11 compiler (such as g++-4.8 or later). On Windows the zoneinfo included with R is used.",
+      "BugReports": "https://github.com/vspinu/timechange/issues",
+      "URL": "https://github.com/vspinu/timechange/",
+      "RoxygenNote": "7.2.1",
+      "NeedsCompilation": "yes",
+      "Author": "Vitalie Spinu [aut, cre], Google Inc. [ctb, cph]",
+      "Maintainer": "Vitalie Spinu <spinuvit@gmail.com>",
       "Repository": "CRAN"
     },
     "tinytex": {
@@ -7090,6 +7559,47 @@
       "NeedsCompilation": "yes",
       "Author": "Yihui Xie [aut, cre, cph] (<https://orcid.org/0000-0003-0645-5666>, https://yihui.org), Wush Wu [ctb], Daijiang Li [ctb], Xianying Tan [ctb], Salim Brüggemann [ctb] (<https://orcid.org/0000-0002-5329-5987>), Christophe Dervieux [ctb]",
       "Maintainer": "Yihui Xie <xie@yihui.name>",
+      "Repository": "CRAN"
+    },
+    "xml2": {
+      "Package": "xml2",
+      "Version": "1.3.8",
+      "Source": "Repository",
+      "Title": "Parse XML",
+      "Authors@R": "c( person(\"Hadley\", \"Wickham\", role = \"aut\"), person(\"Jim\", \"Hester\", role = \"aut\"), person(\"Jeroen\", \"Ooms\", email = \"jeroenooms@gmail.com\", role = c(\"aut\", \"cre\")), person(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\")), person(\"R Foundation\", role = \"ctb\", comment = \"Copy of R-project homepage cached as example\") )",
+      "Description": "Bindings to 'libxml2' for working with XML data using a simple,  consistent interface based on 'XPath' expressions. Also supports XML schema validation; for 'XSLT' transformations see the 'xslt' package.",
+      "License": "MIT + file LICENSE",
+      "URL": "https://xml2.r-lib.org, https://r-lib.r-universe.dev/xml2",
+      "BugReports": "https://github.com/r-lib/xml2/issues",
+      "Depends": [
+        "R (>= 3.6.0)"
+      ],
+      "Imports": [
+        "cli",
+        "methods",
+        "rlang (>= 1.1.0)"
+      ],
+      "Suggests": [
+        "covr",
+        "curl",
+        "httr",
+        "knitr",
+        "magrittr",
+        "mockery",
+        "rmarkdown",
+        "testthat (>= 3.2.0)",
+        "xslt"
+      ],
+      "VignetteBuilder": "knitr",
+      "Config/Needs/website": "tidyverse/tidytemplate",
+      "Encoding": "UTF-8",
+      "RoxygenNote": "7.2.3",
+      "SystemRequirements": "libxml2: libxml2-dev (deb), libxml2-devel (rpm)",
+      "Collate": "'S4.R' 'as_list.R' 'xml_parse.R' 'as_xml_document.R' 'classes.R' 'format.R' 'import-standalone-obj-type.R' 'import-standalone-purrr.R' 'import-standalone-types-check.R' 'init.R' 'nodeset_apply.R' 'paths.R' 'utils.R' 'xml2-package.R' 'xml_attr.R' 'xml_children.R' 'xml_document.R' 'xml_find.R' 'xml_missing.R' 'xml_modify.R' 'xml_name.R' 'xml_namespaces.R' 'xml_node.R' 'xml_nodeset.R' 'xml_path.R' 'xml_schema.R' 'xml_serialize.R' 'xml_structure.R' 'xml_text.R' 'xml_type.R' 'xml_url.R' 'xml_write.R' 'zzz.R'",
+      "Config/testthat/edition": "3",
+      "NeedsCompilation": "yes",
+      "Author": "Hadley Wickham [aut], Jim Hester [aut], Jeroen Ooms [aut, cre], Posit Software, PBC [cph, fnd], R Foundation [ctb] (Copy of R-project homepage cached as example)",
+      "Maintainer": "Jeroen Ooms <jeroenooms@gmail.com>",
       "Repository": "CRAN"
     },
     "yaml": {
