@@ -133,37 +133,7 @@ create_func_groups <- function(can_trees, TTTF_1.3, seed_mass, TTTF_newlit, ZULE
   species_traits <- can_trees %>% 
     st_drop_geometry() %>% 
     group_by(fullname) %>% 
-    tally() %>%
-    mutate(fullname = str_replace(fullname, ' sp.', ' sp'),
-           fullname = case_when(fullname == "Acer spcatum" ~ "Acer spicatum",
-                                fullname == "Amelanchier x grandiflora" ~ "Amelanchier grandiflora",
-                                fullname == "Carpinus carolina" ~ "Carpinus caroliniana",
-                                fullname == "Cupressocyparis   X leylandii" ~ "Cupressocyparis x leylandii",
-                                fullname == "Euonymus europea" ~ "Euonymus europaeus",
-                                fullname == "Fraxinus oxycarpa" ~ "Fraxinus angustifolia subsp. oxycarpa",
-                                fullname == "Ginkgo b.the" | fullname == "Gingko sp" ~ "Ginkgo biloba",
-                                fullname == "Juglans ailantifolia" ~ "Juglans ailanthifolia",
-                                fullname == "Magnolia soulangeana  x" | fullname == "Magnolia soulangiana" ~ "Magnolia x soulangeana",
-                                fullname == "Magnolia spengeri" ~ "Magnolia sprengeri",
-                                fullname == "Malus micromalus   x" ~ "Malus x micromalus",
-                                fullname == "Malus zumi" ~ "Malus x zumi",
-                                fullname == "Populus canescens" ~ "Populus x canescens",
-                                fullname == "Prunus américain" ~ "Prunus americana",
-                                fullname == "Prunus sp" ~ "Prunus sp.",
-                                fullname == "Prunus virginianna" ~ "Prunus virginiana",
-                                fullname == "Pyrus usseriensis" ~ "Pyrus ussuriensis",
-                                fullname == "Salix sp" ~ "Salix sp.",
-                                fullname == "Sorbus acuparia" ~ "Sorbus aucuparia",
-                                fullname == "Sorbus hybrida x" ~ "Sorbus x hybrida",
-                                fullname == "Tilia europaea" ~ "Tilia x europaea",
-                                fullname == "Catalpa spciosa" ~ "Catalpa speciosa",
-                                fullname == "Aesculus octandra" ~ "Aesculus flava",
-                                fullname == "Alnus rugosa" ~ "Alnus incana",
-                                fullname == "Aralia spnosa" ~ "Aralia spinosa",
-                                fullname == "Carya tomentosa" ~ "Carya alba",
-                                fullname == "Salix matsudana" ~ "Salix babylonica var. matsudana",
-                                fullname == "Malux x thunder" ~ "Malus x thunder", 
-                                .default = fullname)) %>% 
+    tally() %>% 
     left_join(., traits_avg, by = join_by(fullname == FinalName)) %>% 
     filter(!str_detect(fullname, "Unknown|Unidentified|Stump"))
   
