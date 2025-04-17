@@ -19,6 +19,9 @@ suppressPackageStartupMessages({
   library(sf)
   library(geojsonio)
   library(stars)
+  library(osmdata)
+  library(rnaturalearth)
+  library(ggrepel)
   
   library(plyr)
   library(dplyr)
