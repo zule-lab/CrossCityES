@@ -7,6 +7,7 @@ create_study_map <- function(){
   
   # Land
   canadacol <- '#ddc48d'
+  citycol <- "#8C6D54"
   
   # Map etc
   gridcol1 <- '#323232'
