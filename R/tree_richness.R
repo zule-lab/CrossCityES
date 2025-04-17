@@ -2,34 +2,6 @@ tree_richness <- function(can_trees, scale, func_groups, road_bound_trees = NULL
   
   # correct species names 
   species_corr <- can_trees %>% 
-    mutate(fullname = str_replace(fullname, ' sp.', ' sp'),
-           fullname = case_when(fullname == "Acer spcatum" ~ "Acer spicatum",
-                                fullname == "Amelanchier x grandiflora" ~ "Amelanchier grandiflora",
-                                fullname == "Carpinus carolina" ~ "Carpinus caroliniana",
-                                fullname == "Cupressocyparis   X leylandii" ~ "Cupressocyparis x leylandii",
-                                fullname == "Euonymus europea" ~ "Euonymus europaeus",
-                                fullname == "Fraxinus oxycarpa" ~ "Fraxinus angustifolia subsp. oxycarpa",
-                                fullname == "Ginkgo b.the" | fullname == "Gingko sp" ~ "Ginkgo biloba",
-                                fullname == "Juglans ailantifolia" ~ "Juglans ailanthifolia",
-                                fullname == "Magnolia soulangeana  x" | fullname == "Magnolia soulangiana" ~ "Magnolia x soulangeana",
-                                fullname == "Magnolia spengeri" ~ "Magnolia sprengeri",
-                                fullname == "Malus micromalus   x" ~ "Malus x micromalus",
-                                fullname == "Malus zumi" ~ "Malus x zumi",
-                                fullname == "Populus canescens" ~ "Populus x canescens",
-                                fullname == "Prunus américain" ~ "Prunus americana",
-                                fullname == "Prunus virginianna" ~ "Prunus virginiana",
-                                fullname == "Pyrus usseriensis" ~ "Pyrus ussuriensis",
-                                fullname == "Sorbus acuparia" ~ "Sorbus aucuparia",
-                                fullname == "Sorbus hybrida x" ~ "Sorbus x hybrida",
-                                fullname == "Tilia europaea" ~ "Tilia x europaea",
-                                fullname == "Catalpa spciosa" ~ "Catalpa speciosa",
-                                fullname == "Aesculus octandra" ~ "Aesculus flava",
-                                fullname == "Alnus rugosa" ~ "Alnus incana",
-                                fullname == "Aralia spnosa" ~ "Aralia spinosa",
-                                fullname == "Carya tomentosa" ~ "Carya alba",
-                                fullname == "Salix matsudana" ~ "Salix babylonica var. matsudana",
-                                fullname == "Malux x thunder" ~ "Malus x thunder", 
-                                .default = fullname)) %>% 
     filter(!str_detect(fullname, "Unknown|Unidentified|Stump"))
   
   
