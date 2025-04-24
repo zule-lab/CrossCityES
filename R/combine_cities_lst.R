@@ -29,13 +29,13 @@ combine_cities_lst <- function(cities_lst, mun_bound_trees, census_city,
     rename(city = CMANAME) %>%
     left_join(., cities_treedensity, by = "city") %>%
     left_join(., cities_treerichness, by = "city") %>%
-    left_join(., cities_treesize %>% st_set_geometry(NULL), by = "city") %>%
+    left_join(., cities_treesize, by = "city") %>%
     left_join(., build_dens_city %>% st_set_geometry(NULL), by = "city") %>% 
     left_join(., cities_roadclass %>% st_set_geometry(NULL), by = "city") %>%
     left_join(., census_city %>% st_set_geometry(NULL), by = "city") %>%
     full_join(., filt_ndvi %>% rename(date_ndvi = date, city = CMANAME), by = "city") %>%
-    rename(mean_ba = mean_ba.x) %>% 
-    select(-c(city_area.x, city_area.y, CMANAME, mean_ba.y)) %>% 
+    rename(ba_per_m2 = ba_per_m2.x) %>% 
+    select(-c(city_area.x, city_area.y, CMANAME, ba_per_m2.y)) %>% 
     separate(date, c('date', 'time'), sep = 'T') %>% 
     separate(date_ndvi, c("date_ndvi", "time_ndvi"), sep = "T") %>% 
     mutate(date = as.Date(date),

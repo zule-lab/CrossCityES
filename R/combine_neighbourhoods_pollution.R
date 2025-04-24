@@ -30,14 +30,14 @@ combine_neighbourhoods_pollution <- function(neighbourhoods_pollution, neighbour
   join <- filt %>%
     left_join(., neighbourhood_treedensity, by = c("city", "hood")) %>%
     left_join(., neighbourhood_treerichness %>% separate(neighbourhood, c('city', 'hood'), sep = '_'), by = c("city", "hood")) %>%
-    left_join(., neighbourhood_treesize %>% st_set_geometry(NULL), by = c("city", "hood")) %>%
+    left_join(., neighbourhood_treesize, by = c("city", "hood")) %>%
     left_join(., build_dens_neighbourhood %>% st_set_geometry(NULL), by = c("city", "hood")) %>%
     rename(hood_id = hood_id.x) %>%
     left_join(., neighbourhood_roadclass %>% st_set_geometry(NULL), by = c("city", "hood_id")) %>%
     left_join(., census_neighbourhood %>% st_set_geometry(NULL) %>% select(-da), by = c("city", "hood_id")) %>% 
     full_join(., filt_ndvi %>% rename(date_ndvi = date), by = c("city", "hood_id")) %>%  
-    rename(mean_ba = mean_ba.x) %>% 
-    select(-c(hood.x, hood_area.x, id.x, id.y, hood_id.y, mean_ba.y)) %>% 
+    rename(ba_per_m2 = ba_per_m2.x) %>% 
+    select(-c(hood.x, hood_area.x, id.x, id.y, hood_id.y, ba_per_m2.y)) %>% 
     separate(date, c('date', 'time'), sep = 'T') %>% 
     separate(date_ndvi, c("date_ndvi", "time_ndvi"), sep = "T") %>% 
     mutate(date = as.Date(date),
