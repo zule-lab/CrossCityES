@@ -270,28 +270,28 @@ targets_prepare_data <- c(
     cities_lst_full, 
     combine_cities_lst(cities_lst, mun_bound_trees, census_city,
                        cities_treedensity, cities_treerichness, cities_treesize, 
-                       build_dens_city, cities_roadclass, cities_ndvi_ndbi) 
+                       build_dens_city, cities_bldhgt, cities_roadclass, cities_ndvi_ndbi) 
   ),
 
 tar_target(
   cities_pollution_full, 
   combine_cities_pollution(cities_pollution, mun_bound_trees, census_city,
                            cities_treedensity, cities_treerichness, cities_treesize, 
-                           build_dens_city, cities_roadclass, cities_ndvi_ndbi)
+                           build_dens_city, cities_bldhgt, cities_roadclass, cities_ndvi_ndbi)
   ), 
 
   tar_target(
     neighbourhoods_lst_full, 
     combine_neighbourhoods_lst(neighbourhoods_lst, neighbourhood_bound_trees, census_neighbourhood,
                                neighbourhood_treedensity, neighbourhood_treerichness, neighbourhood_treesize, 
-                               build_dens_neighbourhood, neighbourhood_roadclass, neighbourhoods_ndvi_ndbi)
+                               build_dens_neighbourhood, neighbourhoods_bldhgt, neighbourhood_roadclass, neighbourhoods_ndvi_ndbi)
   ),
 
   tar_target(
     neighbourhoods_pollution_full, 
     combine_neighbourhoods_pollution(neighbourhoods_pollution, neighbourhood_bound_trees, census_neighbourhood,
                                      neighbourhood_treedensity, neighbourhood_treerichness, neighbourhood_treesize, 
-                                     build_dens_neighbourhood, neighbourhood_roadclass, neighbourhoods_ndvi_ndbi)
+                                     build_dens_neighbourhood, neighbourhoods_bldhgt, neighbourhood_roadclass, neighbourhoods_ndvi_ndbi)
   ),
 
 
@@ -299,7 +299,7 @@ tar_target(
     roads_lst_full,
     combine_roads_lst(streets_lst, road_bound_trees, census_road, 
                       road_treedensity, road_treerichness, road_treesize, 
-                      build_dens_road, streets_ndvi_ndbi)
+                      build_dens_road, streets_bldhgt, streets_ndvi_ndbi)
   )
 
 )

@@ -185,7 +185,7 @@ city_plot(city_tree_vars)
 
 
 city_building_vars <- cities_lst_full %>% 
-  select(c(city, centroid_den, area_den, prop_highway, prop_strts, road_dens, NDBI_mean_, NDBI_stdDev_, NDVI_mean_, NDVI_stdDev_)) %>% 
+  select(c(city, centroid_den, area_den, prop_highway, prop_strts, road_dens, mean_bldhgt, NDBI_mean_, NDBI_stdDev_, NDVI_mean_, NDVI_stdDev_)) %>% 
   pivot_longer(-city, names_to = 'variable')
 
 city_plot(city_building_vars)
@@ -328,7 +328,7 @@ neighbourhood_pca(neighbourhood_tree_vars_pca, city, hood)
 
 
 neighbourhood_building_vars <- neighbourhoods_lst_full %>% 
-  select(c(city, hood, centroid_den, area_den, prop_highway, prop_strts, road_dens, NDBI_mean_, NDBI_stdDev_, NDVI_mean_, NDVI_stdDev_)) %>% 
+  select(c(city, hood, centroid_den, area_den, prop_highway, prop_strts, road_dens, mean_bldhgt, NDBI_mean_, NDBI_stdDev_, NDVI_mean_, NDVI_stdDev_)) %>% 
   pivot_longer(-c(city, hood), names_to = 'variable')
 
 neighbourhood_plot(neighbourhood_building_vars)
@@ -343,7 +343,7 @@ neighbourhood_plot(neighbourhood_building_vars)
 #| label: neighbourhood-built-pca
 
 neighbourhood_built_vars_pca <- neighbourhoods_lst_full %>% 
-  select(c(city, hood, centroid_den, area_den, prop_highway, prop_strts, road_dens, NDBI_mean_, NDBI_stdDev_, NDVI_mean_, NDVI_stdDev_)) 
+  select(c(city, hood, centroid_den, area_den, prop_highway, prop_strts, road_dens, mean_bldhgt, NDBI_mean_, NDBI_stdDev_, NDVI_mean_, NDVI_stdDev_)) 
 
 neighbourhood_pca(neighbourhood_built_vars_pca, city, hood)
 ```
@@ -452,7 +452,7 @@ neighbourhood_pca(street_tree_vars_pca, city, streetid)
 
 
 street_building_vars <- roads_lst_full %>% 
-  select(c(city, streetid, centroid_den, area_den, NDBI_mean_, NDBI_stdDev_, NDVI_mean_, NDVI_stdDev_)) %>% 
+  select(c(city, streetid, centroid_den, area_den, mean_bldhgt, NDBI_mean_, NDBI_stdDev_, NDVI_mean_, NDVI_stdDev_)) %>% 
   pivot_longer(-c(city, streetid), names_to = 'variable')
 
 neighbourhood_plot(street_building_vars)
@@ -467,7 +467,7 @@ neighbourhood_plot(street_building_vars)
 #| label: street-built-pca
 
 street_built_vars_pca <- roads_lst_full %>% 
-  select(c(city, streetid, centroid_den, area_den, NDBI_mean_, NDBI_stdDev_, NDVI_mean_, NDVI_stdDev_)) 
+  select(c(city, streetid, centroid_den, area_den, mean_bldhgt, NDBI_mean_, NDBI_stdDev_, NDVI_mean_, NDVI_stdDev_)) 
 
 neighbourhood_pca(street_built_vars_pca, city, streetid)
 ```
