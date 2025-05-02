@@ -1,6 +1,6 @@
 combine_neighbourhoods_lst <- function(neighbourhoods_lst, neighbourhood_bound_trees, census_neighbourhood,
                                        neighbourhood_treedensity, neighbourhood_treerichness, neighbourhood_treesize, 
-                                       build_dens_neighbourhood, neighbourhood_roadclass, neighbourhoods_ndvi_ndbi){
+                                       build_dens_neighbourhood, neighbourhoods_bldhgt, neighbourhood_roadclass, neighbourhoods_ndvi_ndbi){
   
 
 # filter images -----------------------------------------------------------
@@ -30,12 +30,12 @@ combine_neighbourhoods_lst <- function(neighbourhoods_lst, neighbourhood_bound_t
     left_join(., neighbourhood_treerichness %>% separate(neighbourhood, c('city', 'hood'), sep = '_'), by = c("city", "hood")) %>%
     left_join(., neighbourhood_treesize, by = c("city", "hood")) %>%
     left_join(., build_dens_neighbourhood %>% st_set_geometry(NULL), by = c("city", "hood")) %>%
-    rename(hood_id = hood_id.x) %>%
+    left_join(., neighbourhoods_bldhgt,  by = c("city", "hood")) %>%
     left_join(., neighbourhood_roadclass %>% st_set_geometry(NULL), by = c("city", "hood_id")) %>%
-    left_join(., census_neighbourhood %>% st_set_geometry(NULL) %>% select(-da), by = c("city", "hood_id")) %>% 
+    left_join(., census_neighbourhood %>% st_set_geometry(NULL) %>% select(-da), by = c("city", "hood_id")) %>%
     full_join(., filt_ndvi %>% rename(date_ndvi = date), by = c("city", "hood_id")) %>% 
     rename(ba_per_m2 = ba_per_m2.x) %>% 
-    select(-c(id.x, id.y, hood.x, hood_area.x, hood.y, hood_area.y, hood_id.y, ba_per_m2.y)) %>% 
+    select(-c(id.x, id.y, hood.x, hood_area.x, hood_area.x.x, hood.y, hood_area.y, hood_id.x, hood_id.y, ba_per_m2.y)) %>% 
     separate(date, c('date', 'time'), sep = 'T') %>% 
     separate(date_ndvi, c("date_ndvi", "time_ndvi"), sep = "T") %>% 
     mutate(date = as.Date(date),

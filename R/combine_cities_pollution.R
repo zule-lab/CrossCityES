@@ -1,6 +1,6 @@
 combine_cities_pollution <- function(cities_pollution, mun_bound_trees, census_city,
                                      cities_treedensity, cities_treerichness, cities_treesize, 
-                                     build_dens_city, cities_roadclass, cities_ndvi_ndbi){
+                                     build_dens_city, cities_bldhgt, cities_roadclass, cities_ndvi_ndbi){
   
   
   # filter images -----------------------------------------------------------
@@ -33,6 +33,7 @@ combine_cities_pollution <- function(cities_pollution, mun_bound_trees, census_c
     left_join(., build_dens_city %>% st_set_geometry(NULL), by = "city") %>% 
     left_join(., cities_roadclass %>% st_set_geometry(NULL), by = "city") %>%
     left_join(., census_city %>% st_set_geometry(NULL), by = "city") %>%
+    left_join(., cities_bldhgt %>% rename(city = CMANAME), by = "city") %>%
     full_join(., filt_ndvi %>% rename(date_ndvi = date, city = CMANAME), by = "city") %>%
     rename(ba_per_m2 = ba_per_m2.x) %>% 
     select(-c(city_area.x, city_area.y, CMANAME, ba_per_m2.y)) %>% 
