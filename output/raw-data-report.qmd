@@ -363,7 +363,7 @@ neighbourhood_census_vars <- neighbourhoods_lst_full %>%
   select(c(city, hood, popdens, sidehop, aptfivp, semhoup, rowhoup, aptdupp, aptbuip, mvdwelp, medinc, lowinc, recimmp, indigp, visminp, edubacp)) %>% 
   pivot_longer(-c(city, hood), names_to = 'variable')
 
-city_plot(neighbourhood_census_vars)
+neighbourhood_plot(neighbourhood_census_vars)
 ```
 
 ```{r}
