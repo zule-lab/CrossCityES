@@ -304,10 +304,13 @@ assign_sp_all <- function(van_tree_clean, cal_tree_clean, win_tree_clean, tor_tr
                                 fullname == "Ulmus morton" ~ "Ulmus davidiana",
                                 fullname == "Ulmus x homestead" ~ "Ulmus pumila",
                                 fullname == "Magnolia loebneri x" ~ "Magnolia x loebneri",
+                                fullname == "Magnolia loebneri  x" ~ "Magnolia x loebneri", 
                                 fullname == "Phellodendron l." ~ "Phellodendron sp",
                                 fullname == "Prunus x cistena" ~ "Prunus cistena",
                                 fullname == "Magnolia veitchii  " ~ "Magnolia veitchii",
-                                fullname == "Elm sp.  " ~ "Ulmus sp.",
+                                fullname == "Elm sp  " ~ "Ulmus sp",
+                                fullname == "Elm sp" ~ "Ulmus sp",
+                                fullname == "Salix sepulcralis" ~ "Salix x sepulcralis",
                                 .default = fullname)) 
   
   
