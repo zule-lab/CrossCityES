@@ -7,32 +7,38 @@ execute:
 format: html
 ---
 
-```{r setup, include=FALSE}
+```{r}
+#| label: setup
+#| include: false
+
+
 knitr::opts_chunk$set(echo = T)
 options(tidyverse.quiet = T)
+
+library(targets)
+tar_source('R')
 ```
 
 
 ```{r}
 #| echo: false
-library(targets)
-library(ggplot2)
+#| eval: true
+#| label: data-prep
+
+tar_load(cities_lst_full)
+tar_load(cities_pollution_full) 
+tar_load(neighbourhoods_lst_full)
+tar_load(neighbourhoods_pollution_full)
+tar_load(roads_lst_full)
+tar_load(can_trees)
+
 ```
 
 ## (Not really all that) Quick & Dirty
 
 -   These are the raw data results for *most* of the variables for chapter 1 data
--   NOTES: still missing tree diversity measures
--   still missing street scale data (something weird happening there)
+-   NOTES: still missing tree functional diversity measures
 
-## Points of Discussion
-
--   Comparable street segments
--   Tree size skewness measurements
--   Tree species richness + iNEXT
--   CMA vs weighted census tracts
--   Montreal DBHs aka what is happening here
--   DSM correction (I think I need to correct for sea level)
 
 ## Workflow
 
@@ -43,8 +49,9 @@ library(ggplot2)
 #| fig-width: 15
 #| fig-height: 15
 #| output: false
+#| label: visnetwork
 
-tar_visnetwork(outdated = F)
+tar_visnetwork(targets_only = T, outdated = F)
 ```
 
 ## Tree Stuff
@@ -57,7 +64,19 @@ Number of trees per city:
 #| message: false
 #| fig-width: 15
 #| fig-height: 15
-tar_read(tree_count_city)
+#| label: ntrees
+
+can_trees %>% 
+  st_drop_geometry() %>% 
+  group_by(city) %>% 
+  tally() %>% 
+  arrange(n) %>%
+  ggplot(., aes(x = city, y = n, fill = city)) + 
+  geom_col() + 
+  scale_fill_manual(values=met.brewer("Archambault", 7)) + 
+  theme_classic()  + 
+  ylab("Number of Trees")
+
 ```
 
 Number of tree **species** per city:
@@ -68,7 +87,20 @@ Number of tree **species** per city:
 #| message: false
 #| fig-width: 15
 #| fig-height: 15
-tar_read(sp_count_city)
+#| label: nspecies
+
+can_trees %>% 
+  st_drop_geometry() %>% 
+  group_by(city, fullname) %>% 
+  tally() %>% 
+  group_by(city) %>% 
+  tally() %>% 
+  arrange(n) %>%
+  ggplot(., aes(x = city, y = n, fill = city)) + 
+  geom_col() + 
+  scale_fill_manual(values=met.brewer("Archambault", 7)) + 
+  theme_classic()  + 
+  ylab("Number of Tree Species")
 ```
 
 Tree size distribution per city:
@@ -79,7 +111,18 @@ Tree size distribution per city:
 #| message: false
 #| fig-width: 15
 #| fig-height: 15
-tar_read(skewness_vis_city)
+#| label: dbh
+
+ggplot(can_trees, aes(x = dbh, group = city, col = city)) + 
+  geom_density(alpha= 0.02, mapping = aes(y= ..count..)) +
+  theme_classic() + 
+  xlim(c(0,100)) + 
+  xlab("DBH (cm)")+ 
+  ylab("Density")+ 
+  
+  scale_colour_manual(values=met.brewer("Archambault", 7)) +
+  theme(legend.position = "top", axis.title = element_text(face= "bold", size= 18), axis.text.x = element_text(size= 18), axis.text.y = element_text(size= 18))
+
 ```
 
 ## City Scale (CMA level)
@@ -96,12 +139,19 @@ tar_read(skewness_vis_city)
 #| message: false
 #| fig-width: 15
 #| fig-height: 15
-tar_read(city_response_facet)
+#| label: city-response
+
+city_response_vars <- rbind(
+  cities_lst_full %>% select(c(city, mean_temp, stdDev_temp)) %>% pivot_longer(-city, names_to = 'variable'),
+  cities_pollution_full %>% select(c(city, variable, value)) 
+)
+
+city_plot(city_response_vars)
+
 ```
 
 ### Independent Variables - Trees
 
--   currently missing diversity measures but have included tree size and tree density
 
 ```{r}
 #| echo: false
@@ -109,7 +159,16 @@ tar_read(city_response_facet)
 #| message: false
 #| fig-width: 15
 #| fig-height: 15
-tar_read(city_tree_facet)
+#| label: city-tree
+
+city_tree_vars <- cities_lst_full %>% select(c(city, nTrees, ba_per_m2, stemdens, SpeciesRichness, Shannon, nFG, mean_dbh, sd_dbh)) %>% 
+mutate(ba_per_m2 = drop_units(ba_per_m2),
+stemdens = drop_units(stemdens),
+mean_dbh = drop_units(mean_dbh),
+sd_dbh = drop_units(sd_dbh)) %>%
+pivot_longer(-city, names_to = 'variable') 
+
+city_plot(city_tree_vars)
 ```
 
 ### Independent Variables - Built Infrastructure
@@ -122,7 +181,15 @@ tar_read(city_tree_facet)
 #| message: false
 #| fig-width: 15
 #| fig-height: 15
-tar_read(city_build_facet)
+#| label: city-building
+
+
+city_building_vars <- cities_lst_full %>% 
+  select(c(city, centroid_den, area_den, prop_highway, prop_strts, road_dens, NDBI_mean_, NDBI_stdDev_, NDVI_mean_, NDVI_stdDev_)) %>% 
+  pivot_longer(-city, names_to = 'variable')
+
+city_plot(city_building_vars)
+
 ```
 
 ### Independent Variables - Census
@@ -164,7 +231,14 @@ tar_read(city_build_facet)
 #| message: false
 #| fig-width: 15
 #| fig-height: 15
-tar_read(city_census_facet)
+#| label: city-census
+
+
+city_census_vars <- cities_lst_full %>% 
+  select(c(city, popdens, sidehop, aptfivp, semhoup, rowhoup, aptdupp, aptbuip, mvdwelp, medinc, lowinc, recimmp, indigp, visminp, edubacp)) %>% 
+  pivot_longer(-city, names_to = 'variable')
+
+city_plot(city_census_vars)
 ```
 
 
@@ -178,7 +252,16 @@ tar_read(city_census_facet)
 #| message: false
 #| fig-width: 15
 #| fig-height: 15
-tar_read(neighbourhood_response_facet)
+#| label: neighbourhood-response
+
+neighbourhood_response_vars <- rbind(
+  neighbourhoods_lst_full %>% select(c(city, hood, date, time, mean_temp, stdDev_temp)) %>% pivot_longer(-c(city, hood, date, time), names_to = 'variable'),
+  neighbourhoods_pollution_full %>% select(c(city, hood, date, time, variable, value)) 
+)
+
+neighbourhood_plot(neighbourhood_response_vars)
+
+
 ```
 
 ```{r}
@@ -187,8 +270,13 @@ tar_read(neighbourhood_response_facet)
 #| message: false
 #| fig-width: 15
 #| fig-height: 15
-tar_read(neighbourhood_response_pca)
+#| label: neighbourhood-pollution-pca
+
+neighbourhood_pollution_pca <- neighbourhoods_pollution_full %>% select(c(city, hood, date, time, variable, value)) %>% pivot_wider(names_from = variable, values_from = value, values_fn = first) %>% select(-c(date, time))
+
+neighbourhood_pca(neighbourhood_pollution_pca, city, hood)
 ```
+
 
 ### Independent Variables - Trees
 
@@ -198,7 +286,16 @@ tar_read(neighbourhood_response_pca)
 #| message: false
 #| fig-width: 15
 #| fig-height: 15
-tar_read(neighbourhood_tree_facet)
+#| label: neighbourhood-tree
+
+neighbourhood_tree_vars <- neighbourhoods_lst_full %>% select(c(city, hood, nTrees, ba_per_m2, stemdens, SpeciesRichness, Shannon, nFG, mean_dbh, sd_dbh)) %>% 
+mutate(ba_per_m2 = drop_units(ba_per_m2),
+stemdens = drop_units(stemdens),
+mean_dbh = drop_units(mean_dbh),
+sd_dbh = drop_units(sd_dbh)) %>%
+pivot_longer(-c(city, hood), names_to = 'variable') 
+
+neighbourhood_plot(neighbourhood_tree_vars)
 ```
 
 ```{r}
@@ -207,7 +304,16 @@ tar_read(neighbourhood_tree_facet)
 #| message: false
 #| fig-width: 15
 #| fig-height: 15
-tar_read(neighbourhood_tree_pca)
+#| label: neighbourhood-tree-pca
+
+neighbourhood_tree_vars_pca <- neighbourhoods_lst_full %>% select(c(city, hood, nTrees, ba_per_m2, stemdens, SpeciesRichness, Shannon, nFG, mean_dbh, sd_dbh)) %>% 
+mutate(ba_per_m2 = drop_units(ba_per_m2),
+stemdens = drop_units(stemdens),
+mean_dbh = drop_units(mean_dbh),
+sd_dbh = drop_units(sd_dbh))  %>%
+drop_na()
+
+neighbourhood_pca(neighbourhood_tree_vars_pca, city, hood)
 ```
 
 ### Independent Variables - Built Infrastructure
@@ -218,7 +324,14 @@ tar_read(neighbourhood_tree_pca)
 #| message: false
 #| fig-width: 15
 #| fig-height: 15
-tar_read(neighbourhood_build_facet)
+#| label: neighbourhood-building
+
+
+neighbourhood_building_vars <- neighbourhoods_lst_full %>% 
+  select(c(city, hood, centroid_den, area_den, prop_highway, prop_strts, road_dens, NDBI_mean_, NDBI_stdDev_, NDVI_mean_, NDVI_stdDev_)) %>% 
+  pivot_longer(-c(city, hood), names_to = 'variable')
+
+neighbourhood_plot(neighbourhood_building_vars)
 ```
 
 ```{r}
@@ -227,7 +340,12 @@ tar_read(neighbourhood_build_facet)
 #| message: false
 #| fig-width: 15
 #| fig-height: 15
-tar_read(neighbourhood_build_pca)
+#| label: neighbourhood-built-pca
+
+neighbourhood_built_vars_pca <- neighbourhoods_lst_full %>% 
+  select(c(city, hood, centroid_den, area_den, prop_highway, prop_strts, road_dens, NDBI_mean_, NDBI_stdDev_, NDVI_mean_, NDVI_stdDev_)) 
+
+neighbourhood_pca(neighbourhood_built_vars_pca, city, hood)
 ```
 
 ### Independent Variables - Census
@@ -238,7 +356,14 @@ tar_read(neighbourhood_build_pca)
 #| message: false
 #| fig-width: 15
 #| fig-height: 15
-tar_read(neighbourhood_census_facet)
+#| label: neighbourhood-census
+
+
+neighbourhood_census_vars <- neighbourhoods_lst_full %>% 
+  select(c(city, hood, popdens, sidehop, aptfivp, semhoup, rowhoup, aptdupp, aptbuip, mvdwelp, medinc, lowinc, recimmp, indigp, visminp, edubacp)) %>% 
+  pivot_longer(-c(city, hood), names_to = 'variable')
+
+city_plot(neighbourhood_census_vars)
 ```
 
 ```{r}
@@ -247,9 +372,134 @@ tar_read(neighbourhood_census_facet)
 #| message: false
 #| fig-width: 15
 #| fig-height: 15
-tar_read(neighbourhood_census_pca)
+#| label: census-built-pca
+
+neighbourhood_census_vars_pca <- neighbourhoods_lst_full %>% 
+  select(c(city, hood, popdens, sidehop, aptfivp, semhoup, rowhoup, aptdupp, aptbuip, mvdwelp, medinc, lowinc, recimmp, indigp, visminp, edubacp)) 
+
+neighbourhood_pca(neighbourhood_census_vars_pca, city, hood)
 ```
 
 ## Street Scale
 
-To come...
+### Response Variables
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-width: 15
+#| fig-height: 15
+#| label: street-response
+
+street_response_vars <- roads_lst_full %>% select(c(city, streetid, date, time, mean_temp, stdDev_temp)) %>%
+drop_na(city) %>% pivot_longer(-c(city, streetid, date, time), names_to = 'variable')
+
+neighbourhood_plot(street_response_vars)
+
+
+```
+
+
+
+
+### Independent Variables - Trees
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-width: 15
+#| fig-height: 15
+#| label: street-tree
+
+street_tree_vars <- roads_lst_full %>% select(c(city, streetid, nTrees, ba_per_m2, stemdens, SpeciesRichness, Shannon, nFG, mean_dbh, sd_dbh)) %>% 
+mutate(ba_per_m2 = drop_units(ba_per_m2),
+stemdens = drop_units(stemdens),
+mean_dbh = drop_units(mean_dbh),
+sd_dbh = drop_units(sd_dbh)) %>%
+pivot_longer(-c(city, streetid), names_to = 'variable') 
+
+neighbourhood_plot(street_tree_vars)
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-width: 15
+#| fig-height: 15
+#| label: street-tree-pca
+
+street_tree_vars_pca <- roads_lst_full %>% select(c(city, streetid, nTrees, ba_per_m2, stemdens, SpeciesRichness, Shannon, nFG, mean_dbh, sd_dbh)) %>% 
+mutate(ba_per_m2 = drop_units(ba_per_m2),
+stemdens = drop_units(stemdens),
+mean_dbh = drop_units(mean_dbh),
+sd_dbh = drop_units(sd_dbh))
+
+neighbourhood_pca(street_tree_vars_pca, city, streetid)
+```
+
+### Independent Variables - Built Infrastructure
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-width: 15
+#| fig-height: 15
+#| label: street-building
+
+
+street_building_vars <- roads_lst_full %>% 
+  select(c(city, streetid, centroid_den, area_den, NDBI_mean_, NDBI_stdDev_, NDVI_mean_, NDVI_stdDev_)) %>% 
+  pivot_longer(-c(city, streetid), names_to = 'variable')
+
+neighbourhood_plot(street_building_vars)
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-width: 15
+#| fig-height: 15
+#| label: street-built-pca
+
+street_built_vars_pca <- roads_lst_full %>% 
+  select(c(city, streetid, centroid_den, area_den, NDBI_mean_, NDBI_stdDev_, NDVI_mean_, NDVI_stdDev_)) 
+
+neighbourhood_pca(street_built_vars_pca, city, streetid)
+```
+
+### Independent Variables - Census
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-width: 15
+#| fig-height: 15
+#| label: street-census
+
+
+street_census_vars <- roads_lst_full %>% 
+  select(c(city, streetid, popdens, sidehop, aptfivp, semhoup, rowhoup, aptdupp, aptbuip, mvdwelp, medinc, lowinc, recimmp, indigp, visminp, edubacp)) %>% 
+  pivot_longer(-c(city, streetid), names_to = 'variable')
+
+neighbourhood_plot(street_census_vars)
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-width: 15
+#| fig-height: 15
+#| label: street-census-pca
+
+street_census_vars_pca <-roads_lst_full %>% 
+  select(c(city, streetid, popdens, sidehop, aptfivp, semhoup, rowhoup, aptdupp, aptbuip, mvdwelp, medinc, lowinc, recimmp, indigp, visminp, edubacp))
+
+neighbourhood_pca(street_census_vars_pca, city, streetid)
+```
