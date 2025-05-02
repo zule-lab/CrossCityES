@@ -42,4 +42,4 @@ lapply(grep('targets', ls(), value = TRUE), get)
 # TODO: 
 # - assign hybrids functional groups
 # - calculate functional diversity/evenness 
-# - update quarto doc
+# - update quarto doc -> weird values & functional diversity
