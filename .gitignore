@@ -2,7 +2,7 @@
 .DS_Store
 .directory
 
-# Large folder 
+# Large folder
 /large/
 
 # History files
@@ -47,3 +47,5 @@ vignettes/*.pdf
 
 # Custom
 _targets/
+
+/.quarto/
