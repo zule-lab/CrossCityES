@@ -9,13 +9,16 @@ combine_neighbourhoods_pollution <- function(neighbourhoods_pollution, neighbour
   # we need to filter so that each image must meet a threshold for inclusion 
   
   filt <- neighbourhoods_pollution %>% 
-    filter(str_detect(variable, 'count_')) %>% 
+    mutate(pollutant = str_extract(variable, "[^_]+$"),
+           variable = str_replace(variable, "_[^_]+$", "")) %>%
+    pivot_wider(names_from = variable, values_from = value, values_fn = first) %>%
     inner_join(., neighbourhood_bound_trees) %>% 
     # resolution is 1113.2 m
-    mutate(coverage = round((value*1239214.24)/(drop_units(st_area(geometry)))*100, 3)) %>%
+    mutate(coverage = round((count_neighbourhoods*1239214.24)/(drop_units(st_area(geometry)))*100, 3)) %>%
     # image covers minimum 100% of the neighbourhood area
     filter(coverage >= 100) %>% 
-    select(-geometry)
+    pivot_longer(ends_with('_neighbourhoods'), names_to = "variable") %>%
+    unite('variable', c('variable', 'pollutant'), sep = '_')
   
   filt_ndvi <- neighbourhoods_ndvi_ndbi %>% 
     inner_join(., neighbourhood_bound_trees) %>% 

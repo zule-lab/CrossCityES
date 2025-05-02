@@ -9,12 +9,16 @@ combine_cities_pollution <- function(cities_pollution, mun_bound_trees, census_c
   # we need to filter so that each image must meet a threshold for inclusion 
   
   filt <- cities_pollution %>% 
-    filter(str_detect(variable, 'count_')) %>% 
+    mutate(pollutant = str_extract(variable, "[^_]+$"),
+           variable = str_replace(variable, "_[^_]+$", "")) %>%
+    pivot_wider(names_from = variable, values_from = value, values_fn = first) %>%
     inner_join(., mun_bound_trees, by = join_by('city' == 'CMANAME')) %>% 
     # resolution is 1113.2 m
-    mutate(coverage = round((value*1239214.24)/(drop_units(st_area(geometry)))*100, 3)) %>%
+    mutate(coverage = round((count_cities*1239214.24)/(drop_units(st_area(geometry)))*100, 3)) %>%
     # image covers minimum 75% of the city area
-    filter(coverage > 50) 
+    filter(coverage > 50) %>% 
+    pivot_longer(ends_with('_cities'), names_to = "variable") %>%
+    unite('variable', c('variable', 'pollutant'), sep = '_')
   
   filt_ndvi <- cities_ndvi_ndbi %>% 
     inner_join(., mun_bound_trees) %>% 
