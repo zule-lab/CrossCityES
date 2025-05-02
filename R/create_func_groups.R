@@ -172,6 +172,7 @@ create_func_groups <- function(can_trees, TTTF_1.3, seed_mass, TTTF_newlit, ZULE
     filter(!is.na(SM)) %>% 
     bind_rows(seed_mass)
   
+  
   # impute missing values for species missing only one trait - code from Paquette et al 2021
   # dataset includes species with all trait data and species with 1 missing trait
   onetrait_na <- species_traits_sm %>% 
@@ -287,7 +288,32 @@ create_func_groups <- function(can_trees, TTTF_1.3, seed_mass, TTTF_newlit, ZULE
     select(c(fullname, FG, SM, WD, SLA, Nmass, similarity))
   
   
-  return(full)
+  # assign FGs to hybrids
+  full_hyb <- full %>% 
+    mutate(FG = case_when(fullname == "Ulmus x triumph" ~ '2',
+                          fullname == "Ulmus x sapporo" ~ '2',
+                          fullname == "Cedrus libani" ~ '1',
+                          fullname == "Populus x canadensis" ~ '1',
+                          fullname == "Pterocarya fraxinifolia" ~ '1',
+                          fullname == "Rhus lanceolata" ~ '2',
+                          fullname == "Robinia hispida" ~ '3',
+                          fullname == "Shepherdia canadensis" ~ '6',
+                          fullname == "Aesculus x arnoldiana" ~ '5',
+                          fullname == "Aesculus x homestead" ~ '5',
+                          fullname == "Aesculus x hybrida" ~ '5',
+                          fullname == "Populus jackii" ~ '1',
+                          fullname == "Populus x canadensis" ~ '1',
+                          fullname == "Populus petrowskyana" ~ '1', 
+                          fullname == "Quercus x bimundorum" ~ '2',
+                          fullname == "Quercus x warei" ~ '2',
+                          fullname == "Quercus x macdanielii" ~ '2',
+                          fullname == "Ulmus x frontier" ~ '3',
+                          fullname == "Ulmus x new" ~ '2',
+                          fullname == "Populus x okanese" ~ '1',
+                          .default = FG))
+  
+  
+  return(full_hyb)
   
 }
 
