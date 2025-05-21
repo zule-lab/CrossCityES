@@ -18,7 +18,8 @@ combine_cities_pollution <- function(cities_pollution, mun_bound_trees, census_c
     # image covers minimum 75% of the city area
     filter(coverage > 50) %>% 
     pivot_longer(ends_with('_cities'), names_to = "variable") %>%
-    unite('variable', c('variable', 'pollutant'), sep = '_')
+    unite('variable', c('variable', 'pollutant'), sep = '_') %>% 
+    select(-geometry)
   
   filt_ndvi <- cities_ndvi_ndbi %>% 
     inner_join(., mun_bound_trees) %>% 
@@ -34,9 +35,9 @@ combine_cities_pollution <- function(cities_pollution, mun_bound_trees, census_c
     left_join(., cities_treedensity, by = "city") %>%
     left_join(., cities_treerichness, by = "city") %>%
     left_join(., cities_treesize, by = "city") %>%
-    left_join(., build_dens_city %>% st_set_geometry(NULL), by = "city") %>% 
-    left_join(., cities_roadclass %>% st_set_geometry(NULL), by = "city") %>%
-    left_join(., census_city %>% st_set_geometry(NULL), by = "city") %>%
+    left_join(., build_dens_city %>% st_set_geometry(NULL), by = "city") %>%
+    left_join(., cities_roadclass %>% st_set_geometry(NULL), by = "city") %>% 
+    left_join(., census_city %>% st_drop_geometry() %>% select(-da), by = "city") %>%
     left_join(., cities_bldhgt %>% rename(city = CMANAME), by = "city") %>%
     full_join(., filt_ndvi %>% rename(date_ndvi = date, city = CMANAME), by = "city") %>%
     rename(ba_per_m2 = ba_per_m2.x) %>% 

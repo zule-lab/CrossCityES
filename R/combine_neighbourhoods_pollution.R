@@ -18,7 +18,8 @@ combine_neighbourhoods_pollution <- function(neighbourhoods_pollution, neighbour
     # image covers minimum 100% of the neighbourhood area
     filter(coverage >= 100) %>% 
     pivot_longer(ends_with('_neighbourhoods'), names_to = "variable") %>%
-    unite('variable', c('variable', 'pollutant'), sep = '_')
+    unite('variable', c('variable', 'pollutant'), sep = '_') %>% 
+    select(-geometry)
   
   filt_ndvi <- neighbourhoods_ndvi_ndbi %>% 
     inner_join(., neighbourhood_bound_trees) %>% 
@@ -35,10 +36,10 @@ combine_neighbourhoods_pollution <- function(neighbourhoods_pollution, neighbour
     left_join(., neighbourhood_treerichness %>% separate(neighbourhood, c('city', 'hood'), sep = '_'), by = c("city", "hood")) %>%
     left_join(., neighbourhood_treesize, by = c("city", "hood")) %>%
     left_join(., neighbourhoods_bldhgt, by = c("city", "hood")) %>%
-    left_join(., build_dens_neighbourhood %>% st_set_geometry(NULL), by = c("city", "hood")) %>%
-    left_join(., neighbourhood_roadclass %>% st_set_geometry(NULL), by = c("city", "hood_id")) %>%
-    left_join(., census_neighbourhood %>% st_set_geometry(NULL) %>% select(-da), by = c("city", "hood_id")) %>% 
-    full_join(., filt_ndvi %>% rename(date_ndvi = date), by = c("city", "hood_id")) %>%  
+    left_join(., build_dens_neighbourhood %>% st_drop_geometry(), by = c("city", "hood")) %>%
+    left_join(., neighbourhood_roadclass %>% st_drop_geometry(), by = c("city", "hood_id")) %>%
+    left_join(., census_neighbourhood %>% st_drop_geometry() %>% select(-da), by = c("city", "hood_id")) %>%
+    full_join(., filt_ndvi %>% rename(date_ndvi = date), by = c("city", "hood_id")) %>%
     rename(ba_per_m2 = ba_per_m2.x) %>% 
     select(-c(hood.x, hood_area.x, hood_id.x, id.x, id.y, hood_id.y, ba_per_m2.y)) %>% 
     separate(date, c('date', 'time'), sep = 'T') %>% 
