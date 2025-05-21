@@ -18,6 +18,7 @@ combine_cities_pollution <- function(cities_pollution, mun_bound_trees, census_c
     # image covers minimum 75% of the city area
     filter(coverage > 50) %>% 
     pivot_longer(ends_with('_cities'), names_to = "variable") %>%
+    filter(str_detect(variable, 'mean_')) %>% 
     unite('variable', c('variable', 'pollutant'), sep = '_') %>% 
     select(-geometry)
   

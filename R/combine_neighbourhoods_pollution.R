@@ -18,8 +18,10 @@ combine_neighbourhoods_pollution <- function(neighbourhoods_pollution, neighbour
     # image covers minimum 100% of the neighbourhood area
     filter(coverage >= 100) %>% 
     pivot_longer(ends_with('_neighbourhoods'), names_to = "variable") %>%
+    filter(str_detect(variable, 'mean_')) %>% 
     unite('variable', c('variable', 'pollutant'), sep = '_') %>% 
-    select(-geometry)
+    select(-geometry) 
+    
   
   filt_ndvi <- neighbourhoods_ndvi_ndbi %>% 
     inner_join(., neighbourhood_bound_trees) %>% 
