@@ -87,7 +87,8 @@ clean_census_da <- function(x, n, o, da_bound){
     can_cen_pp <- can_cen_p[, recimmp := recimm/totimm
     ][, indigp := indig/totindig
     ][, visminp := vismin/totvismin
-    ][, edubacp := edubac/totedu]
+    ][, edubacp := edubac/totedu
+    ][, lowincp := lowinc/100]
     
     
     }) %>%
