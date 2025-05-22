@@ -1,4 +1,4 @@
-neighbourhood_plot <- function(x){
+neighbourhood_plot <- function(x, supp.labs){
   
   x <- x %>%
     mutate(value = as.numeric(value)) %>% 
@@ -7,7 +7,7 @@ neighbourhood_plot <- function(x){
     geom_boxplot() + 
     geom_point(size = 0.25) + 
     scale_colour_manual(values=met.brewer("Archambault", 7)) + 
-    facet_wrap(vars(variable), scales = "free_y") + 
+    facet_wrap(vars(variable), scales = "free_y", labeller = labeller(variable = {supp.labs})) + 
     theme_classic() + 
     theme(axis.text.x = element_blank(),
           axis.ticks.x = element_blank()) + 
