@@ -175,7 +175,7 @@ city_response_vars %>%
 #| label: city-tree
 
 city_tree_vars <- cities_lst_full %>% 
-  select(c(city, nTrees, ba_per_m2, stemdens, SpeciesRichness, Shannon, nFG, mean_dbh, sd_dbh)) %>% 
+  select(c(city, nTrees, ba_per_m2, stemdens, SpeciesRichness, Shannon, FG_richness, FG_shannon, mean_dbh, sd_dbh)) %>% 
   mutate(ba_per_m2 = drop_units(ba_per_m2), 
          stemdens = drop_units(stemdens),
          mean_dbh = drop_units(mean_dbh),
@@ -305,7 +305,7 @@ neighbourhood_pca(neighbourhood_pollution_pca, city, hood)
 #| fig-height: 15
 #| label: neighbourhood-tree
 
-neighbourhood_tree_vars <- neighbourhoods_lst_full %>% select(c(city, hood, nTrees, ba_per_m2, stemdens, SpeciesRichness, Shannon, nFG, mean_dbh, sd_dbh)) %>% 
+neighbourhood_tree_vars <- neighbourhoods_lst_full %>% select(c(city, hood, nTrees, ba_per_m2, stemdens, SpeciesRichness, Shannon, FG_richness, FG_shannon, mean_dbh, sd_dbh)) %>% 
 mutate(ba_per_m2 = drop_units(ba_per_m2),
 stemdens = drop_units(stemdens),
 mean_dbh = drop_units(mean_dbh),
@@ -323,7 +323,7 @@ neighbourhood_plot(neighbourhood_tree_vars)
 #| fig-height: 15
 #| label: neighbourhood-tree-pca
 
-neighbourhood_tree_vars_pca <- neighbourhoods_lst_full %>% select(c(city, hood, nTrees, ba_per_m2, stemdens, SpeciesRichness, Shannon, nFG, mean_dbh, sd_dbh)) %>% 
+neighbourhood_tree_vars_pca <- neighbourhoods_lst_full %>% select(c(city, hood, nTrees, ba_per_m2, stemdens, SpeciesRichness, Shannon, FG_richness, FG_shannon, mean_dbh, sd_dbh)) %>% 
 mutate(ba_per_m2 = drop_units(ba_per_m2),
 stemdens = drop_units(stemdens),
 mean_dbh = drop_units(mean_dbh),
@@ -431,7 +431,7 @@ neighbourhood_plot(street_response_vars)
 #| fig-height: 15
 #| label: street-tree
 
-street_tree_vars <- roads_lst_full %>% select(c(city, streetid, nTrees, ba_per_m2, stemdens, SpeciesRichness, Shannon, nFG, mean_dbh, sd_dbh)) %>% 
+street_tree_vars <- roads_lst_full %>% select(c(city, streetid, nTrees, ba_per_m2, stemdens, SpeciesRichness, Shannon, FG_richness, FG_shannon, mean_dbh, sd_dbh)) %>% 
 mutate(ba_per_m2 = drop_units(ba_per_m2),
 stemdens = drop_units(stemdens),
 mean_dbh = drop_units(mean_dbh),
@@ -449,7 +449,7 @@ neighbourhood_plot(street_tree_vars)
 #| fig-height: 15
 #| label: street-tree-pca
 
-street_tree_vars_pca <- roads_lst_full %>% select(c(city, streetid, nTrees, ba_per_m2, stemdens, SpeciesRichness, Shannon, nFG, mean_dbh, sd_dbh)) %>% 
+street_tree_vars_pca <- roads_lst_full %>% select(c(city, streetid, nTrees, ba_per_m2, stemdens, SpeciesRichness, Shannon, FG_richness, FG_shannon, mean_dbh, sd_dbh)) %>% 
 mutate(ba_per_m2 = drop_units(ba_per_m2),
 stemdens = drop_units(stemdens),
 mean_dbh = drop_units(mean_dbh),
