@@ -39,11 +39,11 @@ combine_neighbourhoods_pollution <- function(neighbourhoods_pollution, neighbour
     left_join(., neighbourhood_treesize, by = c("city", "hood")) %>%
     left_join(., neighbourhoods_bldhgt, by = c("city", "hood")) %>%
     left_join(., build_dens_neighbourhood %>% st_drop_geometry(), by = c("city", "hood")) %>%
-    left_join(., neighbourhood_roadclass %>% st_drop_geometry(), by = c("city", "hood_id")) %>%
-    left_join(., census_neighbourhood %>% st_drop_geometry() %>% select(-da), by = c("city", "hood_id")) %>%
-    full_join(., filt_ndvi %>% rename(date_ndvi = date), by = c("city", "hood_id")) %>%
+    left_join(., neighbourhood_roadclass %>% st_drop_geometry(), by = c("city", "hood")) %>%
+    left_join(., census_neighbourhood %>% st_drop_geometry() %>% select(-da), by = c("city", "hood")) %>%
+    full_join(., filt_ndvi %>% rename(date_ndvi = date), by = c("city", "hood")) %>%
     rename(ba_per_m2 = ba_per_m2.x) %>% 
-    select(-c(hood.x, hood_area.x, hood_id.x, id.x, id.y, hood_id.y, ba_per_m2.y)) %>% 
+    select(-c(hood_area.x, hood_id.x, id.x, id.y, hood_id.y, ba_per_m2.y)) %>% 
     separate(date, c('date', 'time'), sep = 'T') %>% 
     separate(date_ndvi, c("date_ndvi", "time_ndvi"), sep = "T") %>% 
     mutate(date = as.Date(date),
@@ -51,7 +51,7 @@ combine_neighbourhoods_pollution <- function(neighbourhoods_pollution, neighbour
            date_ndvi = as.Date(date_ndvi),
            time_ndvi = format(strptime(time_ndvi, "%H:%M:%S"),"%H:%M:%S"),
            diff = abs(date - date_ndvi)) %>% 
-    group_by(city, hood_id, date) %>%
+    group_by(city, hood, date) %>%
     # select for ndvi image that is closest to lst image
     filter(diff == min(diff)) %>% 
     ungroup()
