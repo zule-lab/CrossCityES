@@ -2,7 +2,10 @@ tree_richness <- function(can_trees, scale, func_groups, road_bound_trees = NULL
   
   # correct species names 
   species_corr <- can_trees %>% 
-    filter(!str_detect(fullname, "Unknown|Unidentified|Stump"))
+    filter(!str_detect(fullname, "Unknown|Unidentified|Stump")) %>%
+    mutate(fullname = case_when(fullname == "Salix sepulcralis" ~ "Salix x sepulcralis",
+                                fullname == "Malus x thunder" ~ "Malus sylvestris",
+                                .default = fullname))
   
   
   # calculate functional diversity
@@ -97,34 +100,47 @@ format_vegan <- function(can_trees, scale, road_bound_trees = NULL){
 
 func_diversity <- function(species_corr, scale, func_groups, road_bound_trees = NULL){
   
+  df <- species_corr %>% 
+    st_drop_geometry() %>% 
+    inner_join(., func_groups, by = 'fullname') 
+  
+  
   if (scale == 'city'){
     
-    df <- species_corr %>% 
-      st_drop_geometry() %>% 
-      inner_join(., func_groups, by = 'fullname') %>% 
+    matrix <- df %>% 
+      drop_na(FG) %>%
       group_by(city, FG) %>% 
-      tally() %>%
-      filter(!is.na(FG)) %>% 
-      group_by(city) %>% 
-      summarize(nFG = length(city))
+      mutate(n = n()) %>%
+      select(c(city, FG, n)) %>% 
+      st_drop_geometry() %>%
+      pivot_wider(names_from = 'FG', values_from = 'n', values_fill = 0, values_fn = first) %>%
+      column_to_rownames(var='city')
+    
+    sr <- as_tibble(specnumber(matrix), rownames = scale) %>%
+      rename(FG_richness = value) %>%
+      mutate(FG_shannon = diversity(matrix))
+    
+    
   }
   
   else if (scale == 'neighbourhood'){
     
-    cutoff <- species_corr %>%
+    matrix <- df %>% 
       group_by(city, hood) %>% 
       mutate(nTrees = n()) %>% 
-      filter(nTrees > 50)
-    
-    df <- cutoff %>% 
-      st_drop_geometry() %>% 
-      inner_join(., func_groups, by = 'fullname') %>% 
+      filter(nTrees > 50) %>%
+      drop_na(FG) %>%
       group_by(city, hood, FG) %>% 
-      tally() %>%
-      filter(!is.na(FG)) %>% 
-      group_by(city, hood) %>% 
-      summarize(nFG = length(c(hood))) %>% 
-      unite("neighbourhood", c(city, hood), sep = "_")
+      mutate(n = n()) %>%
+      select(c(city, hood, FG, n)) %>%
+      unite("neighbourhood", c(city, hood), sep = "_") %>% 
+      st_drop_geometry() %>%
+      pivot_wider(names_from = 'FG', values_from = 'n', values_fill = 0, values_fn = first) %>%
+      column_to_rownames(var='neighbourhood')
+    
+    sr <- as_tibble(specnumber(matrix), rownames = scale) %>%
+      rename(FG_richness = value) %>%
+      mutate(FG_shannon = diversity(matrix))
     
   }
   
@@ -138,18 +154,20 @@ func_diversity <- function(species_corr, scale, func_groups, road_bound_trees = 
       mutate(nTrees = n()) %>% 
       filter(nTrees > 1)
     
-    
-    
-    df <- cutoff %>% 
-      inner_join(., func_groups, by = 'fullname') %>% 
+    matrix <- cutoff %>%
+      inner_join(., func_groups, by = 'fullname') %>%
+      drop_na(FG) %>%
       group_by(streetid, FG) %>% 
-      tally() %>%
-      filter(!is.na(FG)) %>% 
-      group_by(streetid) %>% 
-      st_drop_geometry() %>% 
-      summarize(nFG = length(c(streetid))) %>% 
-      rename(road = streetid)
-  
+      mutate(n = n()) %>%
+      select(c(streetid, FG, n)) %>%
+      st_drop_geometry() %>%
+      pivot_wider(names_from = 'FG', values_from = 'n', values_fill = 0, values_fn = first) %>%
+      column_to_rownames(var='streetid')
+    
+    sr <- as_tibble(specnumber(matrix), rownames = scale) %>%
+      rename(FG_richness = value) %>%
+      mutate(FG_shannon = diversity(matrix))
+    
     
   }
   
