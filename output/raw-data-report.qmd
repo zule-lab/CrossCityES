@@ -1,5 +1,5 @@
 ---
-title: "Raw Data Report"
+title: "Data Summary"
 execute:
   echo: false
   warning: false
@@ -33,11 +33,6 @@ tar_load(roads_lst_full)
 tar_load(can_trees)
 
 ```
-
-## (Not really all that) Quick & Dirty
-
--   These are the raw data results for *most* of the variables for chapter 1 data
--   NOTES: still missing tree functional diversity measures
 
 
 ## Workflow
@@ -146,6 +141,11 @@ city_response_vars <- rbind(
   cities_pollution_full %>% select(c(city, variable, value)) 
 )
 
+# facet label names for variable
+supp.labs <- c("Mean CO (mol/m2)", "Mean NO2 (mol/m2)", "Mean O3 (mol/m2)", "Mean SO2 (mol/m2)", "Mean UV", "Mean Temp (deg C)", "Std Dev Temp (deg C)")
+names(supp.labs) <- c("mean_cities_CO", "mean_cities_NO2", "mean_cities_O3", "mean_cities_SO2", "mean_cities_UV", 
+                      "mean_temp", "stdDev_temp")
+
 city_response_vars %>%
     mutate(value = as.numeric(value)) %>%
     arrange(value) %>%   # First sort by val. 
@@ -154,7 +154,7 @@ city_response_vars %>%
     geom_boxplot() + 
     geom_point(size = 0.25) +  
     scale_fill_manual(values=met.brewer("Archambault", 7)) + 
-    facet_wrap(vars(variable), scales = "free_y") + 
+    facet_wrap(vars(variable), scales = "free_y", labeller = labeller(variable = supp.labs)) + 
     theme_classic() + 
     theme(axis.text.x = element_blank(),
           axis.ticks.x = element_blank()) + 
@@ -183,7 +183,12 @@ city_tree_vars <- cities_lst_full %>%
   pivot_longer(-city, names_to = 'variable') %>%
   distinct()
 
-city_plot(city_tree_vars)
+y <- c("Basal Area (km2 tree / km2)", "Number of Functional Groups", "Functional Group Shannon", "Mean DBH (cm)", "Number of Trees", "Std Dev DBH (cm)", "Shannon", "Species Richness", "Stem Density (trees / km2)")
+names(y) <- c("ba_per_m2", "FG_richness", "FG_shannon", "mean_dbh", "nTrees", "sd_dbh", 
+                      "Shannon", "SpeciesRichness", "stemdens")
+
+
+city_plot(city_tree_vars, y)
 ```
 
 ### Independent Variables - Built Infrastructure
@@ -204,42 +209,16 @@ city_building_vars <- cities_lst_full %>%
   pivot_longer(-city, names_to = 'variable') %>% 
   distinct()
 
-city_plot(city_building_vars)
+
+supp.labs <- c("Building Density (km2 building/km2)", "Building Density (# buildings/km2)", "Mean Building Height (m)", "Mean NDBI", "Std Dev NDBI", "Mean NDVI", "Std Dev NDVI", "Highways (% of roads)", "Streets (% of roads)", "Road Density (km road/km2)")
+names(supp.labs) <- c("area_den", "centroid_den", "mean_bldhgt", "NDBI_mean_", "NDBI_stdDev_", "NDVI_mean_", 
+                      "NDVI_stdDev_", "prop_highway", "prop_strts", "road_dens")
+
+city_plot(city_building_vars, supp.labs)
 
 ```
 
 ### Independent Variables - Census
-
--   includes data from 2021 census on:
-    -   totpop = Population 2021
-
-    -   popdens = Pop density per sq km
-
-    -   area = Land area sq km
-
-    -   sidho = Single-detached house
-
-    -   semho = Semi-detached house
-
-    -   rowhou = Row house
-
-    -   aptdup = Apartment or flat in a duplex
-
-    -   aptbui = Apartment in a building that has fewer than five storeys
-
-    -   aptfiv = Apartment in a building that has five or more storeys otsiho = Other single-attached house
-
-    -   mvdwel = Movable dwelling (9)
-
-    -   medinc = Median after-tax income in 2015 among recipients
-
-    -   lowinc = Prevalence of low income based on the Low-income measure, after tax (LIM-AT) (%)
-
-    -   recimm = Total - Immigrant status and period of immigration for the population in private households - 25% sample data (63) -\> Immigrants -\> 2011-2016 (recent immigrants)
-
-    -   aborig = Total - Aboriginal identity for the population in private households - 25% sample data (104) -\> Aboriginal identity (105)
-
-    -   vismin = Total - Visible minority for the population in private households - 25% sample data (121) -\> Total visible minority population (122)
 
 ```{r}
 #| echo: false
@@ -255,7 +234,12 @@ city_census_vars <- cities_lst_full %>%
   pivot_longer(-city, names_to = 'variable') %>% 
   distinct()
 
-city_plot(city_census_vars)
+supp.labs <- c("Apartment Building < 5 str. (% residents)", "Duplex (% residents)", "Apartment Building > 5 str. (% residents)", "Bachelor's Education or + (% residents)", "Indigenous (% residents)", "Low Income (% residents)", "Median Income ($)", "Movable Dwelling (% residents)", "Population Density (ppl/km2)", "Recent Immigrants 2 (% residents)", "Row House (% residents)", "Semi-Detached House (% residents)", "Single Detached House (% residents)", "Visible Minority (% residents)")
+names(supp.labs) <- c("aptbuip", "aptdupp", "aptfivep", "edubacp", "indigp", "lowincp", "medinc", "mvdwelp", 
+                      "popdens", "recimmp", "rowhoup", "semhoup", "sidehop", "visminp")
+
+
+city_plot(city_census_vars, supp.labs)
 ```
 
 
@@ -276,7 +260,11 @@ neighbourhood_response_vars <- rbind(
   neighbourhoods_pollution_full %>% select(c(city, hood, date, time, variable, value)) 
 )
 
-neighbourhood_plot(neighbourhood_response_vars)
+supp.labs <- c("Mean CO (mol/m2)", "Mean NO2 (mol/m2)", "Mean O3 (mol/m2)", "Mean SO2 (mol/m2)", "Mean UV", "Mean Temp (deg C)", "Std Dev Temp (deg C)")
+names(supp.labs) <- c("mean_cities_CO", "mean_cities_NO2", "mean_cities_O3", "mean_cities_SO2", "mean_cities_UV", 
+                      "mean_temp", "stdDev_temp")
+
+neighbourhood_plot(neighbourhood_response_vars, supp.labs)
 
 
 ```
@@ -312,7 +300,11 @@ mean_dbh = drop_units(mean_dbh),
 sd_dbh = drop_units(sd_dbh)) %>%
 pivot_longer(-c(city, hood), names_to = 'variable') 
 
-neighbourhood_plot(neighbourhood_tree_vars)
+supp.labs <- c("Basal Area (km2 tree / km2)", "Number of Functional Groups", "Functional Group Shannon", "Mean DBH (cm)", "Number of Trees", "Std Dev DBH (cm)", "Shannon", "Species Richness", "Stem Density (trees / km2)")
+names(supp.labs) <- c("ba_per_m2", "FG_richness", "FG_shannon", "mean_dbh", "nTrees", "sd_dbh", 
+                      "Shannon", "SpeciesRichness", "stemdens")
+
+neighbourhood_plot(neighbourhood_tree_vars, supp.labs)
 ```
 
 ```{r}
@@ -348,7 +340,12 @@ neighbourhood_building_vars <- neighbourhoods_lst_full %>%
   select(c(city, hood, centroid_den, area_den, prop_highway, prop_strts, road_dens, mean_bldhgt, NDBI_mean_, NDBI_stdDev_, NDVI_mean_, NDVI_stdDev_)) %>% 
   pivot_longer(-c(city, hood), names_to = 'variable')
 
-neighbourhood_plot(neighbourhood_building_vars)
+supp.labs <- c("Building Density (km2 building/km2)", "Building Density (# buildings/km2)", "Mean Building Height (m)", "Mean NDBI", "Std Dev NDBI", "Mean NDVI", "Std Dev NDVI", "Highways (% of roads)", "Streets (% of roads)", "Road Density (km road/km2)")
+names(supp.labs) <- c("area_den", "centroid_den", "mean_bldhgt", "NDBI_mean_", "NDBI_stdDev_", "NDVI_mean_", 
+                      "NDVI_stdDev_", "prop_highway", "prop_strts", "road_dens")
+
+
+neighbourhood_plot(neighbourhood_building_vars, supp.labs)
 ```
 
 ```{r}
@@ -380,7 +377,11 @@ neighbourhood_census_vars <- neighbourhoods_lst_full %>%
   select(c(city, hood, popdens, sidehop, aptfivp, semhoup, rowhoup, aptdupp, aptbuip, mvdwelp, medinc, lowincp, recimmp, indigp, visminp, edubacp)) %>% 
   pivot_longer(-c(city, hood), names_to = 'variable')
 
-neighbourhood_plot(neighbourhood_census_vars)
+supp.labs <- c("Apartment Building < 5 str. (% residents)", "Duplex (% residents)", "Apartment Building > 5 str. (% residents)", "Bachelor's Education or + (% residents)", "Indigenous (% residents)", "Low Income (% residents)", "Median Income ($)", "Movable Dwelling (% residents)", "Population Density (ppl/km2)", "Recent Immigrants 2 (% residents)", "Row House (% residents)", "Semi-Detached House (% residents)", "Single Detached House (% residents)", "Visible Minority (% residents)")
+names(supp.labs) <- c("aptbuip", "aptdupp", "aptfivep", "edubacp", "indigp", "lowincp", "medinc", "mvdwelp", 
+                      "popdens", "recimmp", "rowhoup", "semhoup", "sidehop", "visminp")
+
+neighbourhood_plot(neighbourhood_census_vars, supp.labs)
 ```
 
 ```{r}
@@ -413,7 +414,10 @@ street_response_vars <- roads_lst_full %>% select(c(city, streetid, date, time, 
 drop_na(city) %>% pivot_longer(-c(city, streetid, date, time), names_to = 'variable') %>%
   drop_na(city)
 
-neighbourhood_plot(street_response_vars)
+supp.labs <- c("Mean Temp (deg C)", "Std Dev Temp (deg C)")
+names(supp.labs) <- c("mean_temp", "stdDev_temp")
+
+neighbourhood_plot(street_response_vars, supp.labs)
 
 
 ```
@@ -438,7 +442,12 @@ mean_dbh = drop_units(mean_dbh),
 sd_dbh = drop_units(sd_dbh)) %>%
 pivot_longer(-c(city, streetid), names_to = 'variable') %>% drop_na(city)
 
-neighbourhood_plot(street_tree_vars)
+supp.labs <- c("Basal Area (km2 tree / km2)", "Number of Functional Groups", "Functional Group Shannon", "Mean DBH (cm)", "Number of Trees", "Std Dev DBH (cm)", "Shannon", "Species Richness", "Stem Density (trees / km2)")
+names(supp.labs) <- c("ba_per_m2", "FG_richness", "FG_shannon", "mean_dbh", "nTrees", "sd_dbh", 
+                      "Shannon", "SpeciesRichness", "stemdens")
+
+
+neighbourhood_plot(street_tree_vars, supp.labs)
 ```
 
 ```{r}
@@ -474,7 +483,12 @@ street_building_vars <- roads_lst_full %>%
   select(c(city, streetid, centroid_den, area_den, mean_bldhgt, NDBI_mean_, NDBI_stdDev_, NDVI_mean_, NDVI_stdDev_)) %>% 
   pivot_longer(-c(city, streetid), names_to = 'variable') %>% drop_na(city)
 
-neighbourhood_plot(street_building_vars)
+supp.labs <- c("Building Density (km2 building/km2)", "Building Density (# buildings/km2)", "Mean Building Height (m)", "Mean NDBI", "Std Dev NDBI", "Mean NDVI", "Std Dev NDVI", "Highways (% of roads)", "Streets (% of roads)", "Road Density (km road/km2)")
+names(supp.labs) <- c("area_den", "centroid_den", "mean_bldhgt", "NDBI_mean_", "NDBI_stdDev_", "NDVI_mean_", 
+                      "NDVI_stdDev_", "prop_highway", "prop_strts", "road_dens")
+
+
+neighbourhood_plot(street_building_vars, supp.labs)
 ```
 
 ```{r}
@@ -506,7 +520,11 @@ street_census_vars <- roads_lst_full %>%
   select(c(city, streetid, popdens, sidehop, aptfivp, semhoup, rowhoup, aptdupp, aptbuip, mvdwelp, medinc, lowincp, recimmp, indigp, visminp, edubacp)) %>% 
   pivot_longer(-c(city, streetid), names_to = 'variable') %>% drop_na(city)
 
-neighbourhood_plot(street_census_vars)
+supp.labs <- c("Apartment Building < 5 str. (% residents)", "Duplex (% residents)", "Apartment Building > 5 str. (% residents)", "Bachelor's Education or + (% residents)", "Indigenous (% residents)", "Low Income (% residents)", "Median Income ($)", "Movable Dwelling (% residents)", "Population Density (ppl/km2)", "Recent Immigrants 2 (% residents)", "Row House (% residents)", "Semi-Detached House (% residents)", "Single Detached House (% residents)", "Visible Minority (% residents)")
+names(supp.labs) <- c("aptbuip", "aptdupp", "aptfivep", "edubacp", "indigp", "lowincp", "medinc", "mvdwelp", 
+                      "popdens", "recimmp", "rowhoup", "semhoup", "sidehop", "visminp")
+
+neighbourhood_plot(street_census_vars, supp.labs)
 ```
 
 ```{r}
