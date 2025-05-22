@@ -31,6 +31,7 @@ geo_census <- function(can_bound, census_da_clean, scale){
              edubacp = weighted.mean(as.numeric(edubacp), as.numeric(totpop)),
              totpop = sum(as.numeric(totpop))
       ) %>%
+      mutate(lowincp = lowinc/100) %>% 
       distinct(city, .keep_all = TRUE)
     
     city_cen_onep <- bind_cols(city_cen %>% select(c(city, area, da, geometry)),
@@ -85,6 +86,7 @@ geo_census <- function(can_bound, census_da_clean, scale){
              edubacp = weighted.mean(as.numeric(edubacp), as.numeric(popwithin)),
              popwithin = sum(as.numeric(popwithin))
       ) %>%
+      mutate(lowincp = lowinc/100) %>% 
       distinct(city, hood_id, .keep_all = TRUE)
     
     hood_cen_onep <- bind_cols(hood_cen %>% select(c(hood, hood_id, area, da, geometry)),
@@ -139,6 +141,7 @@ geo_census <- function(can_bound, census_da_clean, scale){
                 edubacp = weighted.mean(as.numeric(edubacp), as.numeric(popwithin)),
                 popwithin = sum(as.numeric(popwithin))
       ) %>%
+      mutate(lowincp = lowinc/100) %>% 
       distinct(CMANAME, streetid, .keep_all = TRUE)
     
     hood_cen_onep <- bind_cols(hood_cen %>% select(c(street, streetid, id, area, geometry)),
