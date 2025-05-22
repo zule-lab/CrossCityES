@@ -37,7 +37,7 @@ geo_build_dens <- function(mun_bound, can_build_cen, scale){
              hood_area = set_units(hood_area, km^2))
     
     can_build_hood_dens <- can_build_hood_km %>%
-      group_by(hood_id) %>%
+      group_by(city, hood) %>%
       mutate(city = city.x,
              centroids=n(), 
              build_area = sum(build_area),
