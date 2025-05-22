@@ -282,7 +282,7 @@ tar_target(
 
   tar_target(
     neighbourhoods_lst_full, 
-    combine_neighbourhoods_lst(neighbourhoods_lst, neighbourhood_bound_trees, census_neighbourhood,
+    combine_neighbourhoods_lst(neighbourhoods_lst, neighbourhood_bound_trees, census_neighbourhood, 
                                neighbourhood_treedensity, neighbourhood_treerichness, neighbourhood_treesize, 
                                build_dens_neighbourhood, neighbourhoods_bldhgt, neighbourhood_roadclass, neighbourhoods_ndvi_ndbi)
   ),
