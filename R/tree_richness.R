@@ -7,9 +7,31 @@ tree_richness <- function(can_trees, scale, func_groups, road_bound_trees = NULL
                                 fullname == "Malus x thunder" ~ "Malus sylvestris",
                                 .default = fullname))
   
+  species_hybrid_fg <- species_corr %>%
+    inner_join(., func_groups, by = 'fullname') %>% 
+    filter(is.na(FG)) %>% 
+    mutate(hybridFG = case_when(fullname == "Amelanchier grandiflora" ~ '3/4',
+                                fullname == "Laburnum x watereri" ~ '3/2',
+                                fullname == "Amelanchier lamarckii" ~ '3/4',
+                                fullname == "Fraxinus x northern" ~ '3/4',
+                                fullname == "Magnolia brooklynensis" ~ '4/1',
+                                fullname == "Magnolia x galaxy" ~ '1/3',
+                                fullname == "Salix x sepulcralis" ~ '4/1',
+                                fullname == "Tilia x flavescens" ~ '4/1')) %>% 
+    group_by(fullname, hybridFG) %>%
+    separate(hybridFG, c('FG1', 'FG2'), sep = '/') %>% 
+    mutate(FG = case_when(row_number() <= n()/2 ~ FG1,
+                          TRUE ~ FG2)) %>% 
+    select(-c(FG1, FG2))
+  
+  species_fg <- species_corr %>% 
+    inner_join(., func_groups, by = 'fullname') %>% 
+    filter(!is.na(FG)) %>% 
+    rbind(., species_hybrid_fg)
+  
   
   # calculate functional diversity
-  func <- func_diversity(species_corr, scale, func_groups, road_bound_trees)  
+  func <- func_diversity(species_fg, scale, func_groups, road_bound_trees)  
   
   
   # format data for vegan
@@ -100,14 +122,11 @@ format_vegan <- function(can_trees, scale, road_bound_trees = NULL){
 
 func_diversity <- function(species_corr, scale, func_groups, road_bound_trees = NULL){
   
-  df <- species_corr %>% 
-    st_drop_geometry() %>% 
-    inner_join(., func_groups, by = 'fullname') 
-  
   
   if (scale == 'city'){
     
-    matrix <- df %>% 
+    matrix <- species_corr %>% 
+      st_drop_geometry() %>% 
       drop_na(FG) %>%
       group_by(city, FG) %>% 
       mutate(n = n()) %>%
@@ -125,7 +144,8 @@ func_diversity <- function(species_corr, scale, func_groups, road_bound_trees = 
   
   else if (scale == 'neighbourhood'){
     
-    matrix <- df %>% 
+    matrix <- species_corr %>% 
+      st_drop_geometry() %>% 
       group_by(city, hood) %>% 
       mutate(nTrees = n()) %>% 
       filter(nTrees > 50) %>%
@@ -146,16 +166,11 @@ func_diversity <- function(species_corr, scale, func_groups, road_bound_trees = 
   
   else if (scale == 'road') {
     
-    can_trees_i <- st_intersection(species_corr, road_bound_trees)
-    
-    # include streets that have more than 1 tree
-    cutoff <- can_trees_i %>%
-      group_by(streetid) %>% 
+    matrix <- st_intersection(species_corr, road_bound_trees) %>% 
+      st_drop_geometry() %>%
+      group_by(streetid)  %>%
       mutate(nTrees = n()) %>% 
-      filter(nTrees > 1)
-    
-    matrix <- cutoff %>%
-      inner_join(., func_groups, by = 'fullname') %>%
+      filter(nTrees > 1) %>% 
       drop_na(FG) %>%
       group_by(streetid, FG) %>% 
       mutate(n = n()) %>%
