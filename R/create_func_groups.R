@@ -310,7 +310,9 @@ create_func_groups <- function(can_trees, TTTF_1.3, seed_mass, TTTF_newlit, ZULE
                           fullname == "Ulmus x frontier" ~ '3',
                           fullname == "Ulmus x new" ~ '2',
                           fullname == "Populus x okanese" ~ '1',
-                          .default = FG))
+                          fullname == "Catalpa erubescens" ~ '1',
+                          .default = FG)) %>% 
+    filter(fullname != "Malus x thunder" | fullname != "Salix sepulcralis") 
   
   
   return(full_hyb)
