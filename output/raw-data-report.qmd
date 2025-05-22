@@ -125,7 +125,7 @@ ggplot(can_trees, aes(x = dbh, group = city, col = city)) +
 
 ```
 
-## City Scale (CMA level)
+## City Scale
 
 ### Response Variables
 
@@ -146,7 +146,20 @@ city_response_vars <- rbind(
   cities_pollution_full %>% select(c(city, variable, value)) 
 )
 
-city_plot(city_response_vars)
+city_response_vars %>%
+    mutate(value = as.numeric(value)) %>%
+    arrange(value) %>%   # First sort by val. 
+    # this sort the dataframe but NOT the factor levels
+    ggplot(., aes(x = city, y = value, fill = city)) + 
+    geom_boxplot() + 
+    geom_point(size = 0.25) +  
+    scale_fill_manual(values=met.brewer("Archambault", 7)) + 
+    facet_wrap(vars(variable), scales = "free_y") + 
+    theme_classic() + 
+    theme(axis.text.x = element_blank(),
+          axis.ticks.x = element_blank()) + 
+    ylab("") + 
+    xlab("")
 
 ```
 
@@ -161,12 +174,14 @@ city_plot(city_response_vars)
 #| fig-height: 15
 #| label: city-tree
 
-city_tree_vars <- cities_lst_full %>% select(c(city, nTrees, ba_per_m2, stemdens, SpeciesRichness, Shannon, nFG, mean_dbh, sd_dbh)) %>% 
-mutate(ba_per_m2 = drop_units(ba_per_m2),
-stemdens = drop_units(stemdens),
-mean_dbh = drop_units(mean_dbh),
-sd_dbh = drop_units(sd_dbh)) %>%
-pivot_longer(-city, names_to = 'variable') 
+city_tree_vars <- cities_lst_full %>% 
+  select(c(city, nTrees, ba_per_m2, stemdens, SpeciesRichness, Shannon, nFG, mean_dbh, sd_dbh)) %>% 
+  mutate(ba_per_m2 = drop_units(ba_per_m2), 
+         stemdens = drop_units(stemdens),
+         mean_dbh = drop_units(mean_dbh),
+         sd_dbh = drop_units(sd_dbh)) %>%
+  pivot_longer(-city, names_to = 'variable') %>%
+  distinct()
 
 city_plot(city_tree_vars)
 ```
@@ -186,7 +201,8 @@ city_plot(city_tree_vars)
 
 city_building_vars <- cities_lst_full %>% 
   select(c(city, centroid_den, area_den, prop_highway, prop_strts, road_dens, mean_bldhgt, NDBI_mean_, NDBI_stdDev_, NDVI_mean_, NDVI_stdDev_)) %>% 
-  pivot_longer(-city, names_to = 'variable')
+  pivot_longer(-city, names_to = 'variable') %>% 
+  distinct()
 
 city_plot(city_building_vars)
 
@@ -235,8 +251,9 @@ city_plot(city_building_vars)
 
 
 city_census_vars <- cities_lst_full %>% 
-  select(c(city, popdens, sidehop, aptfivp, semhoup, rowhoup, aptdupp, aptbuip, mvdwelp, medinc, lowinc, recimmp, indigp, visminp, edubacp)) %>% 
-  pivot_longer(-city, names_to = 'variable')
+  select(c(city, popdens, sidehop, aptfivp, semhoup, rowhoup, aptdupp, aptbuip, mvdwelp, medinc, lowincp, recimmp, indigp, visminp, edubacp)) %>% 
+  pivot_longer(-city, names_to = 'variable') %>% 
+  distinct()
 
 city_plot(city_census_vars)
 ```
@@ -360,7 +377,7 @@ neighbourhood_pca(neighbourhood_built_vars_pca, city, hood)
 
 
 neighbourhood_census_vars <- neighbourhoods_lst_full %>% 
-  select(c(city, hood, popdens, sidehop, aptfivp, semhoup, rowhoup, aptdupp, aptbuip, mvdwelp, medinc, lowinc, recimmp, indigp, visminp, edubacp)) %>% 
+  select(c(city, hood, popdens, sidehop, aptfivp, semhoup, rowhoup, aptdupp, aptbuip, mvdwelp, medinc, lowincp, recimmp, indigp, visminp, edubacp)) %>% 
   pivot_longer(-c(city, hood), names_to = 'variable')
 
 neighbourhood_plot(neighbourhood_census_vars)
@@ -375,7 +392,7 @@ neighbourhood_plot(neighbourhood_census_vars)
 #| label: census-built-pca
 
 neighbourhood_census_vars_pca <- neighbourhoods_lst_full %>% 
-  select(c(city, hood, popdens, sidehop, aptfivp, semhoup, rowhoup, aptdupp, aptbuip, mvdwelp, medinc, lowinc, recimmp, indigp, visminp, edubacp)) 
+  select(c(city, hood, popdens, sidehop, aptfivp, semhoup, rowhoup, aptdupp, aptbuip, mvdwelp, medinc, lowincp, recimmp, indigp, visminp, edubacp)) 
 
 neighbourhood_pca(neighbourhood_census_vars_pca, city, hood)
 ```
@@ -393,7 +410,8 @@ neighbourhood_pca(neighbourhood_census_vars_pca, city, hood)
 #| label: street-response
 
 street_response_vars <- roads_lst_full %>% select(c(city, streetid, date, time, mean_temp, stdDev_temp)) %>%
-drop_na(city) %>% pivot_longer(-c(city, streetid, date, time), names_to = 'variable')
+drop_na(city) %>% pivot_longer(-c(city, streetid, date, time), names_to = 'variable') %>%
+  drop_na(city)
 
 neighbourhood_plot(street_response_vars)
 
@@ -418,7 +436,7 @@ mutate(ba_per_m2 = drop_units(ba_per_m2),
 stemdens = drop_units(stemdens),
 mean_dbh = drop_units(mean_dbh),
 sd_dbh = drop_units(sd_dbh)) %>%
-pivot_longer(-c(city, streetid), names_to = 'variable') 
+pivot_longer(-c(city, streetid), names_to = 'variable') %>% drop_na(city)
 
 neighbourhood_plot(street_tree_vars)
 ```
@@ -435,7 +453,8 @@ street_tree_vars_pca <- roads_lst_full %>% select(c(city, streetid, nTrees, ba_p
 mutate(ba_per_m2 = drop_units(ba_per_m2),
 stemdens = drop_units(stemdens),
 mean_dbh = drop_units(mean_dbh),
-sd_dbh = drop_units(sd_dbh))
+sd_dbh = drop_units(sd_dbh)) %>%
+  drop_na(city)
 
 neighbourhood_pca(street_tree_vars_pca, city, streetid)
 ```
@@ -453,7 +472,7 @@ neighbourhood_pca(street_tree_vars_pca, city, streetid)
 
 street_building_vars <- roads_lst_full %>% 
   select(c(city, streetid, centroid_den, area_den, mean_bldhgt, NDBI_mean_, NDBI_stdDev_, NDVI_mean_, NDVI_stdDev_)) %>% 
-  pivot_longer(-c(city, streetid), names_to = 'variable')
+  pivot_longer(-c(city, streetid), names_to = 'variable') %>% drop_na(city)
 
 neighbourhood_plot(street_building_vars)
 ```
@@ -467,7 +486,7 @@ neighbourhood_plot(street_building_vars)
 #| label: street-built-pca
 
 street_built_vars_pca <- roads_lst_full %>% 
-  select(c(city, streetid, centroid_den, area_den, mean_bldhgt, NDBI_mean_, NDBI_stdDev_, NDVI_mean_, NDVI_stdDev_)) 
+  select(c(city, streetid, centroid_den, area_den, mean_bldhgt, NDBI_mean_, NDBI_stdDev_, NDVI_mean_, NDVI_stdDev_)) %>% drop_na(city)
 
 neighbourhood_pca(street_built_vars_pca, city, streetid)
 ```
@@ -484,8 +503,8 @@ neighbourhood_pca(street_built_vars_pca, city, streetid)
 
 
 street_census_vars <- roads_lst_full %>% 
-  select(c(city, streetid, popdens, sidehop, aptfivp, semhoup, rowhoup, aptdupp, aptbuip, mvdwelp, medinc, lowinc, recimmp, indigp, visminp, edubacp)) %>% 
-  pivot_longer(-c(city, streetid), names_to = 'variable')
+  select(c(city, streetid, popdens, sidehop, aptfivp, semhoup, rowhoup, aptdupp, aptbuip, mvdwelp, medinc, lowincp, recimmp, indigp, visminp, edubacp)) %>% 
+  pivot_longer(-c(city, streetid), names_to = 'variable') %>% drop_na(city)
 
 neighbourhood_plot(street_census_vars)
 ```
@@ -499,7 +518,7 @@ neighbourhood_plot(street_census_vars)
 #| label: street-census-pca
 
 street_census_vars_pca <-roads_lst_full %>% 
-  select(c(city, streetid, popdens, sidehop, aptfivp, semhoup, rowhoup, aptdupp, aptbuip, mvdwelp, medinc, lowinc, recimmp, indigp, visminp, edubacp))
+  select(c(city, streetid, popdens, sidehop, aptfivp, semhoup, rowhoup, aptdupp, aptbuip, mvdwelp, medinc, lowincp, recimmp, indigp, visminp, edubacp)) %>% drop_na(city)
 
 neighbourhood_pca(street_census_vars_pca, city, streetid)
 ```
