@@ -47,6 +47,7 @@ suppressPackageStartupMessages({
   library(mice)
   library(cluster)
   conflicts_prefer(dplyr::filter)
+  library(ranger)
   
   library(xfun)
   
