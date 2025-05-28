@@ -23,7 +23,7 @@ restore()
 
 # Variables ---------------------------------------------------------------
 getOption('timeout')
-options(timeout=1200)
+options(timeout=2000)
 
 
 
