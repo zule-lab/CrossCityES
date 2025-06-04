@@ -49,7 +49,29 @@ combine_cities_lst <- function(cities_lst, mun_bound_trees, census_city,
     filter(diff == min(diff)) %>% 
     ungroup()
   
-  return(join)
+  final <- join %>%
+    # remove irrelevant columns 
+    select(-c(time, count_temp, median_temp, max_temp, min_temp,
+              stdDev_temp, coverage, stemdens_acre, total_ba,
+              centroids, build_area, road_length, area, da,
+              DAcount, lowinc, date_ndvi, time_ndvi, NDBI_count_,
+              NDBI_median_, NDBI_max_, NDBI_min_, NDBI_stdDev_,
+              NDVI_count_, NDVI_median_, NDVI_max_, NDVI_min_,
+              NDVI_stdDev_, diff)) %>% 
+    # make character variables into factors 
+    mutate_if(is.character, factor) %>% 
+    # convert date into doy 
+    mutate(doy = yday(date)) %>% 
+    select(-date) %>% 
+    # get lat lon for spatial autocorrelation
+    inner_join(mun_bound_trees, by = join_by(city == CMANAME)) %>%
+    st_as_sf() %>%
+    st_centroid() %>% 
+    mutate(lon = st_coordinates(.)[,1],
+           lat = st_coordinates(.)[,2]) %>% 
+    st_drop_geometry()
+  
+  return(final)
   
   
 }
