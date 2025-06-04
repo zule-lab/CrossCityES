@@ -82,11 +82,17 @@ combine_roads_lst <- function(streets_lst, road_bound_trees, census_road,
     mutate_if(is.character, factor) %>%
     mutate(doy = yday(date)) %>% 
     select(-date) %>% 
-    drop_na(city)
+    drop_na(city) %>% 
+    inner_join(., road_bound_trees %>% select(c(streetid, geometry))) %>% 
+    st_as_sf() %>% 
+    st_centroid() %>% 
+    mutate(lon = st_coordinates(.)[,1],
+           lat = st_coordinates(.)[,2]) %>% 
+    st_drop_geometry()
     
   
   
-  return(join)
+  return(final)
   
   
   
