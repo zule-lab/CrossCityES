@@ -48,6 +48,11 @@ suppressPackageStartupMessages({
   library(cluster)
   conflicts_prefer(dplyr::filter)
   library(ranger)
+  library(tidymodels)
+  library(themis)
+  library(vip)
+  library(future)
+  library(DALEXtra)
   
   library(xfun)
   
