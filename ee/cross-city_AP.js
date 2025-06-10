@@ -20,6 +20,12 @@ var filter = function(images) {
   return images.filter(ee.Filter.date(start_date, end_date));
 };
 
+// cloud mask for pixels with less than 5% cloud cover
+var cloudMask = function(image) {
+      return image.updateMask(image.select("cloud_fraction").lt(0.1));
+    };
+
+
 
 // get values across each geometry for each date in the image collection 
 var sample = function(images, reducer, region, scale) {
@@ -50,18 +56,25 @@ var CO_raw = ee.ImageCollection('COPERNICUS/S5P/OFFL/L3_CO');
 var UV_raw = filter(UV_raw);
 var SO2_raw = filter(SO2_raw);
 var O3_raw = filter(O3_raw);
-var O3_trop_raw = filter(O3_trop_raw);
 var NO2_raw = filter(NO2_raw);
 var CO_raw = filter(CO_raw);
 
 
+
+// Map the cloud masking functions over NO2 data
+
+
 // Band ----------------
 // select relevant band for each image collection
+// cloud mask for those where its relevant 
 var UV_band = UV_raw.select('absorbing_aerosol_index');
-var SO2_band = SO2_raw.select('SO2_column_number_density');
-var O3_band = O3_raw.select('O3_column_number_density');
+var SO2_band = SO2_raw.select(['SO2_column_number_density', 'cloud_fraction'])
+  .map(cloudMask);
+var O3_band = O3_raw.select(['O3_column_number_density', 'cloud_fraction'])
+  .map(cloudMask);
 var O3_trop_band = O3_trop_raw.select('ozone_tropospheric_vertical_column');
-var NO2_band = NO2_raw.select('NO2_column_number_density');
+var NO2_band = NO2_raw.select(['tropospheric_NO2_column_number_density','cloud_fraction'])
+  .map(cloudMask);
 var CO_band = CO_raw.select('CO_column_number_density');
 
 
@@ -191,5 +204,4 @@ Export.table.toDrive({
 //print(UV_raw);
 //print(UV_city.limit(10));
 
-print(neighbourhood.first())
-Map.addLayer(neighbourhood)
+Map.addLayer(NO2_raw.first())
