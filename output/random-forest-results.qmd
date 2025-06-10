@@ -17,6 +17,10 @@ tar_source('R')
 library(MetBrewer)
 ```
 
+
+# Land Surface Temperature 
+
+
 ## City Scale
 
 
@@ -26,26 +30,6 @@ library(MetBrewer)
 #| eval: true
 
 tar_load(cities_lst_full)
-
-cities_lst_df <- cities_lst_full %>% 
-  # remove irrelevant columns 
-  select(-c(time, count_temp, median_temp, max_temp, min_temp,
-            stdDev_temp, coverage, stemdens_acre, total_ba,
-            centroids, build_area, road_length, area, da,
-            DAcount, lowinc, date_ndvi, time_ndvi, NDBI_count_,
-            NDBI_median_, NDBI_max_, NDBI_min_, NDBI_stdDev_,
-            NDVI_count_, NDVI_median_, NDVI_max_, NDVI_min_,
-            NDVI_stdDev_, diff)) %>% 
-  # make character variables into factors s
-  mutate_if(is.character, factor) %>% 
-  # convert date into doy 
-  mutate(doy = yday(date)) %>% 
-  select(-date)
-
-# drop units from all columns to turn them into numeric class
-cities_lst_df <- drop_units(cities_lst_df)
-
-# add lat / long of cities? 
 
 ```
 
@@ -76,13 +60,13 @@ Now, we start to specify our model:
 set.seed(123)
 # strata ensures that the random sampling is conducted within the stratification variable
 # resamples have equivalent proportions of the original dataset
-df_split <- initial_split(cities_lst_df, strata = city)
+df_split <- initial_split(cities_lst_df %>% rename(value = mean_temp), strata = city)
 df_train <- training(df_split)
 df_test <- testing(df_split)
 
 
 # this is the model, everything in the dataset is explanatory except legal status and ID
-mod_rec <- recipe(mean_temp ~ ., data = df_train) %>%
+mod_rec <- recipe(value ~ ., data = df_train) %>%
   # normalize all continuous vars
   step_normalize(all_numeric_predictors(), -doy) %>% 
   # converts factors (nominal) into numeric binary model terms
@@ -157,7 +141,7 @@ best_auc <- select_best(tune_res, metric = "mae")
 # look at predictions of best model against real values
 collect_predictions(tune_res) %>% 
   filter(.config==pull(show_best(tune_res, metric='mae', n=1),.config)) %>% # only bring back predictions for the best model
-  ggplot(aes(x=.pred, y=mean_temp )) + 
+  ggplot(aes(x=.pred, y=value )) + 
   geom_point(shape=1)  +
   geom_abline(slope=1, linetype = "dashed", colour='blue') +
   coord_obs_pred() +
@@ -217,7 +201,7 @@ tune_res %>%
 
 # prediction vs actual values for final model
 collect_predictions(last_rf_fit) %>% 
-  ggplot(aes(x=.pred, y=mean_temp )) + 
+  ggplot(aes(x=.pred, y=value )) + 
   geom_point(shape=1)  +
   geom_abline(slope=1, linetype = "dashed", colour='blue') +
   coord_obs_pred() +
@@ -256,7 +240,7 @@ We only see 1 street tree variable in the 10 most important variables at this sc
 model_explainer <- explain_tidymodels(
   last_rf_fit$.workflow[[1]],
   data = df_train,
-  y = as.integer(df_train$mean_temp),
+  y = as.integer(df_train$value),
   verbose = FALSE
 )
 
@@ -270,8 +254,8 @@ pdp_time <- model_profile(
   groups = "city"
 )
 
-supp.labs <- c("Mean NDVI", "Day of Year", "Mean NDBI", "Visible Minorities (%)", "Road Density (km/km2)", "Tree Stem Density (km2/km2)", "City Area (km2)", "Std Dev Building Height (m)", "Duplex (% residents)", "Recent Immigrants (%)")
-names(supp.labs) <- vars
+#supp.labs <- c("Mean NDVI", "Day of Year", "Mean NDBI", "Visible Minorities (%)", "Road Density (km/km2)", "Tree Stem Density (km2/km2)", "City Area (km2)", "Std Dev Building Height (m)", "Duplex (% residents)", "Recent Immigrants (%)")
+#names(supp.labs) <- vars
 
 as_tibble(pdp_time$agr_profiles) %>%
   mutate(across(`_vname_`, ~factor(., levels=vars))) %>%
@@ -285,7 +269,7 @@ as_tibble(pdp_time$agr_profiles) %>%
     colour = "",
     x = ""
   ) + 
-  facet_wrap(`_vname_` ~ ., scales = "free", labeller = labeller(`_vname_` = supp.labs)) + 
+  facet_wrap(`_vname_` ~ ., scales = "free") + 
   theme_classic()
 
 ```
@@ -303,28 +287,6 @@ Load and prep data for models:
 #| eval: true
 
 tar_load(neighbourhoods_lst_full)
-
-neighbourhoods_lst_df <- neighbourhoods_lst_full %>%
-  mutate(city_hood = paste0(city, "_", hood)) %>%
-  select(-c(time, hood,
-            count_temp, median_temp, max_temp, min_temp,
-            stdDev_temp, coverage, nTrees, stemdens_acre,
-            total_ba, hood_area.y, hood_id.x.x, hood_area.x.x,
-            centroids, build_area, prop_strts, road_length,
-            neighbourhood_area, area, DSAcount, lowinc,
-            hood_id, date_ndvi, time_ndvi, NDBI_count_,
-            NDBI_median_, NDBI_max_, NDBI_min_, NDBI_stdDev_,
-            NDVI_count_, NDVI_median_, NDVI_max_, NDVI_min_, 
-            NDVI_stdDev_, hood_area.y.y, id, diff)) %>% 
-  mutate_if(is.character, factor) 
-
-neighbourhoods_lst_df <- drop_units(neighbourhoods_lst_df) %>% 
-  # convert date into doy 
-  mutate(doy = yday(date)) %>% 
-  select(-date)
-
-# add lat / long of neighbourhoods? 
-
 
 ```
 
@@ -355,13 +317,13 @@ There are a couple strong correlations in the variables at this scale. We will p
 set.seed(123)
 # strata ensures that the random sampling is conducted within the stratification variable
 # resamples have equivalent proportions of the original dataset
-df_split <- initial_split(neighbourhoods_lst_df, strata = city)
+df_split <- initial_split(neighbourhoods_lst_df %>% rename(value = mean_temp), strata = city)
 df_train <- training(df_split)
 df_test <- testing(df_split)
 
 
 # this is the model, everything in the dataset is explanatory except legal status and ID
-mod_rec <- recipe(mean_temp ~ ., data = df_train) %>%
+mod_rec <- recipe(value ~ ., data = df_train) %>%
   step_normalize(all_numeric_predictors()) %>% 
   # converts factors (nominal) into numeric binary model terms
   step_dummy(all_nominal(), -all_outcomes()) %>%
@@ -419,7 +381,7 @@ best_auc <- select_best(tune_res, metric = "mae")
 # look at predictions of best model against real values
 collect_predictions(tune_res) %>% 
   filter(.config==pull(show_best(tune_res, metric='mae', n=1),.config)) %>% # only bring back predictions for the best model
-  ggplot(aes(x=.pred, y=mean_temp )) + 
+  ggplot(aes(x=.pred, y=value )) + 
   geom_point(shape=1)  +
   geom_abline(slope=1, linetype = "dashed", colour='blue') +
   coord_obs_pred() +
@@ -479,7 +441,7 @@ tune_res %>%
 
 # prediction vs actual values for final model
 collect_predictions(last_rf_fit) %>% 
-  ggplot(aes(x=.pred, y=mean_temp )) + 
+  ggplot(aes(x=.pred, y=value )) + 
   geom_point(shape=1)  +
   geom_abline(slope=1, linetype = "dashed", colour='blue') +
   coord_obs_pred() +
@@ -555,3 +517,819 @@ as_tibble(pdp_time$agr_profiles) %>%
 
 
 ## Street Scale 
+
+
+# Air Pollution
+
+## UV 
+
+### City 
+
+```{r}
+#| label: city-uv-data
+#| echo: false
+#| eval: true
+
+tar_load(cities_pollution_full)
+
+cities_pollution_full %>%
+  filter(variable == 'mean_cities_UV') %>% 
+  select_if(is.numeric) %>%
+  cor(use = "complete.obs") %>%
+  corrplot::corrplot()
+
+
+set.seed(123)
+df_split <- initial_split(cities_pollution_full %>% filter(variable == 'mean_cities_UV') %>% select(-variable), strata = city)
+df_train <- training(df_split)
+df_test <- testing(df_split)
+
+mod_rec <- recipe(value ~ ., data = df_train) %>%
+  step_normalize(all_numeric_predictors(), -doy) %>% 
+  step_dummy(all_nominal(), -all_outcomes()) %>%
+  step_corr(threshold = 0.8) %>% 
+  step_nzv()
+
+tune_spec <- rand_forest(
+  mtry = tune(), 
+  trees = 1000,
+  min_n = tune()) %>%
+  set_mode("regression") %>%
+  set_engine("ranger")
+
+tune_wf <- workflow() %>%
+  add_recipe(mod_rec) %>%
+  add_model(tune_spec)
+
+
+cities_tune <- tar_read(cities_uv_tune)
+
+
+autoplot(cities_tune)
+
+
+# select best values for hyperparameters and fit model
+best_mae <- select_best(cities_tune, metric = "mae")
+
+
+# look at predictions of best model against real values
+collect_predictions(cities_tune) %>% 
+  filter(.config==pull(show_best(cities_tune, metric='mae', n=1),.config)) %>% # only bring back predictions for the best model
+  ggplot(aes(x=.pred, y=value )) + 
+  geom_point(shape=1)  +
+  geom_abline(slope=1, linetype = "dashed", colour='blue') +
+  coord_obs_pred() +
+  ggtitle("Actuals vs Prediction on Resamples") + 
+  theme(text = element_text(size=20))
+
+```
+
+Update model to include variance importance scores and fit best model to test data
+
+```{r}
+#| label: city-uv-fit
+#| echo: true
+#| eval: true
+
+cores <- parallel::detectCores()
+
+last_mod <-
+  rand_forest(mtry = best_mae$mtry, min_n = best_mae$min_n, trees = 1000) %>%
+  set_mode("regression") %>%
+  set_engine("ranger", num.threads = cores, importance = "impurity")
+
+
+# the last workflow
+last_workflow <-
+  tune_wf %>%
+  update_model(last_mod)
+
+# the last fit
+set.seed(345)
+last_rf_fit <-
+  last_workflow %>%
+  last_fit(df_split,
+           metrics = metric_set(mae, rsq))
+
+
+# performance metrics values for top validation model and test model
+cities_uv_tune %>%
+  collect_metrics() %>%
+  inner_join(., best_mae) %>%
+  mutate(model = 'validation',
+         .estimate = mean) %>%
+  select(c(.metric, .estimator, .estimate, .config, model)) %>%
+  rbind(., last_rf_fit %>% collect_metrics() %>% mutate(model = 'test')) 
+
+# performance decreases on real data model 
+
+
+# prediction vs actual values for final model
+collect_predictions(last_rf_fit) %>% 
+  ggplot(aes(x=.pred, y=value )) + 
+  geom_point(shape=1)  +
+  geom_abline(slope=1, linetype = "dashed", colour='blue') +
+  coord_obs_pred() +
+  ggtitle("Actuals vs Prediction on Test") + 
+  theme(text = element_text(size=20))
+
+
+vip <- last_rf_fit %>%
+  extract_fit_parsnip() %>%
+  vip(geom = "point") +
+  theme_classic()
+
+vip
+```
+
+
+```{r}
+#| label: city-uv-pdp
+#| echo: true
+#| eval: true
+#| out-width: 100%
+
+model_explainer <- explain_tidymodels(
+  last_rf_fit$.workflow[[1]],
+  data = df_train,
+  y = as.integer(df_train$value),
+  verbose = FALSE
+)
+
+vars <- vip[["data"]]$Variable
+
+
+pdp_time <- model_profile(
+  model_explainer,
+  variables = vars,
+  N = NULL,
+  groups = "city"
+)
+
+
+as_tibble(pdp_time$agr_profiles) %>%
+  mutate(across(`_vname_`, ~factor(., levels=vars))) %>%
+  ggplot(aes(`_x_`, `_yhat_`, color = `_groups_`)) +
+  scale_color_met_d(name = 'Demuth') + 
+  geom_line(linewidth = 1.2, alpha = 0.9) +
+  labs(
+    title = "10 Most Important Variables at City Scale",
+    y = "Predicted UV",
+    colour = "",
+    x = ""
+  ) + 
+  facet_wrap(`_vname_` ~ ., scales = "free") + 
+  theme_classic()
+
+```
+
+### Neighbourhood 
+
+## CO 
+
+### City 
+
+```{r}
+#| label: city-co-data
+#| echo: false
+#| eval: true
+
+cities_pollution_full %>%
+  filter(variable == 'mean_cities_CO') %>% 
+  select_if(is.numeric) %>%
+  cor(use = "complete.obs") %>%
+  corrplot::corrplot()
+
+
+set.seed(123)
+df_split <- initial_split(cities_pollution_full %>% filter(variable == 'mean_cities_CO') %>% select(-variable), strata = city)
+df_train <- training(df_split)
+df_test <- testing(df_split)
+
+mod_rec <- recipe(value ~ ., data = df_train) %>%
+  step_normalize(all_numeric_predictors(), -doy) %>% 
+  step_dummy(all_nominal(), -all_outcomes()) %>%
+  step_corr(threshold = 0.8) %>% 
+  step_nzv()
+
+tune_spec <- rand_forest(
+  mtry = tune(), 
+  trees = 1000,
+  min_n = tune()) %>%
+  set_mode("regression") %>%
+  set_engine("ranger")
+
+tune_wf <- workflow() %>%
+  add_recipe(mod_rec) %>%
+  add_model(tune_spec)
+
+
+cities_tune <- tar_read(cities_co_tune)
+
+
+autoplot(cities_tune)
+
+
+# select best values for hyperparameters and fit model
+best_mae <- select_best(cities_tune, metric = "mae")
+
+
+# look at predictions of best model against real values
+collect_predictions(cities_tune) %>% 
+  filter(.config==pull(show_best(cities_tune, metric='mae', n=1),.config)) %>% # only bring back predictions for the best model
+  ggplot(aes(x=.pred, y=value )) + 
+  geom_point(shape=1)  +
+  geom_abline(slope=1, linetype = "dashed", colour='blue') +
+  coord_obs_pred() +
+  ggtitle("Actuals vs Prediction on Resamples") + 
+  theme(text = element_text(size=20))
+
+```
+
+Update model to include variance importance scores and fit best model to test data
+
+```{r}
+#| label: city-co-fit
+#| echo: true
+#| eval: true
+
+cores <- parallel::detectCores()
+
+last_mod <-
+  rand_forest(mtry = best_mae$mtry, min_n = best_mae$min_n, trees = 1000) %>%
+  set_mode("regression") %>%
+  set_engine("ranger", num.threads = cores, importance = "impurity")
+
+
+# the last workflow
+last_workflow <-
+  tune_wf %>%
+  update_model(last_mod)
+
+# the last fit
+set.seed(345)
+last_rf_fit <-
+  last_workflow %>%
+  last_fit(df_split,
+           metrics = metric_set(mae, rsq))
+
+
+# performance metrics values for top validation model and test model
+cities_uv_tune %>%
+  collect_metrics() %>%
+  inner_join(., best_mae) %>%
+  mutate(model = 'validation',
+         .estimate = mean) %>%
+  select(c(.metric, .estimator, .estimate, .config, model)) %>%
+  rbind(., last_rf_fit %>% collect_metrics() %>% mutate(model = 'test')) 
+
+# performance decreases on real data model 
+
+
+# prediction vs actual values for final model
+collect_predictions(last_rf_fit) %>% 
+  ggplot(aes(x=.pred, y=value )) + 
+  geom_point(shape=1)  +
+  geom_abline(slope=1, linetype = "dashed", colour='blue') +
+  coord_obs_pred() +
+  ggtitle("Actuals vs Prediction on Test") + 
+  theme(text = element_text(size=20))
+
+
+vip <- last_rf_fit %>%
+  extract_fit_parsnip() %>%
+  vip(geom = "point") +
+  theme_classic()
+
+vip
+```
+
+
+```{r}
+#| label: city-co-pdp
+#| echo: true
+#| eval: true
+#| out-width: 100%
+
+model_explainer <- explain_tidymodels(
+  last_rf_fit$.workflow[[1]],
+  data = df_train,
+  y = as.integer(df_train$value),
+  verbose = FALSE
+)
+
+vars <- vip[["data"]]$Variable
+
+
+pdp_time <- model_profile(
+  model_explainer,
+  variables = vars,
+  N = NULL,
+  groups = "city"
+)
+
+
+as_tibble(pdp_time$agr_profiles) %>%
+  mutate(across(`_vname_`, ~factor(., levels=vars))) %>%
+  ggplot(aes(`_x_`, `_yhat_`, color = `_groups_`)) +
+  scale_color_met_d(name = 'Demuth') + 
+  geom_line(linewidth = 1.2, alpha = 0.9) +
+  labs(
+    title = "10 Most Important Variables at City Scale",
+    y = "Predicted UV",
+    colour = "",
+    x = ""
+  ) + 
+  facet_wrap(`_vname_` ~ ., scales = "free") + 
+  theme_classic()
+
+```
+
+### Neighbourhood 
+
+
+## NO2
+
+### City 
+
+```{r}
+#| label: city-no2-data
+#| echo: false
+#| eval: true
+
+cities_pollution_full %>%
+  filter(variable == 'mean_cities_NO2') %>% 
+  select_if(is.numeric) %>%
+  cor(use = "complete.obs") %>%
+  corrplot::corrplot()
+
+
+set.seed(123)
+df_split <- initial_split(cities_pollution_full %>% filter(variable == 'mean_cities_NO2') %>% select(-variable), strata = city)
+df_train <- training(df_split)
+df_test <- testing(df_split)
+
+mod_rec <- recipe(value ~ ., data = df_train) %>%
+  step_normalize(all_numeric_predictors(), -doy) %>% 
+  step_dummy(all_nominal(), -all_outcomes()) %>%
+  step_corr(threshold = 0.8) %>% 
+  step_nzv()
+
+tune_spec <- rand_forest(
+  mtry = tune(), 
+  trees = 1000,
+  min_n = tune()) %>%
+  set_mode("regression") %>%
+  set_engine("ranger")
+
+tune_wf <- workflow() %>%
+  add_recipe(mod_rec) %>%
+  add_model(tune_spec)
+
+
+cities_tune <- tar_read(cities_no2_tune)
+
+
+autoplot(cities_tune)
+
+
+# select best values for hyperparameters and fit model
+best_mae <- select_best(cities_tune, metric = "mae")
+
+
+# look at predictions of best model against real values
+collect_predictions(cities_tune) %>% 
+  filter(.config==pull(show_best(cities_tune, metric='mae', n=1),.config)) %>% # only bring back predictions for the best model
+  ggplot(aes(x=.pred, y=value )) + 
+  geom_point(shape=1)  +
+  geom_abline(slope=1, linetype = "dashed", colour='blue') +
+  coord_obs_pred() +
+  ggtitle("Actuals vs Prediction on Resamples") + 
+  theme(text = element_text(size=20))
+
+```
+
+Update model to include variance importance scores and fit best model to test data
+
+```{r}
+#| label: city-no2-fit
+#| echo: true
+#| eval: true
+
+cores <- parallel::detectCores()
+
+last_mod <-
+  rand_forest(mtry = best_mae$mtry, min_n = best_mae$min_n, trees = 1000) %>%
+  set_mode("regression") %>%
+  set_engine("ranger", num.threads = cores, importance = "impurity")
+
+
+# the last workflow
+last_workflow <-
+  tune_wf %>%
+  update_model(last_mod)
+
+# the last fit
+set.seed(345)
+last_rf_fit <-
+  last_workflow %>%
+  last_fit(df_split,
+           metrics = metric_set(mae, rsq))
+
+
+# performance metrics values for top validation model and test model
+cities_uv_tune %>%
+  collect_metrics() %>%
+  inner_join(., best_mae) %>%
+  mutate(model = 'validation',
+         .estimate = mean) %>%
+  select(c(.metric, .estimator, .estimate, .config, model)) %>%
+  rbind(., last_rf_fit %>% collect_metrics() %>% mutate(model = 'test')) 
+
+# performance decreases on real data model 
+
+
+# prediction vs actual values for final model
+collect_predictions(last_rf_fit) %>% 
+  ggplot(aes(x=.pred, y=value )) + 
+  geom_point(shape=1)  +
+  geom_abline(slope=1, linetype = "dashed", colour='blue') +
+  coord_obs_pred() +
+  ggtitle("Actuals vs Prediction on Test") + 
+  theme(text = element_text(size=20))
+
+
+vip <- last_rf_fit %>%
+  extract_fit_parsnip() %>%
+  vip(geom = "point") +
+  theme_classic()
+
+vip
+```
+
+
+```{r}
+#| label: city-no2-pdp
+#| echo: true
+#| eval: true
+#| out-width: 100%
+
+model_explainer <- explain_tidymodels(
+  last_rf_fit$.workflow[[1]],
+  data = df_train,
+  y = as.integer(df_train$value),
+  verbose = FALSE
+)
+
+vars <- vip[["data"]]$Variable
+
+
+pdp_time <- model_profile(
+  model_explainer,
+  variables = vars,
+  N = NULL,
+  groups = "city"
+)
+
+
+as_tibble(pdp_time$agr_profiles) %>%
+  mutate(across(`_vname_`, ~factor(., levels=vars))) %>%
+  ggplot(aes(`_x_`, `_yhat_`, color = `_groups_`)) +
+  scale_color_met_d(name = 'Demuth') + 
+  geom_line(linewidth = 1.2, alpha = 0.9) +
+  labs(
+    title = "10 Most Important Variables at City Scale",
+    y = "Predicted UV",
+    colour = "",
+    x = ""
+  ) + 
+  facet_wrap(`_vname_` ~ ., scales = "free") + 
+  theme_classic()
+
+```
+
+### Neighbourhood 
+
+## SO2
+
+### City 
+
+```{r}
+#| label: city-so2-data
+#| echo: false
+#| eval: true
+
+cities_pollution_full %>%
+  filter(variable == 'mean_cities_SO2') %>% 
+  select_if(is.numeric) %>%
+  cor(use = "complete.obs") %>%
+  corrplot::corrplot()
+
+
+set.seed(123)
+df_split <- initial_split(cities_pollution_full %>% filter(variable == 'mean_cities_SO2') %>% select(-variable), strata = city)
+df_train <- training(df_split)
+df_test <- testing(df_split)
+
+mod_rec <- recipe(value ~ ., data = df_train) %>%
+  step_normalize(all_numeric_predictors(), -doy) %>% 
+  step_dummy(all_nominal(), -all_outcomes()) %>%
+  step_corr(threshold = 0.8) %>% 
+  step_nzv()
+
+tune_spec <- rand_forest(
+  mtry = tune(), 
+  trees = 1000,
+  min_n = tune()) %>%
+  set_mode("regression") %>%
+  set_engine("ranger")
+
+tune_wf <- workflow() %>%
+  add_recipe(mod_rec) %>%
+  add_model(tune_spec)
+
+
+cities_tune <- tar_read(cities_so2_tune)
+
+
+autoplot(cities_tune)
+
+
+# select best values for hyperparameters and fit model
+best_mae <- select_best(cities_tune, metric = "mae")
+
+
+# look at predictions of best model against real values
+collect_predictions(cities_tune) %>% 
+  filter(.config==pull(show_best(cities_tune, metric='mae', n=1),.config)) %>% # only bring back predictions for the best model
+  ggplot(aes(x=.pred, y=value )) + 
+  geom_point(shape=1)  +
+  geom_abline(slope=1, linetype = "dashed", colour='blue') +
+  coord_obs_pred() +
+  ggtitle("Actuals vs Prediction on Resamples") + 
+  theme(text = element_text(size=20))
+
+```
+
+Update model to include variance importance scores and fit best model to test data
+
+```{r}
+#| label: city-so2-fit
+#| echo: true
+#| eval: true
+
+cores <- parallel::detectCores()
+
+last_mod <-
+  rand_forest(mtry = best_mae$mtry, min_n = best_mae$min_n, trees = 1000) %>%
+  set_mode("regression") %>%
+  set_engine("ranger", num.threads = cores, importance = "impurity")
+
+
+# the last workflow
+last_workflow <-
+  tune_wf %>%
+  update_model(last_mod)
+
+# the last fit
+set.seed(345)
+last_rf_fit <-
+  last_workflow %>%
+  last_fit(df_split,
+           metrics = metric_set(mae, rsq))
+
+
+# performance metrics values for top validation model and test model
+cities_uv_tune %>%
+  collect_metrics() %>%
+  inner_join(., best_mae) %>%
+  mutate(model = 'validation',
+         .estimate = mean) %>%
+  select(c(.metric, .estimator, .estimate, .config, model)) %>%
+  rbind(., last_rf_fit %>% collect_metrics() %>% mutate(model = 'test')) 
+
+# performance decreases on real data model 
+
+
+# prediction vs actual values for final model
+collect_predictions(last_rf_fit) %>% 
+  ggplot(aes(x=.pred, y=value )) + 
+  geom_point(shape=1)  +
+  geom_abline(slope=1, linetype = "dashed", colour='blue') +
+  coord_obs_pred() +
+  ggtitle("Actuals vs Prediction on Test") + 
+  theme(text = element_text(size=20))
+
+
+vip <- last_rf_fit %>%
+  extract_fit_parsnip() %>%
+  vip(geom = "point") +
+  theme_classic()
+
+vip
+```
+
+
+```{r}
+#| label: city-so2-pdp
+#| echo: true
+#| eval: true
+#| out-width: 100%
+
+model_explainer <- explain_tidymodels(
+  last_rf_fit$.workflow[[1]],
+  data = df_train,
+  y = as.integer(df_train$value),
+  verbose = FALSE
+)
+
+vars <- vip[["data"]]$Variable
+
+
+pdp_time <- model_profile(
+  model_explainer,
+  variables = vars,
+  N = NULL,
+  groups = "city"
+)
+
+
+as_tibble(pdp_time$agr_profiles) %>%
+  mutate(across(`_vname_`, ~factor(., levels=vars))) %>%
+  ggplot(aes(`_x_`, `_yhat_`, color = `_groups_`)) +
+  scale_color_met_d(name = 'Demuth') + 
+  geom_line(linewidth = 1.2, alpha = 0.9) +
+  labs(
+    title = "10 Most Important Variables at City Scale",
+    y = "Predicted UV",
+    colour = "",
+    x = ""
+  ) + 
+  facet_wrap(`_vname_` ~ ., scales = "free") + 
+  theme_classic()
+
+```
+
+### Neighbourhood 
+
+## O3
+
+### City
+
+```{r}
+#| label: city-o3-data
+#| echo: false
+#| eval: true
+
+cities_pollution_full %>%
+  filter(variable == 'mean_cities_O3') %>% 
+  select_if(is.numeric) %>%
+  cor(use = "complete.obs") %>%
+  corrplot::corrplot()
+
+
+set.seed(123)
+df_split <- initial_split(cities_pollution_full %>% filter(variable == 'mean_cities_O3') %>% select(-variable), strata = city)
+df_train <- training(df_split)
+df_test <- testing(df_split)
+
+mod_rec <- recipe(value ~ ., data = df_train) %>%
+  step_normalize(all_numeric_predictors(), -doy) %>% 
+  step_dummy(all_nominal(), -all_outcomes()) %>%
+  step_corr(threshold = 0.8) %>% 
+  step_nzv()
+
+tune_spec <- rand_forest(
+  mtry = tune(), 
+  trees = 1000,
+  min_n = tune()) %>%
+  set_mode("regression") %>%
+  set_engine("ranger")
+
+tune_wf <- workflow() %>%
+  add_recipe(mod_rec) %>%
+  add_model(tune_spec)
+
+
+cities_tune <- tar_read(cities_o3_tune)
+
+
+autoplot(cities_tune)
+
+
+# select best values for hyperparameters and fit model
+best_mae <- select_best(cities_tune, metric = "mae")
+
+
+# look at predictions of best model against real values
+collect_predictions(cities_tune) %>% 
+  filter(.config==pull(show_best(cities_tune, metric='mae', n=1),.config)) %>% # only bring back predictions for the best model
+  ggplot(aes(x=.pred, y=value )) + 
+  geom_point(shape=1)  +
+  geom_abline(slope=1, linetype = "dashed", colour='blue') +
+  coord_obs_pred() +
+  ggtitle("Actuals vs Prediction on Resamples") + 
+  theme(text = element_text(size=20))
+
+```
+
+Update model to include variance importance scores and fit best model to test data
+
+```{r}
+#| label: city-o3-fit
+#| echo: true
+#| eval: true
+
+cores <- parallel::detectCores()
+
+last_mod <-
+  rand_forest(mtry = best_mae$mtry, min_n = best_mae$min_n, trees = 1000) %>%
+  set_mode("regression") %>%
+  set_engine("ranger", num.threads = cores, importance = "impurity")
+
+
+# the last workflow
+last_workflow <-
+  tune_wf %>%
+  update_model(last_mod)
+
+# the last fit
+set.seed(345)
+last_rf_fit <-
+  last_workflow %>%
+  last_fit(df_split,
+           metrics = metric_set(mae, rsq))
+
+
+# performance metrics values for top validation model and test model
+cities_uv_tune %>%
+  collect_metrics() %>%
+  inner_join(., best_mae) %>%
+  mutate(model = 'validation',
+         .estimate = mean) %>%
+  select(c(.metric, .estimator, .estimate, .config, model)) %>%
+  rbind(., last_rf_fit %>% collect_metrics() %>% mutate(model = 'test')) 
+
+# performance decreases on real data model 
+
+
+# prediction vs actual values for final model
+collect_predictions(last_rf_fit) %>% 
+  ggplot(aes(x=.pred, y=value )) + 
+  geom_point(shape=1)  +
+  geom_abline(slope=1, linetype = "dashed", colour='blue') +
+  coord_obs_pred() +
+  ggtitle("Actuals vs Prediction on Test") + 
+  theme(text = element_text(size=20))
+
+
+vip <- last_rf_fit %>%
+  extract_fit_parsnip() %>%
+  vip(geom = "point") +
+  theme_classic()
+
+vip
+```
+
+
+```{r}
+#| label: city-o3-pdp
+#| echo: true
+#| eval: true
+#| out-width: 100%
+
+model_explainer <- explain_tidymodels(
+  last_rf_fit$.workflow[[1]],
+  data = df_train,
+  y = as.integer(df_train$value),
+  verbose = FALSE
+)
+
+vars <- vip[["data"]]$Variable
+
+
+pdp_time <- model_profile(
+  model_explainer,
+  variables = vars,
+  N = NULL,
+  groups = "city"
+)
+
+
+as_tibble(pdp_time$agr_profiles) %>%
+  mutate(across(`_vname_`, ~factor(., levels=vars))) %>%
+  ggplot(aes(`_x_`, `_yhat_`, color = `_groups_`)) +
+  scale_color_met_d(name = 'Demuth') + 
+  geom_line(linewidth = 1.2, alpha = 0.9) +
+  labs(
+    title = "10 Most Important Variables at City Scale",
+    y = "Predicted UV",
+    colour = "",
+    x = ""
+  ) + 
+  facet_wrap(`_vname_` ~ ., scales = "free") + 
+  theme_classic()
+
+```
+
+### Neighbourhood 
