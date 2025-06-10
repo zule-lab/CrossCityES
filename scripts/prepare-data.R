@@ -262,6 +262,15 @@ targets_prepare_data <- c(
     trees_roads_bounds(mun_road_clean, can_trees)
   ),
 
+  # save as EE assets 
+
+  tar_target(
+    ee_assets,
+    save_ee_assets(mun_bound_trees,
+                   neighbourhood_bound_trees,
+                   road_bound_trees)
+    ),
+
 
 
 # full datasets -----------------------------------------------------------
