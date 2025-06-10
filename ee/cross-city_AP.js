@@ -69,12 +69,15 @@ var CO_raw = filter(CO_raw);
 // cloud mask for those where its relevant 
 var UV_band = UV_raw.select('absorbing_aerosol_index');
 var SO2_band = SO2_raw.select(['SO2_column_number_density', 'cloud_fraction'])
-  .map(cloudMask);
+  .map(cloudMask)
+  .select('SO2_column_number_density');
 var O3_band = O3_raw.select(['O3_column_number_density', 'cloud_fraction'])
-  .map(cloudMask);
+  .map(cloudMask)
+  .select('O3_column_number_density');
 var O3_trop_band = O3_trop_raw.select('ozone_tropospheric_vertical_column');
 var NO2_band = NO2_raw.select(['tropospheric_NO2_column_number_density','cloud_fraction'])
-  .map(cloudMask);
+  .map(cloudMask)
+  .select('tropospheric_NO2_column_number_density');
 var CO_band = CO_raw.select('CO_column_number_density');
 
 
@@ -127,7 +130,7 @@ var desirable_fields_neighbourhood = ['city', 'hood', 'hood_id', 'date', 'count'
 Export.table.toDrive({
   collection: UV_city,
   description: 'UV_city',
-  folder: 'Data/SENTINEL_Pollution/',
+  folder: 'Data/SENTINEL_Pollution',
   selectors: desirable_fields_city
 })
 
