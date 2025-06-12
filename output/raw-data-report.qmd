@@ -1,10 +1,12 @@
 ---
-title: "Data Summary"
+title: "Supplementary Materials"
 execute:
   echo: false
   warning: false
   error: false
-format: html
+format: 
+  html:
+    self-contained: true
 ---
 
 ```{r}
@@ -32,22 +34,88 @@ tar_load(neighbourhoods_pollution_full)
 tar_load(roads_lst_full)
 tar_load(can_trees)
 
+neighbourhoods_lst_full <- neighbourhoods_lst_full %>% 
+  separate(city_hood, c('city', 'hood'), "_")
+
+neighbourhoods_pollution_full <- neighbourhoods_pollution_full %>% 
+  separate(city_hood, c('city', 'hood'), "_")
+
 ```
 
 
-## Workflow
+# Tables
+
+Table 1. Descriptive statistics for each of the cities included in the study. 
 
 ```{r}
 #| echo: false
-#| warning: false
-#| message: false
-#| fig-width: 15
-#| fig-height: 15
-#| output: false
-#| label: visnetwork
+#| eval: true 
 
-tar_visnetwork(targets_only = T, outdated = F)
+
+cities_lst_full %>% 
+  group_by(city) %>% 
+  summarize(`Area (km2)` = first(drop_units(cityarea)), 
+            Population = first(totpop),
+            `Population Density` = first(popdens),
+            `Number of Trees` = first(nTrees), 
+            `Tree Species Richness` = first(SpeciesRichness), 
+            `Mean Building Height (m)` = first(mean_bldhgt), 
+            `Proportion Highways (%)` = first(prop_highway*100), 
+            `Median Income ($)` = first(round(medinc, 0)), 
+            `Recent Immigrants (%)` = first(recimmp*100)) %>% 
+  rename(City = city) %>% 
+  knitr::kable(digits = 1)
+
 ```
+
+Table 2. Source links for publicly available datasets used in the study.
+
+```{r}
+#| echo: false
+#| eval: true
+
+
+tribble(
+  ~Location, ~Dataset, ~Link,
+  'Vancouver', 'Neighbourhoods', 'https://opendata.vancouver.ca/explore/dataset/local-area-boundary/download/?format=shp&timezone=Asia/Shanghai&lang=enn',
+  'Calgary', 'Neighbourhoods', 'https://data.calgary.ca/api/views/surr-xmvs/rows.csv?accessType=DOWNLOAD',
+  'Winnipeg', 'Neighbourhoods', 'https://data.winnipeg.ca/resource/8k6x-xxsy.csv',
+  'Toronto', 'Neighbourhoods', 'https://ckan0.cf.opendata.inter.prod-toronto.ca/dataset/neighbourhoods/resource/34b409a6-68ef-45f7-9cc8-c85153c1af62/download/Neighbourhoods%20-%204326.zip',
+  'Ottawa', 'Neighbourhoods', 'https://opendata.arcgis.com/api/v3/datasets/32fe76b71c5e424fab19fec1f180ec18_0/downloads/data?format=shp&spatialRefId=4326',
+  'Montreal', 'Neighbourhoods', 'https://donnees.montreal.ca/dataset/9797a946-9da8-41ec-8815-f6b276dec7e9/resource/e8bea324-044c-4544-bbd1-2e0d08a24216/download/limites-administratives-agglomeration-nad83.zip',
+  'Halifax', 'Neighbourhoods', 'https://opendata.arcgis.com/api/v3/datasets/b4088a068b794436bdb4e5c31df76fe2_0/downloads/data?format=shp&spatialRefId=4326',
+  'Vancouver', 'Parks', 'https://opendata.vancouver.ca/explore/dataset/parks-polygon-representation/download/?format=shp&timezone=Asia/Shanghai&lang=en',
+  'Calgary', 'Parks', 'https://data.calgary.ca/api/views/kami-qbfh/rows.csv?accessType=DOWNLOAD',
+  'Winnipeg', 'Parks', 'https://data.winnipeg.ca/api/views/tx3d-pfxq/rows.csv?doy=20250204&accessType=DOWNLOAD',
+  'Toronto', 'Parks', 'https://ckan0.cf.opendata.inter.prod-toronto.ca/dataset/2aac8903-23ff-4072-ab72-b76cac44ad89/resource/9f53c253-a47e-497f-8a07-528f7d7aad90/download/parks-wgs84.zip',
+  'Ottawa', 'Parks', 'https://opendata.arcgis.com/api/v3/datasets/cfb079e407494c33b038e86c7e05288e_24/downloads/data?format=shp&spatialRefId=4326',
+  'Montreal', 'Parks', 'https://data.montreal.ca/dataset/2e9e4d2f-173a-4c3d-a5e3-565d79baa27d/resource/c57baaf4-0fa8-4aa4-9358-61eb7457b650/download/shapefile.zip',
+  'Halifax', 'Parks', 'https://opendata.arcgis.com/api/v3/datasets/3df29a3d088a42d890f11d027ea1c0be_0/downloads/data?format=shp&spatialRefId=4326',
+  'Vancouver', 'Trees', 'https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/public-trees/exports/csv?lang=en&timezone=America%2FNew_York&use_labels=true&delimiter=%3B',
+  'Calgary', 'Trees', 'https://data.calgary.ca/api/views/tfs4-3wwa/rows.csv?accessType=DOWNLOAD',
+  'Winnipeg', 'Trees', 'https://data.winnipeg.ca/api/views/h923-dxid/rows.csv?accessType=DOWNLOAD',
+  'Toronto', 'Trees', 'https://ckan0.cf.opendata.inter.prod-toronto.ca/dataset/6ac4569e-fd37-4cbc-ac63-db3624c5f6a2/resource/5930412c-408e-4ee3-b473-56a790c9dfb7/download/Alternate%20File_Street%20Tree%20Data_WGS84.csv.csv',
+  'Ottawa', 'Trees', 'https://opendata.arcgis.com/api/v3/datasets/13092822f69143b695bdb916357d421b_0/downloads/data?format=csv&spatialRefId=4326',
+  'Montreal', 'Trees', 'https://data.montreal.ca/dataset/b89fd27d-4b49-461b-8e54-fa2b34a628c4/resource/64e28fe6-ef37-437a-972d-d1d3f1f7d891/download/arbres-publics.csv',
+  'Halifax', 'Trees', 'https://opendata.arcgis.com/api/v3/datasets/33a4e9b6c7e9439abcd2b20ac50c5a4d_0/downloads/data?format=csv&spatialRefId=4326',
+  'Alberta', 'Buildings', 'https://minedbuildings.z5.web.core.windows.net/legacy/canadian-buildings-v2/Alberta.zip',
+  'British Columbia', 'Buildings', 'https://minedbuildings.z5.web.core.windows.net/legacy/canadian-buildings-v2/BritishColumbia.zip',
+  'Manitoba', 'Buildings', 'https://minedbuildings.z5.web.core.windows.net/legacy/canadian-buildings-v2/Manitoba.zip',
+  'Nova Scotia', 'Buildings', 'https://minedbuildings.z5.web.core.windows.net/legacy/canadian-buildings-v2/NovaScotia.zip',
+  'Ontario', 'Buildings', 'https://minedbuildings.z5.web.core.windows.net/legacy/canadian-buildings-v2/Ontario.zip',
+  'Quebec', 'Buildings', 'https://minedbuildings.z5.web.core.windows.net/legacy/canadian-buildings-v2/Quebec.zip',
+  'Canada', 'Census Metropolitan Areas', 'https://www12.statcan.gc.ca/census-recensement/2021/geo/sip-pis/boundary-limites/files-fichiers/lcma000b21a_e.zip',
+  'Canada', 'Roads', 'https://www12.statcan.gc.ca/census-recensement/2011/geo/RNF-FRR/files-fichiers/lrnf000r24a_e.zip',
+  'Canada', 'Dissemination Areas', 'https://www12.statcan.gc.ca/census-recensement/2021/geo/sip-pis/boundary-limites/files-fichiers/lda_000b21a_e.zip',
+  'Canada', 'Census', 'https://www12.statcan.gc.ca/census-recensement/2021/dp-pd/prof/details/download-telecharger/comp/GetFile.cfm?Lang=E&FILETYPE=CSV&GEONO=006'
+) %>% 
+  knitr::kable()
+
+
+```
+
+
+# Figures
 
 ## Tree Stuff
 
@@ -137,7 +205,7 @@ ggplot(can_trees, aes(x = dbh, group = city, col = city)) +
 #| label: city-response
 
 city_response_vars <- rbind(
-  cities_lst_full %>% select(c(city, mean_temp, stdDev_temp)) %>% pivot_longer(-city, names_to = 'variable'),
+  cities_lst_full %>% select(c(city, mean_temp)) %>% pivot_longer(-city, names_to = 'variable'),
   cities_pollution_full %>% select(c(city, variable, value)) 
 )
 
@@ -205,14 +273,14 @@ city_plot(city_tree_vars, y)
 
 
 city_building_vars <- cities_lst_full %>% 
-  select(c(city, centroid_den, area_den, prop_highway, prop_strts, road_dens, mean_bldhgt, NDBI_mean_, NDBI_stdDev_, NDVI_mean_, NDVI_stdDev_)) %>% 
+  select(c(city, centroid_den, area_den, prop_highway, prop_strts, road_dens, mean_bldhgt, NDBI_mean_, NDVI_mean_)) %>% 
   pivot_longer(-city, names_to = 'variable') %>% 
   distinct()
 
 
-supp.labs <- c("Building Density (km2 building/km2)", "Building Density (# buildings/km2)", "Mean Building Height (m)", "Mean NDBI", "Std Dev NDBI", "Mean NDVI", "Std Dev NDVI", "Highways (% of roads)", "Streets (% of roads)", "Road Density (km road/km2)")
-names(supp.labs) <- c("area_den", "centroid_den", "mean_bldhgt", "NDBI_mean_", "NDBI_stdDev_", "NDVI_mean_", 
-                      "NDVI_stdDev_", "prop_highway", "prop_strts", "road_dens")
+supp.labs <- c("Building Density (km2 building/km2)", "Building Density (# buildings/km2)", "Mean Building Height (m)", "Mean NDBI", "Mean NDVI", "Highways (% of roads)", "Streets (% of roads)", "Road Density (km road/km2)")
+names(supp.labs) <- c("area_den", "centroid_den", "mean_bldhgt", "NDBI_mean_", "NDVI_mean_", 
+                      "prop_highway", "prop_strts", "road_dens")
 
 city_plot(city_building_vars, supp.labs)
 
@@ -256,8 +324,8 @@ city_plot(city_census_vars, supp.labs)
 #| label: neighbourhood-response
 
 neighbourhood_response_vars <- rbind(
-  neighbourhoods_lst_full %>% select(c(city, hood, date, time, mean_temp, stdDev_temp)) %>% pivot_longer(-c(city, hood, date, time), names_to = 'variable'),
-  neighbourhoods_pollution_full %>% select(c(city, hood, date, time, variable, value)) 
+  neighbourhoods_lst_full %>% select(c(city, hood, doy, mean_temp)) %>% pivot_longer(-c(city, hood, doy), names_to = 'variable'),
+  neighbourhoods_pollution_full %>% select(c(city, hood, doy, variable, value)) 
 )
 
 supp.labs <- c("Mean CO (mol/m2)", "Mean NO2 (mol/m2)", "Mean O3 (mol/m2)", "Mean SO2 (mol/m2)", "Mean UV", "Mean Temp (deg C)", "Std Dev Temp (deg C)")
@@ -277,7 +345,7 @@ neighbourhood_plot(neighbourhood_response_vars, supp.labs)
 #| fig-height: 15
 #| label: neighbourhood-pollution-pca
 
-neighbourhood_pollution_pca <- neighbourhoods_pollution_full %>% select(c(city, hood, date, time, variable, value)) %>% pivot_wider(names_from = variable, values_from = value, values_fn = first) %>% select(-c(date, time))
+neighbourhood_pollution_pca <- neighbourhoods_pollution_full %>% select(c(city, hood, doy, variable, value)) %>% pivot_wider(names_from = variable, values_from = value, values_fn = first) %>% select(-c(doy))
 
 neighbourhood_pca(neighbourhood_pollution_pca, city, hood)
 ```
@@ -293,15 +361,15 @@ neighbourhood_pca(neighbourhood_pollution_pca, city, hood)
 #| fig-height: 15
 #| label: neighbourhood-tree
 
-neighbourhood_tree_vars <- neighbourhoods_lst_full %>% select(c(city, hood, nTrees, ba_per_m2, stemdens, SpeciesRichness, Shannon, FG_richness, FG_shannon, mean_dbh, sd_dbh)) %>% 
+neighbourhood_tree_vars <- neighbourhoods_lst_full %>% select(c(city, hood, ba_per_m2, stemdens, SpeciesRichness, Shannon, FG_richness, FG_shannon, mean_dbh, sd_dbh)) %>% 
 mutate(ba_per_m2 = drop_units(ba_per_m2),
 stemdens = drop_units(stemdens),
 mean_dbh = drop_units(mean_dbh),
 sd_dbh = drop_units(sd_dbh)) %>%
 pivot_longer(-c(city, hood), names_to = 'variable') 
 
-supp.labs <- c("Basal Area (km2 tree / km2)", "Number of Functional Groups", "Functional Group Shannon", "Mean DBH (cm)", "Number of Trees", "Std Dev DBH (cm)", "Shannon", "Species Richness", "Stem Density (trees / km2)")
-names(supp.labs) <- c("ba_per_m2", "FG_richness", "FG_shannon", "mean_dbh", "nTrees", "sd_dbh", 
+supp.labs <- c("Basal Area (km2 tree / km2)", "Number of Functional Groups", "Functional Group Shannon", "Mean DBH (cm)", "Std Dev DBH (cm)", "Shannon", "Species Richness", "Stem Density (trees / km2)")
+names(supp.labs) <- c("ba_per_m2", "FG_richness", "FG_shannon", "mean_dbh", "sd_dbh", 
                       "Shannon", "SpeciesRichness", "stemdens")
 
 neighbourhood_plot(neighbourhood_tree_vars, supp.labs)
@@ -315,7 +383,7 @@ neighbourhood_plot(neighbourhood_tree_vars, supp.labs)
 #| fig-height: 15
 #| label: neighbourhood-tree-pca
 
-neighbourhood_tree_vars_pca <- neighbourhoods_lst_full %>% select(c(city, hood, nTrees, ba_per_m2, stemdens, SpeciesRichness, Shannon, FG_richness, FG_shannon, mean_dbh, sd_dbh)) %>% 
+neighbourhood_tree_vars_pca <- neighbourhoods_lst_full %>% select(c(city, hood, ba_per_m2, stemdens, SpeciesRichness, Shannon, FG_richness, FG_shannon, mean_dbh, sd_dbh)) %>% 
 mutate(ba_per_m2 = drop_units(ba_per_m2),
 stemdens = drop_units(stemdens),
 mean_dbh = drop_units(mean_dbh),
@@ -337,12 +405,12 @@ neighbourhood_pca(neighbourhood_tree_vars_pca, city, hood)
 
 
 neighbourhood_building_vars <- neighbourhoods_lst_full %>% 
-  select(c(city, hood, centroid_den, area_den, prop_highway, prop_strts, road_dens, mean_bldhgt, NDBI_mean_, NDBI_stdDev_, NDVI_mean_, NDVI_stdDev_)) %>% 
+  select(c(city, hood, centroid_den, area_den, prop_highway, road_dens, mean_bldhgt, NDBI_mean_, NDVI_mean_)) %>% 
   pivot_longer(-c(city, hood), names_to = 'variable')
 
-supp.labs <- c("Building Density (km2 building/km2)", "Building Density (# buildings/km2)", "Mean Building Height (m)", "Mean NDBI", "Std Dev NDBI", "Mean NDVI", "Std Dev NDVI", "Highways (% of roads)", "Streets (% of roads)", "Road Density (km road/km2)")
-names(supp.labs) <- c("area_den", "centroid_den", "mean_bldhgt", "NDBI_mean_", "NDBI_stdDev_", "NDVI_mean_", 
-                      "NDVI_stdDev_", "prop_highway", "prop_strts", "road_dens")
+supp.labs <- c("Building Density (km2 building/km2)", "Building Density (# buildings/km2)", "Mean Building Height (m)", "Mean NDBI", "Mean NDVI", "Highways (% of roads)", "Road Density (km road/km2)")
+names(supp.labs) <- c("area_den", "centroid_den", "mean_bldhgt", "NDBI_mean_", "NDVI_mean_",
+                      "prop_highway", "road_dens")
 
 
 neighbourhood_plot(neighbourhood_building_vars, supp.labs)
@@ -357,7 +425,7 @@ neighbourhood_plot(neighbourhood_building_vars, supp.labs)
 #| label: neighbourhood-built-pca
 
 neighbourhood_built_vars_pca <- neighbourhoods_lst_full %>% 
-  select(c(city, hood, centroid_den, area_den, prop_highway, prop_strts, road_dens, mean_bldhgt, NDBI_mean_, NDBI_stdDev_, NDVI_mean_, NDVI_stdDev_)) 
+  select(c(city, hood, centroid_den, area_den, prop_highway, road_dens, mean_bldhgt, NDBI_mean_, NDVI_mean_)) 
 
 neighbourhood_pca(neighbourhood_built_vars_pca, city, hood)
 ```
@@ -410,8 +478,8 @@ neighbourhood_pca(neighbourhood_census_vars_pca, city, hood)
 #| fig-height: 15
 #| label: street-response
 
-street_response_vars <- roads_lst_full %>% select(c(city, streetid, date, time, mean_temp, stdDev_temp)) %>%
-drop_na(city) %>% pivot_longer(-c(city, streetid, date, time), names_to = 'variable') %>%
+street_response_vars <- roads_lst_full %>% select(c(city, streetid, doy, mean_temp)) %>%
+drop_na(city) %>% pivot_longer(-c(city, streetid, doy), names_to = 'variable') %>%
   drop_na(city)
 
 supp.labs <- c("Mean Temp (deg C)", "Std Dev Temp (deg C)")
@@ -435,15 +503,15 @@ neighbourhood_plot(street_response_vars, supp.labs)
 #| fig-height: 15
 #| label: street-tree
 
-street_tree_vars <- roads_lst_full %>% select(c(city, streetid, nTrees, ba_per_m2, stemdens, SpeciesRichness, Shannon, FG_richness, FG_shannon, mean_dbh, sd_dbh)) %>% 
+street_tree_vars <- roads_lst_full %>% select(c(city, streetid, ba_per_m2, stemdens, SpeciesRichness, Shannon, FG_richness, FG_shannon, mean_dbh, sd_dbh)) %>% 
 mutate(ba_per_m2 = drop_units(ba_per_m2),
 stemdens = drop_units(stemdens),
 mean_dbh = drop_units(mean_dbh),
 sd_dbh = drop_units(sd_dbh)) %>%
 pivot_longer(-c(city, streetid), names_to = 'variable') %>% drop_na(city)
 
-supp.labs <- c("Basal Area (km2 tree / km2)", "Number of Functional Groups", "Functional Group Shannon", "Mean DBH (cm)", "Number of Trees", "Std Dev DBH (cm)", "Shannon", "Species Richness", "Stem Density (trees / km2)")
-names(supp.labs) <- c("ba_per_m2", "FG_richness", "FG_shannon", "mean_dbh", "nTrees", "sd_dbh", 
+supp.labs <- c("Basal Area (km2 tree / km2)", "Number of Functional Groups", "Functional Group Shannon", "Mean DBH (cm)", "Std Dev DBH (cm)", "Shannon", "Species Richness", "Stem Density (trees / km2)")
+names(supp.labs) <- c("ba_per_m2", "FG_richness", "FG_shannon", "mean_dbh", "sd_dbh", 
                       "Shannon", "SpeciesRichness", "stemdens")
 
 
@@ -458,7 +526,7 @@ neighbourhood_plot(street_tree_vars, supp.labs)
 #| fig-height: 15
 #| label: street-tree-pca
 
-street_tree_vars_pca <- roads_lst_full %>% select(c(city, streetid, nTrees, ba_per_m2, stemdens, SpeciesRichness, Shannon, FG_richness, FG_shannon, mean_dbh, sd_dbh)) %>% 
+street_tree_vars_pca <- roads_lst_full %>% select(c(city, streetid, ba_per_m2, stemdens, SpeciesRichness, Shannon, FG_richness, FG_shannon, mean_dbh, sd_dbh)) %>% 
 mutate(ba_per_m2 = drop_units(ba_per_m2),
 stemdens = drop_units(stemdens),
 mean_dbh = drop_units(mean_dbh),
@@ -480,12 +548,11 @@ neighbourhood_pca(street_tree_vars_pca, city, streetid)
 
 
 street_building_vars <- roads_lst_full %>% 
-  select(c(city, streetid, centroid_den, area_den, mean_bldhgt, NDBI_mean_, NDBI_stdDev_, NDVI_mean_, NDVI_stdDev_)) %>% 
+  select(c(city, streetid, centroid_den, area_den, mean_bldhgt, NDBI_mean_, NDVI_mean_)) %>% 
   pivot_longer(-c(city, streetid), names_to = 'variable') %>% drop_na(city)
 
-supp.labs <- c("Building Density (km2 building/km2)", "Building Density (# buildings/km2)", "Mean Building Height (m)", "Mean NDBI", "Std Dev NDBI", "Mean NDVI", "Std Dev NDVI", "Highways (% of roads)", "Streets (% of roads)", "Road Density (km road/km2)")
-names(supp.labs) <- c("area_den", "centroid_den", "mean_bldhgt", "NDBI_mean_", "NDBI_stdDev_", "NDVI_mean_", 
-                      "NDVI_stdDev_", "prop_highway", "prop_strts", "road_dens")
+supp.labs <- c("Building Density (km2 building/km2)", "Building Density (# buildings/km2)", "Mean Building Height (m)", "Mean NDBI", "Mean NDVI")
+names(supp.labs) <- c("area_den", "centroid_den", "mean_bldhgt", "NDBI_mean_", "NDVI_mean_")
 
 
 neighbourhood_plot(street_building_vars, supp.labs)
@@ -500,7 +567,7 @@ neighbourhood_plot(street_building_vars, supp.labs)
 #| label: street-built-pca
 
 street_built_vars_pca <- roads_lst_full %>% 
-  select(c(city, streetid, centroid_den, area_den, mean_bldhgt, NDBI_mean_, NDBI_stdDev_, NDVI_mean_, NDVI_stdDev_)) %>% drop_na(city)
+  select(c(city, streetid, centroid_den, area_den, mean_bldhgt, NDBI_mean_, NDVI_mean_)) %>% drop_na(city)
 
 neighbourhood_pca(street_built_vars_pca, city, streetid)
 ```
