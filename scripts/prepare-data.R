@@ -144,13 +144,120 @@ targets_prepare_data <- c(
 
 # ee ----------------------------------------------------------------------
 
-  # Download
-  tar_eval(
-    tar_target(
-      file_name_sym,
-      clean_ee(dl_link, dl_path, file_ext)
-    ),
-    values = values_ee
+  # Load ee datasets
+
+  tar_file_read(
+    cities_ndvi_ndbi,
+    'ee/SENTINEL_NDVI_NDBI/cities_ndvi.csv', 
+    read.csv(!!.x)
+  ),
+
+  tar_file_read(
+    neighbourhoods_ndvi_ndbi,
+    'ee/SENTINEL_NDVI_NDBI/neighbourhoods_ndvi.csv', 
+    read.csv(!!.x)
+  ),
+  
+  tar_file_read(
+    streets_ndvi_ndbi,
+    'ee/SENTINEL_NDVI_NDBI/streets_ndvi.csv', 
+    read.csv(!!.x)
+  ),
+  
+  tar_file_read(
+    cities_lst,
+    'ee/Landsat_Temperature/cities_lst.csv', 
+    read.csv(!!.x)
+  ),
+  
+  tar_file_read(
+    neighbourhoods_lst,
+    'ee/Landsat_Temperature/neighbourhoods_lst.csv', 
+    read.csv(!!.x)
+  ),
+  
+  tar_file_read(
+    streets_lst,
+    'ee/Landsat_Temperature/streets_lst.csv', 
+    read.csv(!!.x)
+  ),
+  
+  tar_file_read(
+    cities_bldhgt,
+    'ee/DEM/cities_dem.csv', 
+    read.csv(!!.x)
+  ),
+  
+  tar_file_read(
+    neighbourhoods_bldhgt,
+    'ee/DEM/neighbourhoods_dem.csv', 
+    read.csv(!!.x)
+  ),
+  
+  tar_file_read(
+    streets_bldhgt,
+    'ee/DEM/streets_dem.csv', 
+    read.csv(!!.x)
+  ),
+
+  tar_file_read(
+    cities_CO,
+    'ee/SENTINEL_Pollution/cities_CO.csv', 
+    read.csv(!!.x)
+  ),
+  
+  tar_file_read(
+    neighbourhoods_CO,
+    'ee/SENTINEL_Pollution/neighbourhoods_CO.csv', 
+    read.csv(!!.x)
+  ),
+  
+  tar_file_read(
+    cities_NO2,
+    'ee/SENTINEL_Pollution/cities_NO2.csv', 
+    read.csv(!!.x)
+  ),
+  
+  tar_file_read(
+    neighbourhoods_NO2,
+    'ee/SENTINEL_Pollution/neighbourhoods_NO2.csv', 
+    read.csv(!!.x)
+  ),
+  
+  tar_file_read(
+    cities_O3,
+    'ee/SENTINEL_Pollution/cities_O3.csv', 
+    read.csv(!!.x)
+  ),
+  
+  tar_file_read(
+    neighbourhoods_O3,
+    'ee/SENTINEL_Pollution/neighbourhoods_O3.csv', 
+    read.csv(!!.x)
+  ),
+  
+  tar_file_read(
+    cities_SO2,
+    'ee/SENTINEL_Pollution/cities_SO2.csv', 
+    read.csv(!!.x)
+  ),
+  
+  tar_file_read(
+    neighbourhoods_SO2,
+    'ee/SENTINEL_Pollution/neighbourhoods_SO2.csv', 
+    read.csv(!!.x)
+  ),
+  
+  tar_file_read(
+    cities_UV,
+    'ee/SENTINEL_Pollution/cities_UV.csv', 
+    read.csv(!!.x)
+  ),
+  
+  tar_file_read(
+    neighbourhoods_UV,
+    'ee/SENTINEL_Pollution/neighbourhoods_UV.csv', 
+    read.csv(!!.x)
   ),
   
   # combine pollution for city level

@@ -109,40 +109,6 @@ values_census <- tribble(
   )
 
 
-# Earth Engine ------------------------------------------------------------
-values_ee <- tribble(
-  ~dl_path, ~dl_link,
-  'large/ndvi_ndbi/cities_ndvi_ndbi.csv', 'Data/Cross-City ES Project/SENTINEL_NDVI_NDBI/cities_ndvi.csv',
-  'large/ndvi_ndbi/neighbourhoods_ndvi_ndbi.csv', 'Data/Cross-City ES Project/SENTINEL_NDVI_NDBI/neighbourhoods_ndvi.csv',
-  'large/ndvi_ndbi/streets_ndvi_ndbi.csv', 'Data/Cross-City ES Project/SENTINEL_NDVI_NDBI/streets_ndvi.csv',
-  
-  'large/temperature/cities_lst.csv', 'Data/Cross-City ES Project/Landsat_Temperature/cities_lst.csv',
-  'large/temperature/neighbourhoods_lst.csv', 'Data/Cross-City ES Project/Landsat_Temperature/neighbourhoods_lst.csv',
-  'large/temperature/streets_lst.csv', 'Data/Cross-City ES Project/Landsat_Temperature/streets_lst.csv',
-  
-  'large/dem/cities_bldhgt.csv', 'Data/Cross-City ES Project/DEM/cities_dem.csv',
-  'large/dem/neighbourhoods_bldhgt.csv', 'Data/Cross-City ES Project/DEM/neighbourhoods_dem.csv',
-  'large/dem/streets_bldhgt.csv', 'Data/Cross-City ES Project/DEM/streets_dem.csv', 
-  
-  'large/pollution/cities_CO.csv', 'Data/Cross-City ES Project/SENTINEL_Pollution/CO_city.csv',
-  'large/pollution/neighbourhoods_CO.csv', 'Data/Cross-City ES Project/SENTINEL_Pollution/CO_neighbourhood.csv',
-  'large/pollution/cities_NO2.csv', 'Data/Cross-City ES Project/SENTINEL_Pollution/NO2_city.csv',
-  'large/pollution/neighbourhoods_NO2.csv', 'Data/Cross-City ES Project/SENTINEL_Pollution/NO2_neighbourhood.csv',
-  'large/pollution/cities_O3.csv', 'Data/Cross-City ES Project/SENTINEL_Pollution/O3_city.csv',
-  'large/pollution/neighbourhoods_O3.csv', 'Data/Cross-City ES Project/SENTINEL_Pollution/O3_neighbourhood.csv',
-  'large/pollution/cities_SO2.csv', 'Data/Cross-City ES Project/SENTINEL_Pollution/SO2_city.csv',
-  'large/pollution/neighbourhoods_SO2.csv', 'Data/Cross-City ES Project/SENTINEL_Pollution/SO2_neighbourhood.csv',
-  'large/pollution/cities_UV.csv', 'Data/Cross-City ES Project/SENTINEL_Pollution/UV_city.csv',
-  'large/pollution/neighbourhoods_UV.csv', 'Data/Cross-City ES Project/SENTINEL_Pollution/UV_neighbourhood.csv'
-  
-) %>% 
-  mutate(
-    file_name = basename(sans_ext(dl_path)),
-    file_name_sym = lapply(file_name, as.symbol),
-    file_ext = file_ext(dl_path)
-  )
-
-
 # Symbols -----------------------------------------------------------------
 symbol_values <- tibble(
   hood_names_raw = values_hood$file_name_sym,
