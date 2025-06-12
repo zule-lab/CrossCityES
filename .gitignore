@@ -49,3 +49,5 @@ vignettes/*.pdf
 _targets/
 
 /.quarto/
+ee/Landsat_Temperature/streets_lst.csv
+ee/SENTINEL_NDVI_NDBI/streets_ndvi.csv
