@@ -259,7 +259,11 @@ targets_prepare_data <- c(
     'ee/SENTINEL_Pollution/neighbourhoods_UV.csv', 
     read.csv(!!.x)
   ),
-  
+
+  tar_target(
+    
+  ),
+
   # combine pollution for city level
   tar_target(
     cities_pollution,
@@ -368,16 +372,6 @@ targets_prepare_data <- c(
     road_bound_trees,
     trees_roads_bounds(mun_road_clean, can_trees)
   ),
-
-  # save as EE assets 
-
-  tar_target(
-    ee_assets,
-    save_ee_assets(mun_bound_trees,
-                   neighbourhood_bound_trees,
-                   road_bound_trees)
-    ),
-
 
 
 # full datasets -----------------------------------------------------------
