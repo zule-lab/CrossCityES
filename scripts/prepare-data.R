@@ -145,144 +145,67 @@ targets_prepare_data <- c(
 # ee ----------------------------------------------------------------------
 
   # Load ee datasets
-
-  tar_file_read(
-    cities_ndvi_ndbi,
-    'ee/SENTINEL_NDVI_NDBI/cities_ndvi.csv', 
-    read.csv(!!.x)
-  ),
-
-  tar_file_read(
-    neighbourhoods_ndvi_ndbi,
-    'ee/SENTINEL_NDVI_NDBI/neighbourhoods_ndvi.csv', 
-    read.csv(!!.x)
-  ),
-  
-  tar_file_read(
-    streets_ndvi_ndbi,
-    'ee/SENTINEL_NDVI_NDBI/streets_ndvi.csv', 
-    read.csv(!!.x)
-  ),
-  
-  tar_file_read(
-    cities_lst,
-    'ee/Landsat_Temperature/cities_lst.csv', 
-    read.csv(!!.x)
-  ),
-  
-  tar_file_read(
-    neighbourhoods_lst,
-    'ee/Landsat_Temperature/neighbourhoods_lst.csv', 
-    read.csv(!!.x)
-  ),
-  
-  tar_file_read(
-    streets_lst,
-    'ee/Landsat_Temperature/streets_lst.csv', 
-    read.csv(!!.x)
-  ),
-  
-  tar_file_read(
-    cities_bldhgt,
-    'ee/DEM/cities_dem.csv', 
-    read.csv(!!.x)
-  ),
-  
-  tar_file_read(
-    neighbourhoods_bldhgt,
-    'ee/DEM/neighbourhoods_dem.csv', 
-    read.csv(!!.x)
-  ),
-  
-  tar_file_read(
-    streets_bldhgt,
-    'ee/DEM/streets_dem.csv', 
-    read.csv(!!.x)
-  ),
-
-  tar_file_read(
-    cities_CO,
-    'ee/SENTINEL_Pollution/cities_CO.csv', 
-    read.csv(!!.x)
-  ),
-  
-  tar_file_read(
-    neighbourhoods_CO,
-    'ee/SENTINEL_Pollution/neighbourhoods_CO.csv', 
-    read.csv(!!.x)
-  ),
-  
-  tar_file_read(
-    cities_NO2,
-    'ee/SENTINEL_Pollution/cities_NO2.csv', 
-    read.csv(!!.x)
-  ),
-  
-  tar_file_read(
-    neighbourhoods_NO2,
-    'ee/SENTINEL_Pollution/neighbourhoods_NO2.csv', 
-    read.csv(!!.x)
-  ),
-  
-  tar_file_read(
-    cities_O3,
-    'ee/SENTINEL_Pollution/cities_O3.csv', 
-    read.csv(!!.x)
-  ),
-  
-  tar_file_read(
-    neighbourhoods_O3,
-    'ee/SENTINEL_Pollution/neighbourhoods_O3.csv', 
-    read.csv(!!.x)
-  ),
-  
-  tar_file_read(
-    cities_SO2,
-    'ee/SENTINEL_Pollution/cities_SO2.csv', 
-    read.csv(!!.x)
-  ),
-  
-  tar_file_read(
-    neighbourhoods_SO2,
-    'ee/SENTINEL_Pollution/neighbourhoods_SO2.csv', 
-    read.csv(!!.x)
-  ),
-  
-  tar_file_read(
-    cities_UV,
-    'ee/SENTINEL_Pollution/cities_UV.csv', 
-    read.csv(!!.x)
-  ),
-  
-  tar_file_read(
-    neighbourhoods_UV,
-    'ee/SENTINEL_Pollution/neighbourhoods_UV.csv', 
-    read.csv(!!.x)
-  ),
+  tar_target(
+    paths, 
+    c('ee/SENTINEL_NDVI_NDBI/cities_ndvi.csv',
+      'ee/SENTINEL_NDVI_NDBI/neighbourhoods_ndvi.csv',
+      'ee/SENTINEL_NDVI_NDBI/streets_ndvi.csv',
+      'ee/Landsat_Temperature/cities_lst.csv',
+      'ee/Landsat_Temperature/neighbourhoods_lst.csv',
+      'ee/Landsat_Temperature/streets_lst.csv',
+      'ee/DEM/cities_dem.csv',
+      'ee/DEM/neighbourhoods_dem.csv',
+      'ee/DEM/streets_dem.csv',
+      'ee/SENTINEL_Pollution/UV_city.csv',
+      'ee/SENTINEL_Pollution/UV_neighbourhood.csv',
+      'ee/SENTINEL_Pollution/CO_city.csv',
+      'ee/SENTINEL_Pollution/CO_neighbourhood.csv',
+      'ee/SENTINEL_Pollution/NO2_city.csv',
+      'ee/SENTINEL_Pollution/NO2_neighbourhood.csv',
+      'ee/SENTINEL_Pollution/SO2_city.csv',
+      'ee/SENTINEL_Pollution/SO2_neighbourhood.csv',
+      'ee/SENTINEL_Pollution/O3_city.csv',
+      'ee/SENTINEL_Pollution/O3_neighbourhood.csv')
+    ),
 
   tar_target(
-    
+    files, 
+    paths, 
+    format = "file", 
+    pattern = map(paths)
+    ),
+
+  tar_target(
+    ee_data_unnamed, 
+    clean_ee(files), 
+    pattern = map(files),
+    iteration = "list"
+    ),
+
+  tar_target(
+    ee_data,
+    name_list(ee_data_unnamed, paths)
   ),
 
   # combine pollution for city level
   tar_target(
     cities_pollution,
-    rbind(cities_CO %>% pivot_longer(cols = -c(CMANAME, date), names_to = "variable"), 
-              cities_NO2 %>% pivot_longer(cols = -c(CMANAME, date), names_to = "variable"), 
-              cities_O3 %>% pivot_longer(cols = -c(CMANAME, date), names_to = "variable"),
-              cities_SO2 %>% pivot_longer(cols = -c(CMANAME, date), names_to = "variable"),
-              cities_UV %>% pivot_longer(cols = -c(CMANAME, date), names_to = "variable")) %>%
+    rbind(ee_data$CO_city %>% pivot_longer(cols = -c(CMANAME, date), names_to = "variable"), 
+              city_NO2 %>% pivot_longer(cols = -c(CMANAME, date), names_to = "variable"), 
+              city_O3 %>% pivot_longer(cols = -c(CMANAME, date), names_to = "variable"),
+              city_SO2 %>% pivot_longer(cols = -c(CMANAME, date), names_to = "variable"),
+              city_UV %>% pivot_longer(cols = -c(CMANAME, date), names_to = "variable")) %>%
       rename(city = CMANAME)
   ),
   
   # combine pollution for neighbourhood level
   tar_target(
     neighbourhoods_pollution,
-    rbind(neighbourhoods_CO %>% pivot_longer(cols = -c(city, hood, hood_id, date), names_to = "variable"),
-              neighbourhoods_NO2 %>% pivot_longer(cols = -c(city, hood, hood_id, date), names_to = "variable"),
-              neighbourhoods_O3 %>% pivot_longer(cols = -c(city, hood, hood_id, date), names_to = "variable"),
-              neighbourhoods_SO2 %>% pivot_longer(cols = -c(city, hood, hood_id, date), names_to = "variable"),
-              neighbourhoods_UV %>% pivot_longer(cols = -c(city, hood, hood_id, date), names_to = "variable"))
+    rbind(CO_neighbourhood %>% pivot_longer(cols = -c(city, hood, hood_id, date), names_to = "variable"),
+          NO2_neighbourhood %>% pivot_longer(cols = -c(city, hood, hood_id, date), names_to = "variable"),
+          O3_neighbourhood %>% pivot_longer(cols = -c(city, hood, hood_id, date), names_to = "variable"),
+          SO2_neighbourhood %>% pivot_longer(cols = -c(city, hood, hood_id, date), names_to = "variable"),
+          UV_neighbourhood %>% pivot_longer(cols = -c(city, hood, hood_id, date), names_to = "variable"))
   ),
 
 
@@ -378,38 +301,38 @@ targets_prepare_data <- c(
 
   tar_target(
     cities_lst_full, 
-    combine_cities_lst(cities_lst, mun_bound_trees, census_city,
+    combine_cities_lst(ee_data$cities_lst, mun_bound_trees, census_city,
                        cities_treedensity, cities_treerichness, cities_treesize, 
-                       build_dens_city, cities_bldhgt, cities_roadclass, cities_ndvi_ndbi) 
+                       build_dens_city, ee_data$cities_dem, cities_roadclass, ee_data$cities_ndvi) 
   ),
 
 tar_target(
   cities_pollution_full, 
   combine_cities_pollution(cities_pollution, mun_bound_trees, census_city,
                            cities_treedensity, cities_treerichness, cities_treesize, 
-                           build_dens_city, cities_bldhgt, cities_roadclass, cities_ndvi_ndbi)
+                           build_dens_city, ee_data$cities_dem, cities_roadclass, eee_data$cities_ndvi)
   ), 
 
   tar_target(
     neighbourhoods_lst_full, 
-    combine_neighbourhoods_lst(neighbourhoods_lst, neighbourhood_bound_trees, census_neighbourhood, 
+    combine_neighbourhoods_lst(ee_data$neighbourhoods_lst, neighbourhood_bound_trees, census_neighbourhood, 
                                neighbourhood_treedensity, neighbourhood_treerichness, neighbourhood_treesize, 
-                               build_dens_neighbourhood, neighbourhoods_bldhgt, neighbourhood_roadclass, neighbourhoods_ndvi_ndbi)
+                               build_dens_neighbourhood, ee_data$neighbourhoods_dem, neighbourhood_roadclass, ee_data$neighbourhoods_ndvi)
   ),
 
   tar_target(
     neighbourhoods_pollution_full, 
     combine_neighbourhoods_pollution(neighbourhoods_pollution, neighbourhood_bound_trees, census_neighbourhood,
                                      neighbourhood_treedensity, neighbourhood_treerichness, neighbourhood_treesize, 
-                                     build_dens_neighbourhood, neighbourhoods_bldhgt, neighbourhood_roadclass, neighbourhoods_ndvi_ndbi)
+                                     build_dens_neighbourhood, ee_data$neighbourhoods_dem, neighbourhood_roadclass, ee_data$neighbourhoods_ndvi)
   ),
 
 
   tar_target(
     roads_lst_full,
-    combine_roads_lst(streets_lst, road_bound_trees, census_road, 
+    combine_roads_lst(ee_data$streets_lst, road_bound_trees, census_road, 
                       road_treedensity, road_treerichness, road_treesize, 
-                      build_dens_road, streets_bldhgt, streets_ndvi_ndbi)
+                      build_dens_road, ee_data$streets_dem, ee_data$streets_ndvi)
   )
 
 )
