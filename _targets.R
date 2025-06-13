@@ -40,8 +40,6 @@ lapply(grep('targets', ls(), value = TRUE), get)
 
 
 # TODO: 
-# - UPDATE clean_ee
-# - redownload building heights
 # - RF modelling
 # - wrap facet labels 
 # - add air pollution to report 
