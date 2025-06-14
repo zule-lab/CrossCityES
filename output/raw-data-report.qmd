@@ -117,6 +117,11 @@ tribble(
 
 # Figures
 
+![](ee/gee_coverage.tif)
+
+
+### Figure S1. Landsat image coverage of Toronto neighbourhoods. Image was produced in Google Earth Engine, using the code found in `ee/cross-city_LST.js`. We used imagery to calculate the mean temperature for a neighbourhood when image covered >50% of neighbourhood area. 
+
 ## Tree Stuff
 
 Number of trees per city:
