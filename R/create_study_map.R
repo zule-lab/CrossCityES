@@ -127,16 +127,19 @@ streets <- ggplot() +
   
 # combine and save --------------------------------------------------------
 
-  f <- main | ((city + nhoods) / (streets + plot_spacer()))
+  f <- main + city + nhoods + streets + 
+  plot_layout(nrow = 2, ncol = 2,
+              width = unit(c(7.5, -1), c("in","null")))
 
 
   ggsave(
     'graphics/study-system.png',
     f,
-    width = 30,
-    height = 10,
+    width = 15,
+    height = 15,
+    units = 'in',
     dpi = 450
   )
   
   
-}
+ }
