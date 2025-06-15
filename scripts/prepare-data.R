@@ -191,21 +191,21 @@ targets_prepare_data <- c(
   tar_target(
     cities_pollution,
     rbind(ee_data$CO_city %>% pivot_longer(cols = -c(CMANAME, date), names_to = "variable"), 
-              city_NO2 %>% pivot_longer(cols = -c(CMANAME, date), names_to = "variable"), 
-              city_O3 %>% pivot_longer(cols = -c(CMANAME, date), names_to = "variable"),
-              city_SO2 %>% pivot_longer(cols = -c(CMANAME, date), names_to = "variable"),
-              city_UV %>% pivot_longer(cols = -c(CMANAME, date), names_to = "variable")) %>%
+          ee_data$NO2_city %>% pivot_longer(cols = -c(CMANAME, date), names_to = "variable"), 
+          ee_data$O3_city %>% pivot_longer(cols = -c(CMANAME, date), names_to = "variable"),
+          ee_data$SO2_city %>% pivot_longer(cols = -c(CMANAME, date), names_to = "variable"),
+          ee_data$UV_city %>% pivot_longer(cols = -c(CMANAME, date), names_to = "variable")) %>%
       rename(city = CMANAME)
   ),
   
   # combine pollution for neighbourhood level
   tar_target(
     neighbourhoods_pollution,
-    rbind(CO_neighbourhood %>% pivot_longer(cols = -c(city, hood, hood_id, date), names_to = "variable"),
-          NO2_neighbourhood %>% pivot_longer(cols = -c(city, hood, hood_id, date), names_to = "variable"),
-          O3_neighbourhood %>% pivot_longer(cols = -c(city, hood, hood_id, date), names_to = "variable"),
-          SO2_neighbourhood %>% pivot_longer(cols = -c(city, hood, hood_id, date), names_to = "variable"),
-          UV_neighbourhood %>% pivot_longer(cols = -c(city, hood, hood_id, date), names_to = "variable"))
+    rbind(ee_data$CO_neighbourhood %>% pivot_longer(cols = -c(city, hood, hood_id, date), names_to = "variable"),
+          ee_data$NO2_neighbourhood %>% pivot_longer(cols = -c(city, hood, hood_id, date), names_to = "variable"),
+          ee_data$O3_neighbourhood %>% pivot_longer(cols = -c(city, hood, hood_id, date), names_to = "variable"),
+          ee_data$SO2_neighbourhood %>% pivot_longer(cols = -c(city, hood, hood_id, date), names_to = "variable"),
+          ee_data$UV_neighbourhood %>% pivot_longer(cols = -c(city, hood, hood_id, date), names_to = "variable"))
   ),
 
 
@@ -310,7 +310,7 @@ tar_target(
   cities_pollution_full, 
   combine_cities_pollution(cities_pollution, mun_bound_trees, census_city,
                            cities_treedensity, cities_treerichness, cities_treesize, 
-                           build_dens_city, ee_data$cities_dem, cities_roadclass, eee_data$cities_ndvi)
+                           build_dens_city, ee_data$cities_dem, cities_roadclass, ee_data$cities_ndvi)
   ), 
 
   tar_target(
