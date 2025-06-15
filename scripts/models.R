@@ -44,22 +44,22 @@ targets_models <- c(
   
   tar_target(
     neighbourhoods_co_tune,
-    rf_tune(neighbourhoods_pollution_full %>% filter(variable == 'mean_neighbourhoods_CO') %>% select(-variable))
+    rf_tune(neighbourhoods_pollution_full %>% filter(variable == 'mean_CO_neighbourhood') %>% select(-variable))
   ),
   
   tar_target(
     neighbourhoods_no2_tune,
-    rf_tune(neighbourhoods_pollution_full %>% filter(variable == 'mean_neighbourhoods_NO2') %>% select(-variable))
+    rf_tune(neighbourhoods_pollution_full %>% filter(variable == 'mean_NO2_neighbourhood') %>% select(-variable))
   ),
   
   tar_target(
     neighbourhoods_o3_tune,
-    rf_tune(neighbourhoods_pollution_full %>% filter(variable == 'mean_neighbourhoods_O3') %>% select(-variable))
+    rf_tune(neighbourhoods_pollution_full %>% filter(variable == 'mean_O3_neighbourhood') %>% select(-variable))
   ),
   
   tar_target(
     neighbourhoods_so2_tune,
-    rf_tune(neighbourhoods_pollution_full %>% filter(variable == 'mean_neighbourhoods_SO2') %>% select(-variable))
+    rf_tune(neighbourhoods_pollution_full %>% filter(variable == 'mean_SO2_neighbourhood') %>% select(-variable))
   ),
   
   tar_target(
