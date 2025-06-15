@@ -8,27 +8,27 @@ targets_models <- c(
   
   tar_target(
     cities_uv_tune, 
-    rf_tune(cities_pollution_full %>% filter(variable == 'mean_cities_UV') %>% select(-variable))
+    rf_tune(cities_pollution_full %>% filter(variable == 'mean_UV_city') %>% select(-variable))
   ),
   
   tar_target(
     cities_co_tune,
-    rf_tune(cities_pollution_full %>% filter(variable == 'mean_cities_CO') %>% select(-variable))
+    rf_tune(cities_pollution_full %>% filter(variable == 'mean_CO_city') %>% select(-variable))
   ),
   
   tar_target(
     cities_no2_tune,
-    rf_tune(cities_pollution_full %>% filter(variable == 'mean_cities_NO2') %>% select(-variable))
+    rf_tune(cities_pollution_full %>% filter(variable == 'mean_NO2_city') %>% select(-variable))
   ),
   
   tar_target(
     cities_o3_tune,
-    rf_tune(cities_pollution_full %>% filter(variable == 'mean_cities_O3') %>% select(-variable))
+    rf_tune(cities_pollution_full %>% filter(variable == 'mean_O3_city') %>% select(-variable))
   ),
   
   tar_target(
     cities_so2_tune,
-    rf_tune(cities_pollution_full %>% filter(variable == 'mean_cities_SO2') %>% select(-variable))
+    rf_tune(cities_pollution_full %>% filter(variable == 'mean_SO2_city') %>% select(-variable))
   ),
   
   
