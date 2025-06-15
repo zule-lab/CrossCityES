@@ -9,22 +9,21 @@ combine_neighbourhoods_pollution <- function(neighbourhoods_pollution, neighbour
   # we need to filter so that each image must meet a threshold for inclusion 
   
   filt <- neighbourhoods_pollution %>% 
-    mutate(pollutant = str_extract(variable, "[^_]+$"),
-           variable = str_replace(variable, "_[^_]+$", "")) %>%
-    pivot_wider(names_from = variable, values_from = value, values_fn = first) %>%
-    inner_join(., neighbourhood_bound_trees) %>% 
+    separate(variable, c('measure', 'pollutant', 'scale'), '_') %>%
+    pivot_wider(names_from = measure, values_from = value, values_fn = first) %>%
+    inner_join(., neighbourhood_bound_trees %>% select(-hood_id)) %>% 
     # resolution is 1113.2 m
-    mutate(coverage = round((count_neighbourhoods*1239214.24)/(drop_units(st_area(geometry)))*100, 3)) %>%
-    # image covers minimum 100% of the neighbourhood area
+    mutate(coverage = round((count*1239214.24)/(drop_units(st_area(geometry)))*100, 3)) %>%
+    # image covers minimum 100% of the city area
     filter(coverage >= 100) %>% 
-    pivot_longer(ends_with('_neighbourhoods'), names_to = "variable") %>%
-    filter(str_detect(variable, 'mean_')) %>% 
-    unite('variable', c('variable', 'pollutant'), sep = '_') %>% 
+    pivot_longer(mean:stdDev, names_to = "variable") %>%
+    filter(str_detect(variable, 'mean')) %>% 
+    unite('variable', c('variable', 'pollutant', 'scale'), sep = '_') %>% 
     select(-geometry) 
     
   
   filt_ndvi <- neighbourhoods_ndvi_ndbi %>% 
-    inner_join(., neighbourhood_bound_trees) %>% 
+    inner_join(., neighbourhood_bound_trees %>% select(-hood_id)) %>% 
     mutate(coverage = round((NDBI_count_*100)/(drop_units(st_area(geometry)))*100, 3)) %>% 
     # image covers minimum 50% of the neighbourhood area
     filter(coverage > 50) %>% 
@@ -69,7 +68,7 @@ combine_neighbourhoods_pollution <- function(neighbourhoods_pollution, neighbour
               total_ba, hood_area.y, hood_id.x.x, hood_area.x.x,
               centroids, build_area, prop_strts, road_length,
               neighbourhood_area, area, DSAcount, lowinc,
-              hood_id, date_ndvi, time_ndvi, NDBI_count_,
+              hood_id.y.y, hood_id, date_ndvi, time_ndvi, NDBI_count_,
               NDBI_median_, NDBI_max_, NDBI_min_, NDBI_stdDev_,
               NDVI_count_, NDVI_median_, NDVI_max_, NDVI_min_, 
               NDVI_stdDev_, hood_area.y.y, id, diff)) %>% 
