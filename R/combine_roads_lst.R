@@ -54,7 +54,7 @@ combine_roads_lst <- function(streets_lst, road_bound_trees, census_road,
     select(-c(CMANAME.x.x, CMANAME.x.y, CMANAME.y.y, CMANAME.y.x, 
               class.x.x, class.x.y, class.y.x, class.y.y, id.x, id.y, 
               street.x, street.y, street.x.x, street.y.y, 
-              streettype.x, streettype.y, streetdir.x, streetdir.y,  
+              streetdir.x, streetdir.y,  
               road_class.y, ba_per_m2.y, city.y, rank, geometry)) %>% 
     separate(date, c('date', 'time'), sep = 'T') %>% 
     separate(date_ndvi, c("date_ndvi", "time_ndvi"), sep = "T") %>% 
@@ -72,13 +72,13 @@ combine_roads_lst <- function(streets_lst, road_bound_trees, census_road,
     select(-c(time, count_temp, median_temp, max_temp, min_temp,
               stdDev_temp, road_class, coverage, nTrees, roadarea, 
               stemdens_acre, total_ba, centroids, build_area, road_area, 
-              area, CMANAME.x.x.x, DSAcount, lowinc, id.x.x, 
-              streetdir.x.x, streettype.x.x, date_ndvi, time_ndvi,
+              area, CMANAME.x.x.x, DSAcount, lowinc, 
+              date_ndvi, time_ndvi, streettype.x, streettype.y,
               NDBI_count_, NDBI_stdDev_,
               NDBI_median_, NDBI_max_, NDBI_min_, NDBI_stdDev_,
               NDVI_count_, NDVI_median_, NDVI_max_, NDVI_min_, 
-              street, streettype.y.y, streetdir.y.y, CMANAME.y.y.y, 
-              id.y.y, diff)) %>%
+              CMANAME.y.y.y, id,
+              diff)) %>%
     mutate_if(is.character, factor) %>%
     mutate(doy = yday(date)) %>% 
     select(-date) %>% 
