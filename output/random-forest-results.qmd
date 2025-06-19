@@ -608,7 +608,7 @@ last_rf_fit <-
 
 
 # performance metrics values for top validation model and test model
-cities_uv_tune %>%
+cities_tune %>%
   collect_metrics() %>%
   inner_join(., best_mae) %>%
   mutate(model = 'validation',
