@@ -40,7 +40,7 @@ After prepping dataset, we check for correlations across variables :
 #| echo: true
 #| eval: true
 
-cities_lst_df %>%
+cities_lst_full %>%
   select_if(is.numeric) %>%
   cor(use = "complete.obs") %>%
   corrplot::corrplot()
@@ -60,7 +60,7 @@ Now, we start to specify our model:
 set.seed(123)
 # strata ensures that the random sampling is conducted within the stratification variable
 # resamples have equivalent proportions of the original dataset
-df_split <- initial_split(cities_lst_df %>% rename(value = mean_temp), strata = city)
+df_split <- initial_split(cities_lst_full %>% rename(value = mean_temp), strata = city)
 df_train <- training(df_split)
 df_test <- testing(df_split)
 
@@ -297,7 +297,7 @@ After prepping dataset, we check for correlations across variables :
 #| echo: false
 #| eval: true
 
-neighbourhoods_lst_df %>%
+neighbourhoods_lst_full %>%
   select_if(is.numeric) %>%
   cor(use = "complete.obs") %>%
   corrplot::corrplot()
@@ -306,7 +306,6 @@ neighbourhoods_lst_df %>%
 
 
 There are a couple strong correlations in the variables at this scale. We will proceed with the `step_corr()` function. We will use cross-fold validation instead of bootstrapping at this scale, because we have enough samples.
-
 
 ```{r}
 #| label: nhood-workflow
@@ -450,11 +449,7 @@ collect_predictions(last_rf_fit) %>%
 
 ```
 
-The city model is not great at predicting data. This makes sense, it is a small dataset with a lot of autocorrelation. The test data performs better than the training data, though ideally these metrics would be similar across groups. This model is weak.
 
-The worst predictions seem to be at very low and very high mean temperatures.
-
-Let's see what the most important variables in our model are
 
 ```{r}
 #| label: nhood-vip
@@ -533,14 +528,14 @@ as_tibble(pdp_time$agr_profiles) %>%
 tar_load(cities_pollution_full)
 
 cities_pollution_full %>%
-  filter(variable == 'mean_cities_UV') %>% 
+  filter(variable == 'mean_UV_city') %>% 
   select_if(is.numeric) %>%
   cor(use = "complete.obs") %>%
   corrplot::corrplot()
 
 
 set.seed(123)
-df_split <- initial_split(cities_pollution_full %>% filter(variable == 'mean_cities_UV') %>% select(-variable), strata = city)
+df_split <- initial_split(cities_pollution_full %>% filter(variable == 'mean_UV_city') %>% select(-variable), strata = city)
 df_train <- training(df_split)
 df_test <- testing(df_split)
 
@@ -695,14 +690,14 @@ as_tibble(pdp_time$agr_profiles) %>%
 #| eval: true
 
 cities_pollution_full %>%
-  filter(variable == 'mean_cities_CO') %>% 
+  filter(variable == 'mean_CO_city') %>% 
   select_if(is.numeric) %>%
   cor(use = "complete.obs") %>%
   corrplot::corrplot()
 
 
 set.seed(123)
-df_split <- initial_split(cities_pollution_full %>% filter(variable == 'mean_cities_CO') %>% select(-variable), strata = city)
+df_split <- initial_split(cities_pollution_full %>% filter(variable == 'mean_CO_city') %>% select(-variable), strata = city)
 df_train <- training(df_split)
 df_test <- testing(df_split)
 
@@ -858,14 +853,14 @@ as_tibble(pdp_time$agr_profiles) %>%
 #| eval: true
 
 cities_pollution_full %>%
-  filter(variable == 'mean_cities_NO2') %>% 
+  filter(variable == 'mean_NO2_city') %>% 
   select_if(is.numeric) %>%
   cor(use = "complete.obs") %>%
   corrplot::corrplot()
 
 
 set.seed(123)
-df_split <- initial_split(cities_pollution_full %>% filter(variable == 'mean_cities_NO2') %>% select(-variable), strata = city)
+df_split <- initial_split(cities_pollution_full %>% filter(variable == 'mean_NO2_city') %>% select(-variable), strata = city)
 df_train <- training(df_split)
 df_test <- testing(df_split)
 
@@ -1020,14 +1015,14 @@ as_tibble(pdp_time$agr_profiles) %>%
 #| eval: true
 
 cities_pollution_full %>%
-  filter(variable == 'mean_cities_SO2') %>% 
+  filter(variable == 'mean_SO2_city') %>% 
   select_if(is.numeric) %>%
   cor(use = "complete.obs") %>%
   corrplot::corrplot()
 
 
 set.seed(123)
-df_split <- initial_split(cities_pollution_full %>% filter(variable == 'mean_cities_SO2') %>% select(-variable), strata = city)
+df_split <- initial_split(cities_pollution_full %>% filter(variable == 'mean_SO2_city') %>% select(-variable), strata = city)
 df_train <- training(df_split)
 df_test <- testing(df_split)
 
@@ -1182,14 +1177,14 @@ as_tibble(pdp_time$agr_profiles) %>%
 #| eval: true
 
 cities_pollution_full %>%
-  filter(variable == 'mean_cities_O3') %>% 
+  filter(variable == 'mean_O3_city') %>% 
   select_if(is.numeric) %>%
   cor(use = "complete.obs") %>%
   corrplot::corrplot()
 
 
 set.seed(123)
-df_split <- initial_split(cities_pollution_full %>% filter(variable == 'mean_cities_O3') %>% select(-variable), strata = city)
+df_split <- initial_split(cities_pollution_full %>% filter(variable == 'mean_O3_city') %>% select(-variable), strata = city)
 df_train <- training(df_split)
 df_test <- testing(df_split)
 
