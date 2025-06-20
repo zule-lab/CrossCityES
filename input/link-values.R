@@ -92,6 +92,21 @@ values_buildings <- tribble(
 ) %>% 
   mutate(
     file_name = basename(sans_ext(dl_path)),
+    file_name_sym = lapply(paste0(file_name, "_raw"), as.symbol),
+    file_ext = file_ext(dl_path)
+  )
+
+values_buildings_clean <- tribble(
+  ~dl_path,
+  
+  'large/national/Alberta_Buildings.zip',
+  'large/national/BritishColumbia_Buildings.zip',
+  'large/national/Manitoba_Buildings.zip',
+  'large/national/NovaScotia_Buildings.zip', 
+  'large/national/Ontario_Buildings.zip',
+  'large/national/Quebec_Buildings.zip') %>% 
+  mutate(
+    file_name = basename(sans_ext(dl_path)),
     file_name_sym = lapply(file_name, as.symbol),
     file_ext = file_ext(dl_path)
   )
