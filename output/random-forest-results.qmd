@@ -316,7 +316,7 @@ There are a couple strong correlations in the variables at this scale. We will p
 set.seed(123)
 # strata ensures that the random sampling is conducted within the stratification variable
 # resamples have equivalent proportions of the original dataset
-df_split <- initial_split(neighbourhoods_lst_df %>% rename(value = mean_temp), strata = city)
+df_split <- initial_split(neighbourhoods_lst_full %>% rename(value = mean_temp), strata = city)
 df_train <- training(df_split)
 df_test <- testing(df_split)
 
@@ -770,7 +770,7 @@ last_rf_fit <-
 
 
 # performance metrics values for top validation model and test model
-cities_uv_tune %>%
+cities_tune %>%
   collect_metrics() %>%
   inner_join(., best_mae) %>%
   mutate(model = 'validation',
@@ -815,6 +815,7 @@ model_explainer <- explain_tidymodels(
 
 vars <- vip[["data"]]$Variable
 
+vars <- vars[vars != 'city_Winnipeg']
 
 pdp_time <- model_profile(
   model_explainer,
@@ -933,7 +934,7 @@ last_rf_fit <-
 
 
 # performance metrics values for top validation model and test model
-cities_uv_tune %>%
+cities_tune %>%
   collect_metrics() %>%
   inner_join(., best_mae) %>%
   mutate(model = 'validation',
@@ -1095,7 +1096,7 @@ last_rf_fit <-
 
 
 # performance metrics values for top validation model and test model
-cities_uv_tune %>%
+cities_tune %>%
   collect_metrics() %>%
   inner_join(., best_mae) %>%
   mutate(model = 'validation',
@@ -1257,7 +1258,7 @@ last_rf_fit <-
 
 
 # performance metrics values for top validation model and test model
-cities_uv_tune %>%
+cities_tune %>%
   collect_metrics() %>%
   inner_join(., best_mae) %>%
   mutate(model = 'validation',
