@@ -112,16 +112,22 @@ targets_prepare_data <- c(
   tar_eval(
     tar_target(
       file_name_sym,
-      building_sf(dl_link, dl_path, file_ext, mun_bound_trees)
+      download_only(dl_link, dl_path)
     ),
     values = values_buildings
   ),
-  
-  # bind
+
+  # Clean
+  tar_target(
+    building_paths,
+    c(BritishColumbia_Buildings, Alberta_Buildings, Manitoba_Buildings, Ontario_Buildings, Quebec_Buildings, NovaScotia_Buildings)
+  ),
+
   tar_target(
     can_build,
-    rbind(BritishColumbia_Buildings, Alberta_Buildings, Manitoba_Buildings, Ontario_Buildings, Quebec_Buildings, NovaScotia_Buildings)
-  ),
+    building_sf(building_paths, mun_bound_trees),
+    pattern = map(building_paths)
+   ),
 
 
 # census ------------------------------------------------------------------
@@ -130,7 +136,7 @@ targets_prepare_data <- c(
   tar_eval(
     tar_target(
       file_name_sym,
-      download_file(dl_link, dl_path, file_ext)
+      download.file(dl_link, dl_path, mode = "wb")
     ),
     values = values_census
   ),
