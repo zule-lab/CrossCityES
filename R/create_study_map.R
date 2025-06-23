@@ -104,12 +104,19 @@ city <- ggplot() +
 # neighbourhood map  ------------------------------------------------------
 mtlnhoods <- can_hood %>% filter(city == "Montreal")
 mtlnhoodfinal <- neighbourhood_bound_trees %>% filter(city == "Montreal")
+mtlnhoodfinal_trees <- st_intersection(mtlnhoodfinal, can_trees) %>% 
+  st_drop_geometry() %>%
+  group_by(hood) %>%
+  tally() %>% 
+  filter(n > 50) %>% 
+  left_join(mtlnhoodfinal) %>% 
+  st_as_sf()
 
 
 nhoods <- ggplot() +
   geom_sf(data = mtlnhoods, alpha = 0.5) + 
   geom_sf(data = mtltrees, colour = 'darkgreen', size = 0.01) +
-  geom_sf(data = mtlnhoodfinal, colour = 'black', fill = NA, linewidth = 1) + 
+  geom_sf(data = mtlnhoodfinal_trees, colour = 'black', fill = NA, linewidth = 1) + 
   coord_sf(xlim = c(7600454, 7636840), ylim = c(1225208, 1268951), expand = FALSE) + 
   ggtitle('C) Neighbourhood Scale')
 
