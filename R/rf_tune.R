@@ -53,9 +53,8 @@ rf_tune <- function(df){
   tune_res <- tune_grid(
     tune_wf,
     resamples = mod_folds,
-    # data frame of tuning combinations with 25 candidate parameter sets
-    grid = 25,
-    control = control_grid(save_pred = T),
+    # data frame of tuning combinations with 15 candidate parameter sets
+    grid = 15,
     metrics = metric_set(mae, rsq))
   
   return(tune_res)
