@@ -26,7 +26,7 @@ library(MetBrewer)
 
 ```{r}
 #| label: city-data
-#| echo: true
+#| echo: false
 #| eval: true
 
 tar_load(cities_lst_full)
@@ -167,13 +167,6 @@ last_rf_fit <-
 
 last_rf_model <- last_rf_fit$.workflow[[1]]
 
-# look at predictions of best model against real values
-last_rf_model %>% 
-  augment(new_data = df_train) %>%
-  ggplot(aes(value, .pred)) +
-  geom_point(shape = 1) +
-  geom_abline(slope = 1, linetype = 'dashed', colour = 'blue') + 
-  ggtitle('Actuals vs Prediction on Training Set')
 
 ```
 
@@ -185,25 +178,28 @@ Now we can assess the performance of the final model. We want metrics to stay co
 #| echo: true
 #| eval: true
 
-# performance metrics values for top validation model and test model
-tune_res %>%
-  collect_metrics() %>%
-  inner_join(., best_auc) %>%
-  mutate(model = 'validation',
-         .estimate = mean) %>%
-  select(c(.metric, .estimator, .estimate, .config, model)) %>%
-  rbind(., last_rf_fit %>% collect_metrics() %>% mutate(model = 'test')) 
-
-# performance decreases on real data model 
-
-
 # prediction vs actual values for final model
-last_rf_model %>% 
-  augment(new_data = df_test) %>%
+all_predictions <- bind_rows(
+  augment(last_rf_model, new_data = df_train) %>% 
+    mutate(type = "train"),
+  augment(last_rf_model, new_data = df_test) %>% 
+    mutate(type = "test")
+)
+
+# metrics between testing and training 
+
+all_predictions %>% 
+  group_by(type) %>% 
+  metrics(value, .pred)
+
+# model fit between testing and training 
+
+all_predictions %>%
   ggplot(aes(value, .pred)) +
-  geom_point(shape = 1) +
-  geom_abline(slope = 1, linetype = 'dashed', colour = 'blue') + 
-  ggtitle('Actuals vs Prediction on Testing Set')
+  geom_point() +
+  geom_abline() +
+  facet_wrap(~type)
+
 
 ```
 
@@ -276,8 +272,6 @@ as_tibble(pdp_time$agr_profiles) %>%
 The code is the same so we will only be looking at table and figure outputs. 
 
 
-Load and prep data for models: 
-
 ```{r}
 #| label: nhood-data
 #| echo: false
@@ -346,15 +340,6 @@ tune_spec <- rand_forest(
 tune_wf <- workflow() %>%
   add_recipe(mod_rec) %>%
   add_model(tune_spec)
-```
-
-After this, we want to tune our hyperparameters so that we select the ones with the best performance 
-
-```{r}
-#| label: nhood-tuning
-#| echo: false
-#| eval: true
-#| message: false
 
 tune_res <- tar_read(neighbourhoods_temp_tune)
 ```
@@ -372,18 +357,6 @@ autoplot(tune_res)
 
 # select best values for hyperparameters and fit model
 best_auc <- select_best(tune_res, metric = "mae")
-
-
-# look at predictions of best model against real values
-collect_predictions(tune_res) %>% 
-  filter(.config==pull(show_best(tune_res, metric='mae', n=1),.config)) %>% # only bring back predictions for the best model
-  ggplot(aes(x=.pred, y=value )) + 
-  geom_point(shape=1)  +
-  geom_abline(slope=1, linetype = "dashed", colour='blue') +
-  coord_obs_pred() +
-  ggtitle("Actuals vs Prediction on Resamples") + 
-  theme(text = element_text(size=20))
-
 ```
 
 Update model to include variance importance scores and fit best model to test data
@@ -413,45 +386,32 @@ last_rf_fit <-
   last_fit(df_split,
            metrics = metric_set(mae, rsq))
 
-```
 
-Now we can assess the performance of the final model. We want metrics to stay consistent across testing and training data. 
-
-
-```{r}
-#| label: nhood-performance
-#| echo: false
-#| eval: true
-
-# performance metrics values for top validation model and test model
-tune_res %>%
-  collect_metrics() %>%
-  inner_join(., best_auc) %>%
-  mutate(model = 'validation',
-         .estimate = mean) %>%
-  select(c(.metric, .estimator, .estimate, .config, model)) %>%
-  rbind(., last_rf_fit %>% collect_metrics() %>% mutate(model = 'test')) 
-
-# performance decreases on real data model 
+last_rf_model <- last_rf_fit$.workflow[[1]]
 
 
 # prediction vs actual values for final model
-collect_predictions(last_rf_fit) %>% 
-  ggplot(aes(x=.pred, y=value )) + 
-  geom_point(shape=1)  +
-  geom_abline(slope=1, linetype = "dashed", colour='blue') +
-  coord_obs_pred() +
-  ggtitle("Actuals vs Prediction on Test") + 
-  theme(text = element_text(size=20))
+all_predictions <- bind_rows(
+  augment(last_rf_model, new_data = df_train) %>% 
+    mutate(type = "train"),
+  augment(last_rf_model, new_data = df_test) %>% 
+    mutate(type = "test")
+)
 
-```
+# metrics between testing and training 
 
+all_predictions %>% 
+  group_by(type) %>% 
+  metrics(value, .pred)
 
+# model fit between testing and training 
 
-```{r}
-#| label: nhood-vip
-#| echo: false
-#| eval: true
+all_predictions %>%
+  ggplot(aes(value, .pred)) +
+  geom_point() +
+  geom_abline() +
+  facet_wrap(~type)
+
 
 vip <- last_rf_fit %>%
   extract_fit_parsnip() %>%
@@ -472,7 +432,7 @@ EXPLANATION
 model_explainer <- explain_tidymodels(
   last_rf_fit$.workflow[[1]],
   data = df_train,
-  y = as.integer(df_train$mean_temp),
+  y = as.integer(df_train$value),
   verbose = FALSE
 )
 
@@ -509,6 +469,182 @@ as_tibble(pdp_time$agr_profiles) %>%
 
 
 ## Street Scale 
+
+```{r}
+#| label: street-data
+#| echo: false
+#| eval: true
+
+tar_load(roads_lst_full)
+
+```
+
+
+After prepping dataset, we check for correlations across variables :
+```{r}
+#| label: street-corr
+#| echo: false
+#| eval: true
+
+roads_lst_full %>%
+  select_if(is.numeric) %>%
+  cor(use = "complete.obs") %>%
+  corrplot::corrplot()
+
+
+set.seed(123)
+# strata ensures that the random sampling is conducted within the stratification variable
+# resamples have equivalent proportions of the original dataset
+df_split <- initial_split(roads_lst_full %>% rename(value = mean_temp), strata = city)
+df_train <- training(df_split)
+df_test <- testing(df_split)
+
+
+# this is the model, everything in the dataset is explanatory except legal status and ID
+mod_rec <- recipe(value ~ ., data = df_train) %>%
+  step_normalize(all_numeric_predictors()) %>% 
+  # converts factors (nominal) into numeric binary model terms
+  step_dummy(all_nominal(), -all_outcomes()) %>%
+  step_corr(threshold = 0.8) %>% 
+  step_nzv()
+
+
+# tune hyperparameters mtry and min_n
+tune_spec <- rand_forest(
+  mtry = tune(), # number of predictors that will be randomly sampled at each split
+  trees = 1000,
+  min_n = tune() # min number of data points in a node required for the node to split further
+) %>%
+  # mode options are unknown, regression, classification, censored regression
+  # classification mode is trying to predict differences in categories
+  # regression is trying to predict/fit numeric values
+  set_mode("regression") %>%
+  # type of computational engine -> dependent on model type
+  # random forest models have ranger, randomForest, and spark as options
+  # ranger is default and allows tuning of hyperparameters
+  set_engine("ranger")
+
+# put everything together in a workflow
+tune_wf <- workflow() %>%
+  add_recipe(mod_rec) %>%
+  add_model(tune_spec)
+
+tune_res <- tar_read(streets_temp_tune)
+
+
+autoplot(tune_res)
+
+
+# select best values for hyperparameters and fit model
+best_auc <- select_best(tune_res, metric = "mae")
+```
+
+Update model to include variance importance scores and fit best model to test data
+
+```{r}
+#| label: street-fit
+#| echo: false
+#| eval: true
+
+cores <- parallel::detectCores()
+
+last_mod <-
+  rand_forest(mtry = best_auc$mtry, min_n = best_auc$min_n, trees = 1000) %>%
+  set_mode("regression") %>%
+  set_engine("ranger", num.threads = cores, importance = "impurity")
+
+
+# the last workflow
+last_workflow <-
+  tune_wf %>%
+  update_model(last_mod)
+
+# the last fit
+set.seed(345)
+last_rf_fit <-
+  last_workflow %>%
+  last_fit(df_split,
+           metrics = metric_set(mae, rsq))
+
+
+last_rf_model <- last_rf_fit$.workflow[[1]]
+
+
+# prediction vs actual values for final model
+all_predictions <- bind_rows(
+  augment(last_rf_model, new_data = df_train) %>% 
+    mutate(type = "train"),
+  augment(last_rf_model, new_data = df_test) %>% 
+    mutate(type = "test")
+)
+
+# metrics between testing and training 
+
+all_predictions %>% 
+  group_by(type) %>% 
+  metrics(value, .pred)
+
+# model fit between testing and training 
+
+all_predictions %>%
+  ggplot(aes(value, .pred)) +
+  geom_point() +
+  geom_abline() +
+  facet_wrap(~type)
+
+
+vip <- last_rf_fit %>%
+  extract_fit_parsnip() %>%
+  vip(geom = "point") +
+  theme_classic()
+
+vip
+```
+
+EXPLANATION 
+
+```{r}
+#| label: street-pdp
+#| echo: false
+#| eval: true
+#| out-width: 100%
+
+model_explainer <- explain_tidymodels(
+  last_rf_fit$.workflow[[1]],
+  data = df_train,
+  y = as.integer(df_train$value),
+  verbose = FALSE
+)
+
+vars <- vip[["data"]]$Variable
+
+
+pdp_time <- model_profile(
+  model_explainer,
+  variables = vars,
+  N = NULL,
+  groups = "city"
+)
+
+#supp.labs <- c("Mean NDVI", "Day of Year", "Mean NDBI", "Visible Minorities (%)", "Road Density (km/km2)", "Tree Stem Density (km2/km2)", "City Area (km2)", "Std Dev Building Height (m)", "Duplex (% residents)", "Recent Immigrants (%)")
+#names(supp.labs) <- vars
+
+as_tibble(pdp_time$agr_profiles) %>%
+  mutate(across(`_vname_`, ~factor(., levels=vars))) %>%
+  ggplot(aes(`_x_`, `_yhat_`, color = `_groups_`)) +
+  scale_color_met_d(name = 'Demuth') + 
+  #geom_point(data = df_train, aes(x = stemdens, y = mean_temp, colour = city)) + 
+  geom_line(linewidth = 1.2, alpha = 0.9) +
+  labs(
+    title = "10 Most Important Variables at Street Scale",
+    y = "Predicted mean temp",
+    colour = "",
+    x = ""
+  ) + 
+  facet_wrap(`_vname_` ~ ., scales = "free") + 
+  theme_classic()
+
+```
 
 
 # Air Pollution
@@ -563,24 +699,13 @@ autoplot(cities_tune)
 # select best values for hyperparameters and fit model
 best_mae <- select_best(cities_tune, metric = "mae")
 
-
-# look at predictions of best model against real values
-collect_predictions(cities_tune) %>% 
-  filter(.config==pull(show_best(cities_tune, metric='mae', n=1),.config)) %>% # only bring back predictions for the best model
-  ggplot(aes(x=.pred, y=value )) + 
-  geom_point(shape=1)  +
-  geom_abline(slope=1, linetype = "dashed", colour='blue') +
-  coord_obs_pred() +
-  ggtitle("Actuals vs Prediction on Resamples") + 
-  theme(text = element_text(size=20))
-
 ```
 
 Update model to include variance importance scores and fit best model to test data
 
 ```{r}
 #| label: city-uv-fit
-#| echo: true
+#| echo: false
 #| eval: true
 
 cores <- parallel::detectCores()
@@ -603,28 +728,31 @@ last_rf_fit <-
   last_fit(df_split,
            metrics = metric_set(mae, rsq))
 
-
-# performance metrics values for top validation model and test model
-cities_tune %>%
-  collect_metrics() %>%
-  inner_join(., best_mae) %>%
-  mutate(model = 'validation',
-         .estimate = mean) %>%
-  select(c(.metric, .estimator, .estimate, .config, model)) %>%
-  rbind(., last_rf_fit %>% collect_metrics() %>% mutate(model = 'test')) 
-
-# performance decreases on real data model 
-
+last_rf_model <- last_rf_fit$.workflow[[1]]
 
 # prediction vs actual values for final model
-collect_predictions(last_rf_fit) %>% 
-  ggplot(aes(x=.pred, y=value )) + 
-  geom_point(shape=1)  +
-  geom_abline(slope=1, linetype = "dashed", colour='blue') +
-  coord_obs_pred() +
-  ggtitle("Actuals vs Prediction on Test") + 
-  theme(text = element_text(size=20))
+all_predictions <- bind_rows(
+  augment(last_rf_model, new_data = df_train) %>% 
+    mutate(type = "train"),
+  augment(last_rf_model, new_data = df_test) %>% 
+    mutate(type = "test")
+)
 
+# metrics between testing and training 
+
+all_predictions %>% 
+  group_by(type) %>% 
+  metrics(value, .pred)
+
+# model fit between testing and training 
+
+all_predictions %>%
+  ggplot(aes(value, .pred)) +
+  geom_point() +
+  geom_abline() +
+  facet_wrap(~type)
+
+# vip
 
 vip <- last_rf_fit %>%
   extract_fit_parsnip() %>%
@@ -637,7 +765,7 @@ vip
 
 ```{r}
 #| label: city-uv-pdp
-#| echo: true
+#| echo: false
 #| eval: true
 #| out-width: 100%
 
@@ -676,6 +804,158 @@ as_tibble(pdp_time$agr_profiles) %>%
 ```
 
 ### Neighbourhood 
+
+
+```{r}
+#| label: nhood-uv-data
+#| echo: false
+#| eval: true
+
+tar_load(neighbourhoods_pollution_full)
+
+neighbourhoods_pollution_full %>%
+  filter(variable == 'mean_UV_neighbourhood') %>% 
+  select_if(is.numeric) %>%
+  cor(use = "complete.obs") %>%
+  corrplot::corrplot()
+
+
+set.seed(123)
+df_split <- initial_split(neighbourhoods_pollution_full %>% filter(variable == 'mean_UV_neighbourhood') %>% select(-variable), strata = city)
+df_train <- training(df_split)
+df_test <- testing(df_split)
+
+mod_rec <- recipe(value ~ ., data = df_train) %>%
+  step_normalize(all_numeric_predictors(), -doy) %>% 
+  step_dummy(all_nominal(), -all_outcomes()) %>%
+  step_corr(threshold = 0.8) %>% 
+  step_nzv()
+
+tune_spec <- rand_forest(
+  mtry = tune(), 
+  trees = 1000,
+  min_n = tune()) %>%
+  set_mode("regression") %>%
+  set_engine("ranger")
+
+tune_wf <- workflow() %>%
+  add_recipe(mod_rec) %>%
+  add_model(tune_spec)
+
+
+cities_tune <- tar_read(neighbourhoods_uv_tune)
+
+
+autoplot(cities_tune)
+
+
+# select best values for hyperparameters and fit model
+best_mae <- select_best(cities_tune, metric = "mae")
+
+```
+
+Update model to include variance importance scores and fit best model to test data
+
+```{r}
+#| label: nhood-uv-fit
+#| echo: false
+#| eval: true
+
+cores <- parallel::detectCores()
+
+last_mod <-
+  rand_forest(mtry = best_mae$mtry, min_n = best_mae$min_n, trees = 1000) %>%
+  set_mode("regression") %>%
+  set_engine("ranger", num.threads = cores, importance = "impurity")
+
+
+# the last workflow
+last_workflow <-
+  tune_wf %>%
+  update_model(last_mod)
+
+# the last fit
+set.seed(345)
+last_rf_fit <-
+  last_workflow %>%
+  last_fit(df_split,
+           metrics = metric_set(mae, rsq))
+
+last_rf_model <- last_rf_fit$.workflow[[1]]
+
+# prediction vs actual values for final model
+all_predictions <- bind_rows(
+  augment(last_rf_model, new_data = df_train) %>% 
+    mutate(type = "train"),
+  augment(last_rf_model, new_data = df_test) %>% 
+    mutate(type = "test")
+)
+
+# metrics between testing and training 
+
+all_predictions %>% 
+  group_by(type) %>% 
+  metrics(value, .pred)
+
+# model fit between testing and training 
+
+all_predictions %>%
+  ggplot(aes(value, .pred)) +
+  geom_point() +
+  geom_abline() +
+  facet_wrap(~type)
+
+# vip
+
+vip <- last_rf_fit %>%
+  extract_fit_parsnip() %>%
+  vip(geom = "point") +
+  theme_classic()
+
+vip
+```
+
+
+```{r}
+#| label: nhood-uv-pdp
+#| echo: false
+#| eval: true
+#| out-width: 100%
+
+model_explainer <- explain_tidymodels(
+  last_rf_fit$.workflow[[1]],
+  data = df_train,
+  y = as.integer(df_train$value),
+  verbose = FALSE
+)
+
+vars <- vip[["data"]]$Variable
+
+
+pdp_time <- model_profile(
+  model_explainer,
+  variables = vars,
+  N = NULL,
+  groups = "city"
+)
+
+
+as_tibble(pdp_time$agr_profiles) %>%
+  mutate(across(`_vname_`, ~factor(., levels=vars))) %>%
+  ggplot(aes(`_x_`, `_yhat_`, color = `_groups_`)) +
+  scale_color_met_d(name = 'Demuth') + 
+  geom_line(linewidth = 1.2, alpha = 0.9) +
+  labs(
+    title = "10 Most Important Variables at Neighbourhood Scale",
+    y = "Predicted UV",
+    colour = "",
+    x = ""
+  ) + 
+  facet_wrap(`_vname_` ~ ., scales = "free") + 
+  theme_classic()
+
+```
+
 
 ## CO 
 
@@ -726,23 +1006,13 @@ autoplot(cities_tune)
 best_mae <- select_best(cities_tune, metric = "mae")
 
 
-# look at predictions of best model against real values
-collect_predictions(cities_tune) %>% 
-  filter(.config==pull(show_best(cities_tune, metric='mae', n=1),.config)) %>% # only bring back predictions for the best model
-  ggplot(aes(x=.pred, y=value )) + 
-  geom_point(shape=1)  +
-  geom_abline(slope=1, linetype = "dashed", colour='blue') +
-  coord_obs_pred() +
-  ggtitle("Actuals vs Prediction on Resamples") + 
-  theme(text = element_text(size=20))
-
 ```
 
 Update model to include variance importance scores and fit best model to test data
 
 ```{r}
 #| label: city-co-fit
-#| echo: true
+#| echo: false
 #| eval: true
 
 cores <- parallel::detectCores()
@@ -765,27 +1035,29 @@ last_rf_fit <-
   last_fit(df_split,
            metrics = metric_set(mae, rsq))
 
-
-# performance metrics values for top validation model and test model
-cities_tune %>%
-  collect_metrics() %>%
-  inner_join(., best_mae) %>%
-  mutate(model = 'validation',
-         .estimate = mean) %>%
-  select(c(.metric, .estimator, .estimate, .config, model)) %>%
-  rbind(., last_rf_fit %>% collect_metrics() %>% mutate(model = 'test')) 
-
-# performance decreases on real data model 
-
+last_rf_model <- last_rf_fit$.workflow[[1]]
 
 # prediction vs actual values for final model
-collect_predictions(last_rf_fit) %>% 
-  ggplot(aes(x=.pred, y=value )) + 
-  geom_point(shape=1)  +
-  geom_abline(slope=1, linetype = "dashed", colour='blue') +
-  coord_obs_pred() +
-  ggtitle("Actuals vs Prediction on Test") + 
-  theme(text = element_text(size=20))
+all_predictions <- bind_rows(
+  augment(last_rf_model, new_data = df_train) %>% 
+    mutate(type = "train"),
+  augment(last_rf_model, new_data = df_test) %>% 
+    mutate(type = "test")
+)
+
+# metrics between testing and training 
+
+all_predictions %>% 
+  group_by(type) %>% 
+  metrics(value, .pred)
+
+# model fit between testing and training 
+
+all_predictions %>%
+  ggplot(aes(value, .pred)) +
+  geom_point() +
+  geom_abline() +
+  facet_wrap(~type)
 
 
 vip <- last_rf_fit %>%
@@ -799,7 +1071,7 @@ vip
 
 ```{r}
 #| label: city-co-pdp
-#| echo: true
+#| echo: false
 #| eval: true
 #| out-width: 100%
 
@@ -839,6 +1111,155 @@ as_tibble(pdp_time$agr_profiles) %>%
 ```
 
 ### Neighbourhood 
+
+```{r}
+#| label: nhood-co-data
+#| echo: false
+#| eval: true
+
+neighbourhoods_pollution_full %>%
+  filter(variable == 'mean_CO_neighbourhood') %>% 
+  select_if(is.numeric) %>%
+  cor(use = "complete.obs") %>%
+  corrplot::corrplot()
+
+
+set.seed(123)
+df_split <- initial_split(neighbourhoods_pollution_full %>% filter(variable == 'mean_CO_neighbourhood') %>% select(-variable), strata = city)
+df_train <- training(df_split)
+df_test <- testing(df_split)
+
+mod_rec <- recipe(value ~ ., data = df_train) %>%
+  step_normalize(all_numeric_predictors(), -doy) %>% 
+  step_dummy(all_nominal(), -all_outcomes()) %>%
+  step_corr(threshold = 0.8) %>% 
+  step_nzv()
+
+tune_spec <- rand_forest(
+  mtry = tune(), 
+  trees = 1000,
+  min_n = tune()) %>%
+  set_mode("regression") %>%
+  set_engine("ranger")
+
+tune_wf <- workflow() %>%
+  add_recipe(mod_rec) %>%
+  add_model(tune_spec)
+
+
+cities_tune <- tar_read(neighbourhoods_co_tune)
+
+
+autoplot(cities_tune)
+
+
+# select best values for hyperparameters and fit model
+best_mae <- select_best(cities_tune, metric = "mae")
+
+
+```
+
+Update model to include variance importance scores and fit best model to test data
+
+```{r}
+#| label: nhood-co-fit
+#| echo: false
+#| eval: true
+
+cores <- parallel::detectCores()
+
+last_mod <-
+  rand_forest(mtry = best_mae$mtry, min_n = best_mae$min_n, trees = 1000) %>%
+  set_mode("regression") %>%
+  set_engine("ranger", num.threads = cores, importance = "impurity")
+
+
+# the last workflow
+last_workflow <-
+  tune_wf %>%
+  update_model(last_mod)
+
+# the last fit
+set.seed(345)
+last_rf_fit <-
+  last_workflow %>%
+  last_fit(df_split,
+           metrics = metric_set(mae, rsq))
+
+last_rf_model <- last_rf_fit$.workflow[[1]]
+
+# prediction vs actual values for final model
+all_predictions <- bind_rows(
+  augment(last_rf_model, new_data = df_train) %>% 
+    mutate(type = "train"),
+  augment(last_rf_model, new_data = df_test) %>% 
+    mutate(type = "test")
+)
+
+# metrics between testing and training 
+
+all_predictions %>% 
+  group_by(type) %>% 
+  metrics(value, .pred)
+
+# model fit between testing and training 
+
+all_predictions %>%
+  ggplot(aes(value, .pred)) +
+  geom_point() +
+  geom_abline() +
+  facet_wrap(~type)
+
+
+vip <- last_rf_fit %>%
+  extract_fit_parsnip() %>%
+  vip(geom = "point") +
+  theme_classic()
+
+vip
+```
+
+
+```{r}
+#| label: nhood-co-pdp
+#| echo: false
+#| eval: true
+#| out-width: 100%
+
+model_explainer <- explain_tidymodels(
+  last_rf_fit$.workflow[[1]],
+  data = df_train,
+  y = as.integer(df_train$value),
+  verbose = FALSE
+)
+
+vars <- vip[["data"]]$Variable
+
+vars <- vars[vars != 'city_Winnipeg']
+
+pdp_time <- model_profile(
+  model_explainer,
+  variables = vars,
+  N = NULL,
+  groups = "city"
+)
+
+
+as_tibble(pdp_time$agr_profiles) %>%
+  mutate(across(`_vname_`, ~factor(., levels=vars))) %>%
+  ggplot(aes(`_x_`, `_yhat_`, color = `_groups_`)) +
+  scale_color_met_d(name = 'Demuth') + 
+  geom_line(linewidth = 1.2, alpha = 0.9) +
+  labs(
+    title = "10 Most Important Variables at Neighbourhood Scale",
+    y = "Predicted UV",
+    colour = "",
+    x = ""
+  ) + 
+  facet_wrap(`_vname_` ~ ., scales = "free") + 
+  theme_classic()
+
+```
 
 
 ## NO2
@@ -890,15 +1311,6 @@ autoplot(cities_tune)
 best_mae <- select_best(cities_tune, metric = "mae")
 
 
-# look at predictions of best model against real values
-collect_predictions(cities_tune) %>% 
-  filter(.config==pull(show_best(cities_tune, metric='mae', n=1),.config)) %>% # only bring back predictions for the best model
-  ggplot(aes(x=.pred, y=value )) + 
-  geom_point(shape=1)  +
-  geom_abline(slope=1, linetype = "dashed", colour='blue') +
-  coord_obs_pred() +
-  ggtitle("Actuals vs Prediction on Resamples") + 
-  theme(text = element_text(size=20))
 
 ```
 
@@ -906,7 +1318,7 @@ Update model to include variance importance scores and fit best model to test da
 
 ```{r}
 #| label: city-no2-fit
-#| echo: true
+#| echo: false
 #| eval: true
 
 cores <- parallel::detectCores()
@@ -929,27 +1341,29 @@ last_rf_fit <-
   last_fit(df_split,
            metrics = metric_set(mae, rsq))
 
-
-# performance metrics values for top validation model and test model
-cities_tune %>%
-  collect_metrics() %>%
-  inner_join(., best_mae) %>%
-  mutate(model = 'validation',
-         .estimate = mean) %>%
-  select(c(.metric, .estimator, .estimate, .config, model)) %>%
-  rbind(., last_rf_fit %>% collect_metrics() %>% mutate(model = 'test')) 
-
-# performance decreases on real data model 
-
+last_rf_model <- last_rf_fit$.workflow[[1]]
 
 # prediction vs actual values for final model
-collect_predictions(last_rf_fit) %>% 
-  ggplot(aes(x=.pred, y=value )) + 
-  geom_point(shape=1)  +
-  geom_abline(slope=1, linetype = "dashed", colour='blue') +
-  coord_obs_pred() +
-  ggtitle("Actuals vs Prediction on Test") + 
-  theme(text = element_text(size=20))
+all_predictions <- bind_rows(
+  augment(last_rf_model, new_data = df_train) %>% 
+    mutate(type = "train"),
+  augment(last_rf_model, new_data = df_test) %>% 
+    mutate(type = "test")
+)
+
+# metrics between testing and training 
+
+all_predictions %>% 
+  group_by(type) %>% 
+  metrics(value, .pred)
+
+# model fit between testing and training 
+
+all_predictions %>%
+  ggplot(aes(value, .pred)) +
+  geom_point() +
+  geom_abline() +
+  facet_wrap(~type)
 
 
 vip <- last_rf_fit %>%
@@ -963,7 +1377,7 @@ vip
 
 ```{r}
 #| label: city-no2-pdp
-#| echo: true
+#| echo: false
 #| eval: true
 #| out-width: 100%
 
@@ -1001,7 +1415,158 @@ as_tibble(pdp_time$agr_profiles) %>%
 
 ```
 
-### Neighbourhood 
+### Neighbourhood
+
+
+```{r}
+#| label: nhood-no2-data
+#| echo: false
+#| eval: true
+
+neighbourhoods_pollution_full %>%
+  filter(variable == 'mean_NO2_neighbourhood') %>% 
+  select_if(is.numeric) %>%
+  cor(use = "complete.obs") %>%
+  corrplot::corrplot()
+
+
+set.seed(123)
+df_split <- initial_split(neighbourhoods_pollution_full %>% filter(variable == 'mean_NO2_neighbourhood') %>% select(-variable), strata = city)
+df_train <- training(df_split)
+df_test <- testing(df_split)
+
+mod_rec <- recipe(value ~ ., data = df_train) %>%
+  step_normalize(all_numeric_predictors(), -doy) %>% 
+  step_dummy(all_nominal(), -all_outcomes()) %>%
+  step_corr(threshold = 0.8) %>% 
+  step_nzv()
+
+tune_spec <- rand_forest(
+  mtry = tune(), 
+  trees = 1000,
+  min_n = tune()) %>%
+  set_mode("regression") %>%
+  set_engine("ranger")
+
+tune_wf <- workflow() %>%
+  add_recipe(mod_rec) %>%
+  add_model(tune_spec)
+
+
+cities_tune <- tar_read(neighbourhoods_no2_tune)
+
+
+autoplot(cities_tune)
+
+
+# select best values for hyperparameters and fit model
+best_mae <- select_best(cities_tune, metric = "mae")
+
+
+
+```
+
+Update model to include variance importance scores and fit best model to test data
+
+```{r}
+#| label: nhood-no2-fit
+#| echo: false
+#| eval: true
+
+cores <- parallel::detectCores()
+
+last_mod <-
+  rand_forest(mtry = best_mae$mtry, min_n = best_mae$min_n, trees = 1000) %>%
+  set_mode("regression") %>%
+  set_engine("ranger", num.threads = cores, importance = "impurity")
+
+
+# the last workflow
+last_workflow <-
+  tune_wf %>%
+  update_model(last_mod)
+
+# the last fit
+set.seed(345)
+last_rf_fit <-
+  last_workflow %>%
+  last_fit(df_split,
+           metrics = metric_set(mae, rsq))
+
+last_rf_model <- last_rf_fit$.workflow[[1]]
+
+# prediction vs actual values for final model
+all_predictions <- bind_rows(
+  augment(last_rf_model, new_data = df_train) %>% 
+    mutate(type = "train"),
+  augment(last_rf_model, new_data = df_test) %>% 
+    mutate(type = "test")
+)
+
+# metrics between testing and training 
+
+all_predictions %>% 
+  group_by(type) %>% 
+  metrics(value, .pred)
+
+# model fit between testing and training 
+
+all_predictions %>%
+  ggplot(aes(value, .pred)) +
+  geom_point() +
+  geom_abline() +
+  facet_wrap(~type)
+
+
+vip <- last_rf_fit %>%
+  extract_fit_parsnip() %>%
+  vip(geom = "point") +
+  theme_classic()
+
+vip
+```
+
+
+```{r}
+#| label: nhood-no2-pdp
+#| echo: false
+#| eval: true
+#| out-width: 100%
+
+model_explainer <- explain_tidymodels(
+  last_rf_fit$.workflow[[1]],
+  data = df_train,
+  y = as.integer(df_train$value),
+  verbose = FALSE
+)
+
+vars <- vip[["data"]]$Variable
+
+
+pdp_time <- model_profile(
+  model_explainer,
+  variables = vars,
+  N = NULL,
+  groups = "city"
+)
+
+
+as_tibble(pdp_time$agr_profiles) %>%
+  mutate(across(`_vname_`, ~factor(., levels=vars))) %>%
+  ggplot(aes(`_x_`, `_yhat_`, color = `_groups_`)) +
+  scale_color_met_d(name = 'Demuth') + 
+  geom_line(linewidth = 1.2, alpha = 0.9) +
+  labs(
+    title = "10 Most Important Variables at Neighbourhood Scale",
+    y = "Predicted UV",
+    colour = "",
+    x = ""
+  ) + 
+  facet_wrap(`_vname_` ~ ., scales = "free") + 
+  theme_classic()
+
+```
+
 
 ## SO2
 
@@ -1052,23 +1617,13 @@ autoplot(cities_tune)
 best_mae <- select_best(cities_tune, metric = "mae")
 
 
-# look at predictions of best model against real values
-collect_predictions(cities_tune) %>% 
-  filter(.config==pull(show_best(cities_tune, metric='mae', n=1),.config)) %>% # only bring back predictions for the best model
-  ggplot(aes(x=.pred, y=value )) + 
-  geom_point(shape=1)  +
-  geom_abline(slope=1, linetype = "dashed", colour='blue') +
-  coord_obs_pred() +
-  ggtitle("Actuals vs Prediction on Resamples") + 
-  theme(text = element_text(size=20))
-
 ```
 
 Update model to include variance importance scores and fit best model to test data
 
 ```{r}
 #| label: city-so2-fit
-#| echo: true
+#| echo: false
 #| eval: true
 
 cores <- parallel::detectCores()
@@ -1091,27 +1646,29 @@ last_rf_fit <-
   last_fit(df_split,
            metrics = metric_set(mae, rsq))
 
-
-# performance metrics values for top validation model and test model
-cities_tune %>%
-  collect_metrics() %>%
-  inner_join(., best_mae) %>%
-  mutate(model = 'validation',
-         .estimate = mean) %>%
-  select(c(.metric, .estimator, .estimate, .config, model)) %>%
-  rbind(., last_rf_fit %>% collect_metrics() %>% mutate(model = 'test')) 
-
-# performance decreases on real data model 
-
+last_rf_model <- last_rf_fit$.workflow[[1]]
 
 # prediction vs actual values for final model
-collect_predictions(last_rf_fit) %>% 
-  ggplot(aes(x=.pred, y=value )) + 
-  geom_point(shape=1)  +
-  geom_abline(slope=1, linetype = "dashed", colour='blue') +
-  coord_obs_pred() +
-  ggtitle("Actuals vs Prediction on Test") + 
-  theme(text = element_text(size=20))
+all_predictions <- bind_rows(
+  augment(last_rf_model, new_data = df_train) %>% 
+    mutate(type = "train"),
+  augment(last_rf_model, new_data = df_test) %>% 
+    mutate(type = "test")
+)
+
+# metrics between testing and training 
+
+all_predictions %>% 
+  group_by(type) %>% 
+  metrics(value, .pred)
+
+# model fit between testing and training 
+
+all_predictions %>%
+  ggplot(aes(value, .pred)) +
+  geom_point() +
+  geom_abline() +
+  facet_wrap(~type)
 
 
 vip <- last_rf_fit %>%
@@ -1125,7 +1682,7 @@ vip
 
 ```{r}
 #| label: city-so2-pdp
-#| echo: true
+#| echo: false
 #| eval: true
 #| out-width: 100%
 
@@ -1164,6 +1721,156 @@ as_tibble(pdp_time$agr_profiles) %>%
 ```
 
 ### Neighbourhood 
+
+
+```{r}
+#| label: nhood-so2-data
+#| echo: false
+#| eval: true
+
+neighbourhoods_pollution_full %>%
+  filter(variable == 'mean_SO2_neighbourhood') %>% 
+  select_if(is.numeric) %>%
+  cor(use = "complete.obs") %>%
+  corrplot::corrplot()
+
+
+set.seed(123)
+df_split <- initial_split(neighbourhoods_pollution_full %>% filter(variable == 'mean_SO2_neighbourhood') %>% select(-variable), strata = city)
+df_train <- training(df_split)
+df_test <- testing(df_split)
+
+mod_rec <- recipe(value ~ ., data = df_train) %>%
+  step_normalize(all_numeric_predictors(), -doy) %>% 
+  step_dummy(all_nominal(), -all_outcomes()) %>%
+  step_corr(threshold = 0.8) %>% 
+  step_nzv()
+
+tune_spec <- rand_forest(
+  mtry = tune(), 
+  trees = 1000,
+  min_n = tune()) %>%
+  set_mode("regression") %>%
+  set_engine("ranger")
+
+tune_wf <- workflow() %>%
+  add_recipe(mod_rec) %>%
+  add_model(tune_spec)
+
+
+cities_tune <- tar_read(neighbourhoods_so2_tune)
+
+
+autoplot(cities_tune)
+
+
+# select best values for hyperparameters and fit model
+best_mae <- select_best(cities_tune, metric = "mae")
+
+
+```
+
+Update model to include variance importance scores and fit best model to test data
+
+```{r}
+#| label: nhood-so2-fit
+#| echo: false
+#| eval: true
+
+cores <- parallel::detectCores()
+
+last_mod <-
+  rand_forest(mtry = best_mae$mtry, min_n = best_mae$min_n, trees = 1000) %>%
+  set_mode("regression") %>%
+  set_engine("ranger", num.threads = cores, importance = "impurity")
+
+
+# the last workflow
+last_workflow <-
+  tune_wf %>%
+  update_model(last_mod)
+
+# the last fit
+set.seed(345)
+last_rf_fit <-
+  last_workflow %>%
+  last_fit(df_split,
+           metrics = metric_set(mae, rsq))
+
+last_rf_model <- last_rf_fit$.workflow[[1]]
+
+# prediction vs actual values for final model
+all_predictions <- bind_rows(
+  augment(last_rf_model, new_data = df_train) %>% 
+    mutate(type = "train"),
+  augment(last_rf_model, new_data = df_test) %>% 
+    mutate(type = "test")
+)
+
+# metrics between testing and training 
+
+all_predictions %>% 
+  group_by(type) %>% 
+  metrics(value, .pred)
+
+# model fit between testing and training 
+
+all_predictions %>%
+  ggplot(aes(value, .pred)) +
+  geom_point() +
+  geom_abline() +
+  facet_wrap(~type)
+
+
+vip <- last_rf_fit %>%
+  extract_fit_parsnip() %>%
+  vip(geom = "point") +
+  theme_classic()
+
+vip
+```
+
+
+```{r}
+#| label: nhood-so2-pdp
+#| echo: false
+#| eval: true
+#| out-width: 100%
+
+model_explainer <- explain_tidymodels(
+  last_rf_fit$.workflow[[1]],
+  data = df_train,
+  y = as.integer(df_train$value),
+  verbose = FALSE
+)
+
+vars <- vip[["data"]]$Variable
+
+
+pdp_time <- model_profile(
+  model_explainer,
+  variables = vars,
+  N = NULL,
+  groups = "city"
+)
+
+
+as_tibble(pdp_time$agr_profiles) %>%
+  mutate(across(`_vname_`, ~factor(., levels=vars))) %>%
+  ggplot(aes(`_x_`, `_yhat_`, color = `_groups_`)) +
+  scale_color_met_d(name = 'Demuth') + 
+  geom_line(linewidth = 1.2, alpha = 0.9) +
+  labs(
+    title = "10 Most Important Variables at Neighbourhood Scale",
+    y = "Predicted UV",
+    colour = "",
+    x = ""
+  ) + 
+  facet_wrap(`_vname_` ~ ., scales = "free") + 
+  theme_classic()
+
+```
+
 
 ## O3
 
@@ -1214,23 +1921,13 @@ autoplot(cities_tune)
 best_mae <- select_best(cities_tune, metric = "mae")
 
 
-# look at predictions of best model against real values
-collect_predictions(cities_tune) %>% 
-  filter(.config==pull(show_best(cities_tune, metric='mae', n=1),.config)) %>% # only bring back predictions for the best model
-  ggplot(aes(x=.pred, y=value )) + 
-  geom_point(shape=1)  +
-  geom_abline(slope=1, linetype = "dashed", colour='blue') +
-  coord_obs_pred() +
-  ggtitle("Actuals vs Prediction on Resamples") + 
-  theme(text = element_text(size=20))
-
 ```
 
 Update model to include variance importance scores and fit best model to test data
 
 ```{r}
 #| label: city-o3-fit
-#| echo: true
+#| echo: false
 #| eval: true
 
 cores <- parallel::detectCores()
@@ -1253,27 +1950,29 @@ last_rf_fit <-
   last_fit(df_split,
            metrics = metric_set(mae, rsq))
 
-
-# performance metrics values for top validation model and test model
-cities_tune %>%
-  collect_metrics() %>%
-  inner_join(., best_mae) %>%
-  mutate(model = 'validation',
-         .estimate = mean) %>%
-  select(c(.metric, .estimator, .estimate, .config, model)) %>%
-  rbind(., last_rf_fit %>% collect_metrics() %>% mutate(model = 'test')) 
-
-# performance decreases on real data model 
-
+last_rf_model <- last_rf_fit$.workflow[[1]]
 
 # prediction vs actual values for final model
-collect_predictions(last_rf_fit) %>% 
-  ggplot(aes(x=.pred, y=value )) + 
-  geom_point(shape=1)  +
-  geom_abline(slope=1, linetype = "dashed", colour='blue') +
-  coord_obs_pred() +
-  ggtitle("Actuals vs Prediction on Test") + 
-  theme(text = element_text(size=20))
+all_predictions <- bind_rows(
+  augment(last_rf_model, new_data = df_train) %>% 
+    mutate(type = "train"),
+  augment(last_rf_model, new_data = df_test) %>% 
+    mutate(type = "test")
+)
+
+# metrics between testing and training 
+
+all_predictions %>% 
+  group_by(type) %>% 
+  metrics(value, .pred)
+
+# model fit between testing and training 
+
+all_predictions %>%
+  ggplot(aes(value, .pred)) +
+  geom_point() +
+  geom_abline() +
+  facet_wrap(~type)
 
 
 vip <- last_rf_fit %>%
@@ -1287,7 +1986,7 @@ vip
 
 ```{r}
 #| label: city-o3-pdp
-#| echo: true
+#| echo: false
 #| eval: true
 #| out-width: 100%
 
@@ -1326,3 +2025,152 @@ as_tibble(pdp_time$agr_profiles) %>%
 ```
 
 ### Neighbourhood 
+
+
+```{r}
+#| label: nhood-o3-data
+#| echo: false
+#| eval: true
+
+neighbourhoods_pollution_full %>%
+  filter(variable == 'mean_O3_neighbourhood') %>% 
+  select_if(is.numeric) %>%
+  cor(use = "complete.obs") %>%
+  corrplot::corrplot()
+
+
+set.seed(123)
+df_split <- initial_split(neighbourhoods_pollution_full %>% filter(variable == 'mean_O3_neighbourhood') %>% select(-variable), strata = city)
+df_train <- training(df_split)
+df_test <- testing(df_split)
+
+mod_rec <- recipe(value ~ ., data = df_train) %>%
+  step_normalize(all_numeric_predictors(), -doy) %>% 
+  step_dummy(all_nominal(), -all_outcomes()) %>%
+  step_corr(threshold = 0.8) %>% 
+  step_nzv()
+
+tune_spec <- rand_forest(
+  mtry = tune(), 
+  trees = 1000,
+  min_n = tune()) %>%
+  set_mode("regression") %>%
+  set_engine("ranger")
+
+tune_wf <- workflow() %>%
+  add_recipe(mod_rec) %>%
+  add_model(tune_spec)
+
+
+cities_tune <- tar_read(neighbourhoods_o3_tune)
+
+
+autoplot(cities_tune)
+
+
+# select best values for hyperparameters and fit model
+best_mae <- select_best(cities_tune, metric = "mae")
+
+
+```
+
+Update model to include variance importance scores and fit best model to test data
+
+```{r}
+#| label: nhood-o3-fit
+#| echo: false
+#| eval: true
+
+cores <- parallel::detectCores()
+
+last_mod <-
+  rand_forest(mtry = best_mae$mtry, min_n = best_mae$min_n, trees = 1000) %>%
+  set_mode("regression") %>%
+  set_engine("ranger", num.threads = cores, importance = "impurity")
+
+
+# the last workflow
+last_workflow <-
+  tune_wf %>%
+  update_model(last_mod)
+
+# the last fit
+set.seed(345)
+last_rf_fit <-
+  last_workflow %>%
+  last_fit(df_split,
+           metrics = metric_set(mae, rsq))
+
+last_rf_model <- last_rf_fit$.workflow[[1]]
+
+# prediction vs actual values for final model
+all_predictions <- bind_rows(
+  augment(last_rf_model, new_data = df_train) %>% 
+    mutate(type = "train"),
+  augment(last_rf_model, new_data = df_test) %>% 
+    mutate(type = "test")
+)
+
+# metrics between testing and training 
+
+all_predictions %>% 
+  group_by(type) %>% 
+  metrics(value, .pred)
+
+# model fit between testing and training 
+
+all_predictions %>%
+  ggplot(aes(value, .pred)) +
+  geom_point() +
+  geom_abline() +
+  facet_wrap(~type)
+
+
+vip <- last_rf_fit %>%
+  extract_fit_parsnip() %>%
+  vip(geom = "point") +
+  theme_classic()
+
+vip
+```
+
+
+```{r}
+#| label: nhood-o3-pdp
+#| echo: false
+#| eval: true
+#| out-width: 100%
+
+model_explainer <- explain_tidymodels(
+  last_rf_fit$.workflow[[1]],
+  data = df_train,
+  y = as.integer(df_train$value),
+  verbose = FALSE
+)
+
+vars <- vip[["data"]]$Variable
+
+
+pdp_time <- model_profile(
+  model_explainer,
+  variables = vars,
+  N = NULL,
+  groups = "city"
+)
+
+
+as_tibble(pdp_time$agr_profiles) %>%
+  mutate(across(`_vname_`, ~factor(., levels=vars))) %>%
+  ggplot(aes(`_x_`, `_yhat_`, color = `_groups_`)) +
+  scale_color_met_d(name = 'Demuth') + 
+  geom_line(linewidth = 1.2, alpha = 0.9) +
+  labs(
+    title = "10 Most Important Variables at Neighbourhood Scale",
+    y = "Predicted UV",
+    colour = "",
+    x = ""
+  ) + 
+  facet_wrap(`_vname_` ~ ., scales = "free") + 
+  theme_classic()
+
+```
