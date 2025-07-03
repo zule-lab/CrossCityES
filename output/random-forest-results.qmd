@@ -118,8 +118,7 @@ tune_res <- tune_grid(
   tune_wf,
   resamples = mod_folds,
   # data frame of tuning combinations with 25 candidate parameter sets
-  grid = 25,
-  control = control_grid(save_pred = T),
+  grid = 15,
   metrics = metric_set(mae, rsq))
 ```
 
@@ -136,17 +135,6 @@ autoplot(tune_res)
 
 # select best values for hyperparameters and fit model
 best_auc <- select_best(tune_res, metric = "mae")
-
-
-# look at predictions of best model against real values
-collect_predictions(tune_res) %>% 
-  filter(.config==pull(show_best(tune_res, metric='mae', n=1),.config)) %>% # only bring back predictions for the best model
-  ggplot(aes(x=.pred, y=value )) + 
-  geom_point(shape=1)  +
-  geom_abline(slope=1, linetype = "dashed", colour='blue') +
-  coord_obs_pred() +
-  ggtitle("Actuals vs Prediction on Resamples") + 
-  theme(text = element_text(size=20))
 
 ```
 
@@ -177,6 +165,16 @@ last_rf_fit <-
   last_fit(df_split,
            metrics = metric_set(mae, rsq))
 
+last_rf_model <- last_rf_fit$.workflow[[1]]
+
+# look at predictions of best model against real values
+last_rf_model %>% 
+  augment(new_data = df_train) %>%
+  ggplot(aes(value, .pred)) +
+  geom_point(shape = 1) +
+  geom_abline(slope = 1, linetype = 'dashed', colour = 'blue') + 
+  ggtitle('Actuals vs Prediction on Training Set')
+
 ```
 
 Now we can assess the performance of the final model. We want metrics to stay consistent across testing and training data. 
@@ -200,13 +198,12 @@ tune_res %>%
 
 
 # prediction vs actual values for final model
-collect_predictions(last_rf_fit) %>% 
-  ggplot(aes(x=.pred, y=value )) + 
-  geom_point(shape=1)  +
-  geom_abline(slope=1, linetype = "dashed", colour='blue') +
-  coord_obs_pred() +
-  ggtitle("Actuals vs Prediction on Test") + 
-  theme(text = element_text(size=20))
+last_rf_model %>% 
+  augment(new_data = df_test) %>%
+  ggplot(aes(value, .pred)) +
+  geom_point(shape = 1) +
+  geom_abline(slope = 1, linetype = 'dashed', colour = 'blue') + 
+  ggtitle('Actuals vs Prediction on Testing Set')
 
 ```
 
