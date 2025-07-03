@@ -46,7 +46,7 @@ rf_tune <- function(df){
   mod_folds <- vfold_cv(df_train)
   
   # need to assess across many models - use parallel processing to use 20 grid points
-  future::plan(strategy = 'multisession')
+  future::plan(strategy = 'multicore', workers = 10)
   
   set.seed(345)
   # computes performance metrics for tuning parameters (set in tune_wf) for resamples (trees_folds)
