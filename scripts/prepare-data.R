@@ -124,10 +124,16 @@ targets_prepare_data <- c(
   ),
 
   tar_target(
-    can_build,
+    can_build_list,
     building_sf(building_paths, mun_bound_trees),
-    pattern = map(building_paths)
+    pattern = map(building_paths),
+    iteration = 'list'
    ),
+
+  tar_target(
+    can_build,
+    do.call(rbind, can_build_list)
+  ),
 
 
 # census ------------------------------------------------------------------
