@@ -11,8 +11,9 @@ tar_source('R')
 
 # Options -----------------------------------------------------------------
 # Targets
-tar_option_set(format = 'qs')
-
+tar_option_set(format = 'qs',
+               #controller = crew_controller_local(workers = 10),
+               seed = 666)
 
 
 # Renv --------------------------------------------------------------------
@@ -22,15 +23,14 @@ restore()
 
 
 # Variables ---------------------------------------------------------------
-getOption('timeout')
-options(timeout=2000)
-
+#getOption('timeout')
+#options(timeout=2000)
 
 
 # Data --------------------------------------------------------------------
-tar_source('input/link-values.R')
 # NOTE: need to create large/ directories if cloning repository 
 # example: dir.create(file.path('large', 'neighbourhoods'))
+tar_source('input/link-values.R')
 
 
 # Targets: all ------------------------------------------------------------

@@ -1,4 +1,4 @@
-clean_census_da <- function(x, n, o, da_bound){
+clean_census_da <- function(x, n, o, da_bound, cen_da_raw){
   
   # combine 5 separated census files that are in zipped folder
   l <- as.character(unzip(x, list = T)$Name)
