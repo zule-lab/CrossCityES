@@ -1,7 +1,7 @@
 rf_tune <- function(folds, model_workflow, dataset_folds){
   
   fold <- dataset_folds %>% 
-    dplyr::filter(id == folds) 
+    filter(id == folds) 
   
   fold_format <- manual_rset(fold$splits, fold$id)
   
