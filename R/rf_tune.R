@@ -12,6 +12,6 @@ rf_tune <- function(folds, model_workflow, dataset_folds){
     grid = 15,
     metrics = metric_set(mae, rsq))
   
-  return(fold)
+  return(tune_res)
   
 }
