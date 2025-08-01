@@ -62,7 +62,7 @@ targets_models <- c(
   tar_target(
     final_models_unnamed,
     select_model(model_tune_list_formatted, names(model_tune_list_formatted), model_workflow, model_data),
-    pattern = map(model_tune_list_formatted, model_workflow, dataset_split),
+    pattern = map(model_tune_list_formatted, model_workflow, dataset_split, model_data),
     iteration = 'list'
   ),
   
