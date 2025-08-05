@@ -1,12 +1,10 @@
 ---
 title: "Random Forest Model Results"
-date: last-modified
 ---
 
 ```{r}
 #| label: setup
 #| include: false
-
 
 knitr::opts_chunk$set(echo = T)
 options(tidyverse.quiet = T)
@@ -21,185 +19,183 @@ tar_source('R')
 
 Model fit:
 
-![](graphics/cities_temp_model-fit.png)
+![](../graphics/cities_temp_model-fit.png)
 
 Most important variables:
 
-![](graphics/cities_temp_vip.png)
+![](../graphics/cities_temp_vip.png)
 
 Relationships with most important variables:
 
-![](graphics/cities_temp_pdp.png)
+![](../graphics/cities_temp_pdp.png)
 
 ## Neighbourhood Scale
 
 Model fit:
 
-![](graphics/neighbourhoods_temp_model-fit.png)
+![](../graphics/neighbourhoods_temp_model-fit.png)
 
 Most important variables:
 
-![](graphics/neighbourhoods_temp_vip.png)
+![](../graphics/neighbourhoods_temp_vip.png)
 
 Relationships with most important variables:
 
-![](graphics/neighbourhoods_temp_pdp.png)
+![](../graphics/neighbourhoods_temp_pdp.png)
 
 ## Street Scale
 
 Model fit:
 
-![](graphics/streets_temp_model-fit.png)
+![](../graphics/streets_temp_model-fit.png)
 
 Most important variables:
 
-![](graphics/streets_temp_vip.png)
+![](../graphics/streets_temp_vip.png)
 
 Relationships with most important variables:
 
-![](graphics/streets_temp_pdp.png)
+![](../graphics/streets_temp_pdp.png)
 
 # UV
 
 ## City Scale
 
-![](graphics/cities_UV_model-fit.png)
+![](../graphics/cities_UV_model-fit.png)
 
 Most important variables:
 
-![](graphics/cities_UV_vip.png)
+![](../graphics/cities_UV_vip.png)
 
 Relationships with most important variables:
 
-![](graphics/cities_UV_pdp.png)
+![](../graphics/cities_UV_pdp.png)
 
 ## Neighbourhood Scale
 
 
 Model fit:
 
-![](graphics/neighbourhoods_UV_model-fit.png)
+![](../graphics/neighbourhoods_UV_model-fit.png)
 
 Most important variables:
 
-![](graphics/neighbourhoods_UV_vip.png)
+![](../graphics/neighbourhoods_UV_vip.png)
 
 Relationships with most important variables:
-
-![](graphics/neighbourhoods_UV_pdp.png)
 
 # CO
 
 ## City Scale
 
-![](graphics/cities_CO_model-fit.png)
+![](../graphics/cities_CO_model-fit.png)
 
 Most important variables:
 
-![](graphics/cities_CO_vip.png)
+![](../graphics/cities_CO_vip.png)
 
 Relationships with most important variables:
 
-![](graphics/cities_CO_pdp.png)
+![](../graphics/cities_CO_pdp.png)
 
 ## Neighbourhood Scale
 
 
 Model fit:
 
-![](graphics/neighbourhoods_CO_model-fit.png)
+![](../graphics/neighbourhoods_CO_model-fit.png)
 
 Most important variables:
 
-![](graphics/neighbourhoods_CO_vip.png)
+![](../graphics/neighbourhoods_CO_vip.png)
 
 Relationships with most important variables:
 
-![](graphics/neighbourhoods_CO_pdp.png)
+![](../graphics/neighbourhoods_CO_pdp.png)
 
 # SO2
 
 ## City Scale
 
-![](graphics/cities_SO2_model-fit.png)
+![](../graphics/cities_SO2_model-fit.png)
 
 Most important variables:
 
-![](graphics/cities_SO2_vip.png)
+![](../graphics/cities_SO2_vip.png)
 
 Relationships with most important variables:
 
-![](graphics/cities_SO2_pdp.png)
+![](../graphics/cities_SO2_pdp.png)
 
 ## Neighbourhood Scale
 
 
 Model fit:
 
-![](graphics/neighbourhoods_SO2_model-fit.png)
+![](../graphics/neighbourhoods_SO2_model-fit.png)
 
 Most important variables:
 
-![](graphics/neighbourhoods_SO2_vip.png)
+![](../graphics/neighbourhoods_SO2_vip.png)
 
 Relationships with most important variables:
 
-![](graphics/neighbourhoods_SO2_pdp.png)
+![](../graphics/neighbourhoods_SO2_pdp.png)
 
 # NO2
 
 ## City Scale
 
-![](graphics/cities_NO2_model-fit.png)
+![](../graphics/cities_NO2_model-fit.png)
 
 Most important variables:
 
-![](graphics/cities_NO2_vip.png)
+![](../graphics/cities_NO2_vip.png)
 
 Relationships with most important variables:
 
-![](graphics/cities_NO2_pdp.png)
+![](../graphics/cities_NO2_pdp.png)
 
 ## Neighbourhood Scale
 
 
 Model fit:
 
-![](graphics/neighbourhoods_NO2_model-fit.png)
+![](../graphics/neighbourhoods_NO2_model-fit.png)
 
 Most important variables:
 
-![](graphics/neighbourhoods_NO2_vip.png)
+![](../graphics/neighbourhoods_NO2_vip.png)
 
 Relationships with most important variables:
 
-![](graphics/neighbourhoods_NO2_pdp.png)
+![](../graphics/neighbourhoods_NO2_pdp.png)
 
 # O3
 
 ## City Scale
 
-![](graphics/cities_O3_model-fit.png)
+![](../graphics/cities_O3_model-fit.png)
 
 Most important variables:
 
-![](graphics/cities_O3_vip.png)
+![](../graphics/cities_O3_vip.png)
 
 Relationships with most important variables:
 
-![](graphics/cities_O3_pdp.png)
+![](../graphics/cities_O3_pdp.png)
 
 ## Neighbourhood Scale
 
 
 Model fit:
 
-![](graphics/neighbourhoods_O3_model-fit.png)
+![](../graphics/neighbourhoods_O3_model-fit.png)
 
 Most important variables:
 
-![](graphics/neighbourhoods_O3_vip.png)
+![](../graphics/neighbourhoods_O3_vip.png)
 
 Relationships with most important variables:
 
-![](graphics/neighbourhoods_O3_pdp.png)
+![](../graphics/neighbourhoods_O3_pdp.png)
