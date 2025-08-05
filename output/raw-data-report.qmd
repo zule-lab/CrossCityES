@@ -4,9 +4,6 @@ execute:
   echo: false
   warning: false
   error: false
-format: 
-  html:
-    self-contained: true
 ---
 
 ```{r}
