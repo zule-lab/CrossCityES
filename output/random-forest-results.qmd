@@ -13,6 +13,37 @@ library(targets)
 tar_source('R')
 ```
 
+# Interpretation
+
+This document begins with summary tables, which include the results for all models. The first table summarizes the results for temperature models, the second for air pollution. Each row in the tables represents a different model, with columns representing the most important predictor variables for that model. The relationships between the predictor and response are in brackets, inc = positive relationship, dec = negative relationship, mixed means that there are both positive and negative relationships depending on the city. The air pollution table shows models for 5 different pollutants, at two different scales.
+
+The figures are then presented for each model. The first figure, a 2 panel scatterplot shows the fit of the model based on the training and testing datasets. The second figure is a variance importance plot, which depicts the most important predictors for each model. This value is derived from taking the average model improvement score when that specific predictor is added across many model iterations. Finally, there are the partial dependency plots which depict the relationship between the top 10 predictor variables and the response variable, across all cities. It is important to note however, that not all 10 variables are always important predictors (you can check which ones are from the vip plots or summary tables). Also, the partial dependency plots are sorted alphabetically, not in order of variable importance.
+
+# Summary Tables
+
+## Temperature
+
+| Scale | Predictor 1 | Predictor 2 | Predictor 3 | Predictor 4 | Predictor 5 | Predictor 6 | Predictor 7 | Predictor 8 |
+|--------|--------|--------|--------|--------|--------|--------|--------|--------|
+| City | day of year | NDVI (dec) | NDBI (inc) | \% immigrants (inc) | \% vis minorities (inc) |  |  |  |
+| Neighbourhood | area (dec) | mean DBH (mixed) | basal area (mixed) | stem density (mixed) | std dev DBH (mixed) | functional group Shannon (inc) | species richness (dec) | Shannon (mixed) |
+| Street | street direction |  |  |  |  |  |  |  |
+
+## Air Pollution
+
+| Pollutant-Scale | Predictor 1 | Predictor 2 | Predictor 3 | Predictor 4 | Predictor 5 | Predictor 6 | Predictor 7 | Predictor 8 |
+|--------|--------|--------|--------|--------|--------|--------|--------|--------|
+| UV - city | day of year | NDVI (dec) | NDBI (inc) |  |  |  |  |  |
+| CO - city | day of year |  |  |  |  |  |  |  |
+| SO2 - city | day of year | NDBI (inc) | NDVI (dec) | road density (inc) |  |  |  |  |
+| NO2 - city | day of year | \% trailers (dec) | \% Indigenous (dec) | \% single detached homes (dec) |  |  |  |  |
+| O3 - city | day of year | NDBI (inc) |  |  |  |  |  |  |
+| UV - neighbourhood | area | basal area | stem density | species richness | functional group Shannon |  |  |  |
+| CO - neighbourhood | area (mixed) | basal area (dec) | DBH (inc) | Shannon (mixed) | stem density (dec) | std dev DBH (dec) | species richness (mixed) | functional group Shannon (dec) |
+| SO2 - neighbourhood | basal area (inc) | area (inc) | stem dens (inc) | mean DBH (dec) | std dev DBH (mixed) | functional group Shannon (inc) | Shannon (inc) | species richness (inc) |
+| NO2 - neighbourhood | area (inc) | basal area (mixed) | mean DBH (dec) | Shannon (inc) | stem density (mixed) | std dev DBH (mixed) | species richness (inc) | functional group Shannon (mixed) |
+| O3 - neighbourhood | area (inc) | mean DBH (mixed) | basal area (dec) | stem dens (dec) | Shannon (mixed) | std dev DBH (dec) | functional group Shannon (mixed) | species richness (mixed) |
+
 # Land Surface Temperature
 
 ## City Scale
@@ -73,7 +104,6 @@ Relationships with most important variables:
 
 ## Neighbourhood Scale
 
-
 Model fit:
 
 ![](../graphics/neighbourhoods_UV_model-fit.png)
@@ -83,6 +113,8 @@ Most important variables:
 ![](../graphics/neighbourhoods_UV_vip.png)
 
 Relationships with most important variables:
+
+![](../graphics/neighbourhoods_UV_pdp.png)
 
 # CO
 
@@ -99,7 +131,6 @@ Relationships with most important variables:
 ![](../graphics/cities_CO_pdp.png)
 
 ## Neighbourhood Scale
-
 
 Model fit:
 
@@ -129,7 +160,6 @@ Relationships with most important variables:
 
 ## Neighbourhood Scale
 
-
 Model fit:
 
 ![](../graphics/neighbourhoods_SO2_model-fit.png)
@@ -157,7 +187,6 @@ Relationships with most important variables:
 ![](../graphics/cities_NO2_pdp.png)
 
 ## Neighbourhood Scale
-
 
 Model fit:
 
@@ -187,7 +216,6 @@ Relationships with most important variables:
 
 ## Neighbourhood Scale
 
-
 Model fit:
 
 ![](../graphics/neighbourhoods_O3_model-fit.png)
@@ -199,3 +227,17 @@ Most important variables:
 Relationships with most important variables:
 
 ![](../graphics/neighbourhoods_O3_pdp.png)
+
+# Notes
+
+-   air pollution units don't match WHO guidelines, hard to assess if they are at relevant levels... need to figure this out
+
+-   including street direction in models was a mistake, rerunning that and the UV partial dependency plot now
+
+-   city-scale : doy, ndvi, ndbi best predictors in general. some socioeconomic vars.
+
+-   neighbourhood-scale: tree vars best predictors.
+
+-   mixed relationships: often peaks or valleys appear once a certain threshold is reached. cities that have high levels respond opposite to those w low levels.
+
+-   models: often a lot of noise, not great at predicting extremes
