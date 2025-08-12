@@ -22,7 +22,7 @@ select_model <- function(tune_list, name, tune_wf, model_data){
   last_mod <-
     rand_forest(mtry = best_auc$mtry, min_n = best_auc$min_n, trees = 1000) %>%
     set_mode("regression") %>%
-    set_engine("ranger", num.threads = cores, importance = "impurity")
+    set_engine("ranger", num.threads = cores, importance = "impurity_corrected")
   
   
   # the last workflow
