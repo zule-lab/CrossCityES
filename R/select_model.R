@@ -51,9 +51,11 @@ select_model <- function(tune_list, name, tune_wf, model_data){
   
   # metrics between testing and training 
   
-  all_predictions %>% 
+  model_metrics <- all_predictions %>% 
     group_by(type) %>% 
     metrics(value, .pred)
+  
+  write.csv(model_metrics, paste0('graphics/', name, '_model-metrics.csv'))
   
   # model fit between testing and training 
   

@@ -12,8 +12,6 @@ options(tidyverse.quiet = T)
 library(targets)
 tar_source('R')
 
-tar_load(final_models)
-tar_load(dataset_split)
 ```
 
 # Interpretation
@@ -62,17 +60,9 @@ Most important variables:
 #| eval: true
 #| label: city-temp-metrics
 
-last_rf_model <- final_models$cities_temp
-df_train <- dataset_split[[1]]$train
-df_test <- dataset_split[[1]]$test
+read.csv('graphics/cities_temp_model-metrics.csv') %>% 
+  knitr::kable()
 
-bind_rows(
-  augment(last_rf_model, new_data = df_train) %>% 
-    mutate(type = "train"),
-  augment(last_rf_model, new_data = df_test) %>% 
-    mutate(type = "test")) %>% 
-  group_by(type) %>% 
-  metrics(value, .pred)
 ```
 
 ![](../graphics/cities_temp_vip.png)
@@ -94,17 +84,8 @@ Most important variables:
 #| eval: true
 #| label: nhood-temp-metrics
 
-last_rf_model <- final_models$neighbourhoods_temp
-df_train <- dataset_split[[7]]$train
-df_test <- dataset_split[[7]]$test
-
-bind_rows(
-  augment(last_rf_model, new_data = df_train) %>% 
-    mutate(type = "train"),
-  augment(last_rf_model, new_data = df_test) %>% 
-    mutate(type = "test")) %>% 
-  group_by(type) %>% 
-  metrics(value, .pred)
+read.csv('graphics/neighbourhoods_temp_model-metrics.csv') %>% 
+  knitr::kable()
 ```
 
 ![](../graphics/neighbourhoods_temp_vip.png)
@@ -126,17 +107,9 @@ Most important variables:
 #| eval: true
 #| label: street-temp-metrics
 
-last_rf_model <- final_models$streets_temp
-df_train <- dataset_split[[13]]$train
-df_test <- dataset_split[[13]]$test
+read.csv('graphics/streets_temp_model-metrics.csv') %>% 
+  knitr::kable()
 
-bind_rows(
-  augment(last_rf_model, new_data = df_train) %>% 
-    mutate(type = "train"),
-  augment(last_rf_model, new_data = df_test) %>% 
-    mutate(type = "test")) %>% 
-  group_by(type) %>% 
-  metrics(value, .pred)
 ```
 
 ![](../graphics/streets_temp_vip.png)
@@ -158,17 +131,8 @@ Most important variables:
 #| eval: true
 #| label: city-uv-metrics
 
-last_rf_model <- final_models$cities_UV
-df_train <- dataset_split[[2]]$train
-df_test <- dataset_split[[2]]$test
-
-bind_rows(
-  augment(last_rf_model, new_data = df_train) %>% 
-    mutate(type = "train"),
-  augment(last_rf_model, new_data = df_test) %>% 
-    mutate(type = "test")) %>% 
-  group_by(type) %>% 
-  metrics(value, .pred)
+read.csv('graphics/cities_UV_model-metrics.csv') %>% 
+  knitr::kable()
 ```
 
 ![](../graphics/cities_UV_vip.png)
@@ -190,17 +154,8 @@ Most important variables:
 #| eval: true
 #| label: nhood-uv-metrics
 
-last_rf_model <- final_models$neighbourhoods_UV
-df_train <- dataset_split[[8]]$train
-df_test <- dataset_split[[8]]$test
-
-bind_rows(
-  augment(last_rf_model, new_data = df_train) %>% 
-    mutate(type = "train"),
-  augment(last_rf_model, new_data = df_test) %>% 
-    mutate(type = "test")) %>% 
-  group_by(type) %>% 
-  metrics(value, .pred)
+read.csv('graphics/neighbourhoods_UV_model-metrics.csv') %>% 
+  knitr::kable()
 ```
 
 ![](../graphics/neighbourhoods_UV_vip.png)
@@ -222,17 +177,8 @@ Most important variables:
 #| eval: true
 #| label: city-co-metrics
 
-last_rf_model <- final_models$cities_CO
-df_train <- dataset_split[[3]]$train
-df_test <- dataset_split[[3]]$test
-
-bind_rows(
-  augment(last_rf_model, new_data = df_train) %>% 
-    mutate(type = "train"),
-  augment(last_rf_model, new_data = df_test) %>% 
-    mutate(type = "test")) %>% 
-  group_by(type) %>% 
-  metrics(value, .pred)
+read.csv('graphics/cities_CO_model-metrics.csv') %>% 
+  knitr::kable()
 ```
 
 ![](../graphics/cities_CO_vip.png)
@@ -254,17 +200,8 @@ Most important variables:
 #| eval: true
 #| label: nhood-co-metrics
 
-last_rf_model <- final_models$neighbourhoods_CO
-df_train <- dataset_split[[9]]$train
-df_test <- dataset_split[[9]]$test
-
-bind_rows(
-  augment(last_rf_model, new_data = df_train) %>% 
-    mutate(type = "train"),
-  augment(last_rf_model, new_data = df_test) %>% 
-    mutate(type = "test")) %>% 
-  group_by(type) %>% 
-  metrics(value, .pred)
+read.csv('graphics/neighbourhoods_CO_model-metrics.csv') %>% 
+  knitr::kable()
 ```
 
 ![](../graphics/neighbourhoods_CO_vip.png)
@@ -285,18 +222,8 @@ Most important variables:
 #| echo: false
 #| eval: true
 #| label: city-so2-metrics
-
-last_rf_model <- final_models$cities_SO2
-df_train <- dataset_split[[6]]$train
-df_test <- dataset_split[[6]]$test
-
-bind_rows(
-  augment(last_rf_model, new_data = df_train) %>% 
-    mutate(type = "train"),
-  augment(last_rf_model, new_data = df_test) %>% 
-    mutate(type = "test")) %>% 
-  group_by(type) %>% 
-  metrics(value, .pred)
+read.csv('graphics/cities_SO2_model-metrics.csv') %>% 
+  knitr::kable()
 ```
 
 ![](../graphics/cities_SO2_vip.png)
@@ -318,17 +245,8 @@ Most important variables:
 #| eval: true
 #| label: nhood-so2-metrics
 
-last_rf_model <- final_models$neighbourhoods_SO2
-df_train <- dataset_split[[12]]$train
-df_test <- dataset_split[[12]]$test
-
-bind_rows(
-  augment(last_rf_model, new_data = df_train) %>% 
-    mutate(type = "train"),
-  augment(last_rf_model, new_data = df_test) %>% 
-    mutate(type = "test")) %>% 
-  group_by(type) %>% 
-  metrics(value, .pred)
+read.csv('graphics/neighbourhoods_SO2_model-metrics.csv') %>% 
+  knitr::kable()
 ```
 
 ![](../graphics/neighbourhoods_SO2_vip.png)
@@ -349,18 +267,9 @@ Most important variables:
 #| echo: false
 #| eval: true
 #| label: city-no2-metrics
-
-last_rf_model <- final_models$cities_NO2
-df_train <- dataset_split[[4]]$train
-df_test <- dataset_split[[4]]$test
-
-bind_rows(
-  augment(last_rf_model, new_data = df_train) %>% 
-    mutate(type = "train"),
-  augment(last_rf_model, new_data = df_test) %>% 
-    mutate(type = "test")) %>% 
-  group_by(type) %>% 
-  metrics(value, .pred)
+#| 
+read.csv('graphics/cities_NO2_model-metrics.csv') %>% 
+  knitr::kable()
 ```
 
 ![](../graphics/cities_NO2_vip.png)
@@ -382,17 +291,8 @@ Most important variables:
 #| eval: true
 #| label: nhood-no2-metrics
 
-last_rf_model <- final_models$neighbourhoods_NO2
-df_train <- dataset_split[[10]]$train
-df_test <- dataset_split[[10]]$test
-
-bind_rows(
-  augment(last_rf_model, new_data = df_train) %>% 
-    mutate(type = "train"),
-  augment(last_rf_model, new_data = df_test) %>% 
-    mutate(type = "test")) %>% 
-  group_by(type) %>% 
-  metrics(value, .pred)
+read.csv('graphics/neighbourhoods_NO2_model-metrics.csv') %>% 
+  knitr::kable()
 ```
 
 ![](../graphics/neighbourhoods_NO2_vip.png)
@@ -414,17 +314,8 @@ Most important variables:
 #| eval: true
 #| label: city-o3-metrics
 
-last_rf_model <- final_models$cities_O3
-df_train <- dataset_split[[5]]$train
-df_test <- dataset_split[[5]]$test
-
-bind_rows(
-  augment(last_rf_model, new_data = df_train) %>% 
-    mutate(type = "train"),
-  augment(last_rf_model, new_data = df_test) %>% 
-    mutate(type = "test")) %>% 
-  group_by(type) %>% 
-  metrics(value, .pred)
+read.csv('graphics/cities_O3_model-metrics.csv') %>% 
+  knitr::kable()
 ```
 
 ![](../graphics/cities_O3_vip.png)
@@ -437,27 +328,18 @@ Relationships with most important variables:
 
 Model fit:
 
+![](../graphics/neighbourhoods_O3_model-fit.png)
+
+Most important variables:
+
 ```{r}
 #| echo: false
 #| eval: true
 #| label: nhood-o3-metrics
-
-last_rf_model <- final_models$neighbourhoods_O3
-df_train <- dataset_split[[11]]$train
-df_test <- dataset_split[[11]]$test
-
-bind_rows(
-  augment(last_rf_model, new_data = df_train) %>% 
-    mutate(type = "train"),
-  augment(last_rf_model, new_data = df_test) %>% 
-    mutate(type = "test")) %>% 
-  group_by(type) %>% 
-  metrics(value, .pred)
+#| 
+read.csv('graphics/neighbourhoods_O3_model-metrics.csv') %>% 
+  knitr::kable()
 ```
-
-![](../graphics/neighbourhoods_O3_model-fit.png)
-
-Most important variables:
 
 ![](../graphics/neighbourhoods_O3_vip.png)
 
