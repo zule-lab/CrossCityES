@@ -150,7 +150,6 @@ standard_vi <- function(model, model_name, scale){
     extract_fit_parsnip() %>% 
     vi() %>%
     mutate(Model = model_name,
-           model_name = model_name,
            Scale = scale)
   
 }
