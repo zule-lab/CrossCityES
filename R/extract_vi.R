@@ -132,7 +132,7 @@ extract_vi <- function(final_models){
                                 Variable == "stemdens" ~ 'Tree Stem Density (stems/m2)',
                                 Variable == "sd_dbh" ~ 'Standard Deviation DBH (cm)',
                                 Variable == "Shannon" ~ 'Shannon',
-                                Variable == "mean_dbh" ~ 'Mean DBH (cm)'
+                                Variable == "mean_dbh" ~ 'Mean DBH (cm)',
                                 .default = Variable))
   write.csv(pollution_table, 'output/pollution_variable-importance.csv')
   
