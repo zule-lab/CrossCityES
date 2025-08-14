@@ -21,7 +21,7 @@ plot_pdp <- function(final_model, name, df_train, vi){
                                                       'Ozone' = 'O3',
                                                       'UV Aerosols' = 'UV'))) %>%
     filter(model_name == name) %>% 
-    drop_levels()
+    droplevels()
   
   vars <- levels(as.factor(vip$Variable))
   
