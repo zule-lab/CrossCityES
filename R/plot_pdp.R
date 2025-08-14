@@ -1,4 +1,4 @@
-plot_pdp <- function(final_model, name, df_train){
+plot_pdp <- function(final_model, name, df_train, vi){
   
   
   model_explainer <- explain_tidymodels(
@@ -9,12 +9,12 @@ plot_pdp <- function(final_model, name, df_train){
   )
   
   
-  vip <- final_model[[1]] %>%
-    extract_fit_parsnip() %>%
-    vip(geom = "point") +
-    theme_classic()
+  vip <- vi %>% 
+    mutate(Variable = as.factor(Variable)) %>%
+    filter(model_name == name) %>% 
+    drop_levels()
   
-  vars <- vip[["data"]]$Variable
+  vars <- levels(as.factor(vip$Variable))
   
   
   pdp_time <- model_profile(

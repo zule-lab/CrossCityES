@@ -10,7 +10,7 @@ extract_vi <- function(final_models){
                                              Variable == "NDBI_mean_" ~ 'positive',
                                              Variable == "recimmp" ~ 'postive',
                                              Variable == "visminp" ~ 'positive')) %>% 
-    select(c(Model, Scale, Variable, Importance, Relationship))
+    select(c(Model, Scale, Variable, Importance, Relationship, model_name))
   
   nhood_temp <- standard_vi(final_models$neighbourhoods_temp, 
                            'Temperature',
@@ -21,7 +21,7 @@ extract_vi <- function(final_models){
                                     Variable == "edubacp" ~ 'negative',
                                     Variable == "medinc" ~ 'mixed',
                                     Variable == "popwithin" ~ 'mixed')) %>% 
-    select(c(Model, Scale, Variable, Importance, Relationship))
+    select(c(Model, Scale, Variable, Importance, Relationship, model_name))
   
   
   street_temp <- standard_vi(final_models$streets_temp, 
@@ -31,10 +31,10 @@ extract_vi <- function(final_models){
     mutate(Relationship = case_when(Variable == "FG_shannon" ~ 'mixed',
                                     Variable == "sidehop" ~ 'negative',
                                     Variable == "Shannon" ~ 'negative')) %>% 
-    select(c(Model, Scale, Variable, Importance, Relationship))
+    select(c(Model, Scale, Variable, Importance, Relationship, model_name))
   
   temp_table <- rbind(city_temp, nhood_temp, street_temp) %>% 
-    mutate(Variable = case_when(Variable == "NDVI_mean_" ~ 'NDVI',
+    mutate(Variable_Formatted = case_when(Variable == "NDVI_mean_" ~ 'NDVI',
                                 Variable == "NDBI_mean_" ~ 'NDBI',
                                 Variable == "recimmp" ~ 'Recent Immigrants (%)',
                                 Variable == "visminp" ~ 'Visible Minorities (%)',
@@ -46,7 +46,8 @@ extract_vi <- function(final_models){
                                 Variable == "FG_shannon" ~ 'Functional Group Shannon',
                                 Variable == "sidehop" ~ 'Single Detached Home (%)',
                                 Variable == "Shannon" ~ 'Shannon',
-                                .default = Variable))
+                                .default = Variable),
+           Importance = round(Importance, 2))
   write.csv(temp_table, 'output/temperature_variable-importance.csv')
   
   
@@ -57,14 +58,14 @@ extract_vi <- function(final_models){
                            'City') %>% 
     slice_head(n = 1) %>% 
     mutate(Relationship = case_when(Variable == "doy" ~ 'positive')) %>% 
-    select(c(Model, Scale, Variable, Importance, Relationship))
+    select(c(Model, Scale, Variable, Importance, Relationship, model_name))
   
   nhood_co <- standard_vi(final_models$neighbourhoods_CO, 
                          'Carbon Monoxide',
                          'Neighbourhood') %>% 
     slice_head(n = 1) %>% 
     mutate(Relationship = case_when(Variable == "doy" ~ '')) %>% 
-    select(c(Model, Scale, Variable, Importance, Relationship))
+    select(c(Model, Scale, Variable, Importance, Relationship, model_name))
   
   
   city_no2 <- standard_vi(final_models$cities_NO2, 
@@ -75,7 +76,7 @@ extract_vi <- function(final_models){
                                     Variable == "sidehop" ~ "negative",
                                     Variable == "indigp" ~ "negative",
                                     Variable == "doy" ~ 'mixed')) %>% 
-    select(c(Model, Scale, Variable, Importance, Relationship))
+    select(c(Model, Scale, Variable, Importance, Relationship, model_name))
   
   nhood_no2 <- standard_vi(final_models$neighbourhoods_NO2, 
                           'Nitrogen Dioxide',
@@ -83,14 +84,14 @@ extract_vi <- function(final_models){
     slice_head(n = 2) %>% 
     mutate(Relationship = case_when(Variable == "lat" ~ "",
                                     Variable == "doy" ~ '')) %>% 
-    select(c(Model, Scale, Variable, Importance, Relationship))
+    select(c(Model, Scale, Variable, Importance, Relationship, model_name))
   
   city_o3 <- standard_vi(final_models$cities_O3, 
                           'Ozone',
                           'City') %>% 
     slice_head(n = 1) %>% 
     mutate(Relationship = case_when(Variable == "doy" ~ 'negative')) %>% 
-    select(c(Model, Scale, Variable, Importance, Relationship))
+    select(c(Model, Scale, Variable, Importance, Relationship, model_name))
   
   nhood_o3 <- standard_vi(final_models$neighbourhoods_O3, 
                            'Ozone',
@@ -102,7 +103,7 @@ extract_vi <- function(final_models){
                                     Variable == "sd_dbh" ~ '',
                                     Variable == "Shannon" ~ '',
                                     Variable == "mean_dbh" ~ '')) %>% 
-    select(c(Model, Scale, Variable, Importance, Relationship))
+    select(c(Model, Scale, Variable, Importance, Relationship, model_name))
   
   
   city_uv <- standard_vi(final_models$cities_UV, 
@@ -110,19 +111,19 @@ extract_vi <- function(final_models){
                          'City') %>% 
     slice_head(n = 1) %>% 
     mutate(Relationship = case_when(Variable == "doy" ~ 'positive')) %>% 
-    select(c(Model, Scale, Variable, Importance, Relationship))
+    select(c(Model, Scale, Variable, Importance, Relationship, model_name))
   
   nhood_uv <- standard_vi(final_models$neighbourhoods_UV, 
                           'UV Aerosols',
                           'Neighbourhood') %>% 
     slice_head(n = 1) %>% 
     mutate(Relationship = case_when(Variable == "doy" ~ '')) %>% 
-    select(c(Model, Scale, Variable, Importance, Relationship))
+    select(c(Model, Scale, Variable, Importance, Relationship, model_name))
  
   
   pollution_table <- rbind(city_co, nhood_co, city_no2, nhood_no2,
                            city_o3, nhood_o3, city_uv, nhood_uv) %>% 
-    mutate(Variable = case_when(Variable == "mvdwelp" ~ "Moving Dwellings (%)",
+    mutate(Variable_Formatted = case_when(Variable == "mvdwelp" ~ "Moving Dwellings (%)",
                                 Variable == "sidehop" ~ "Single Detached Homes (%)",
                                 Variable == "indigp" ~ "Indigenous People (%)",
                                 Variable == "doy" ~ 'Day of Year',
@@ -133,7 +134,8 @@ extract_vi <- function(final_models){
                                 Variable == "sd_dbh" ~ 'Standard Deviation DBH (cm)',
                                 Variable == "Shannon" ~ 'Shannon',
                                 Variable == "mean_dbh" ~ 'Mean DBH (cm)',
-                                .default = Variable))
+                                .default = Variable),
+           Importance = round(Importance, 2))
   write.csv(pollution_table, 'output/pollution_variable-importance.csv')
   
   final <- rbind(temp_table, pollution_table)
@@ -148,6 +150,7 @@ standard_vi <- function(model, model_name, scale){
     extract_fit_parsnip() %>% 
     vi() %>%
     mutate(Model = model_name,
+           model_name = model_name,
            Scale = scale)
   
 }
