@@ -105,6 +105,24 @@ extract_vi <- function(final_models){
                                     Variable == "mean_dbh" ~ '')) %>% 
     select(c(Model, Scale, Variable, Importance, Relationship))
   
+  city_so2 <- standard_vi(final_models$cities_SO2, 
+                         'Sulfur Dioxide',
+                         'City') %>% 
+    slice_head(n = 5) %>% 
+    mutate(Relationship = case_when(Variable == "aptdupp" ~ '',
+                                    Variable == "lat" ~ '',
+                                    Variable == "prop_highway" ~ '',
+                                    Variable == "mean_bldhgt" ~ '',
+                                    Variable == "mvdwelp" ~ '')) %>% 
+    select(c(Model, Scale, Variable, Importance, Relationship))
+  
+  nhood_so2 <- standard_vi(final_models$neighbourhoods_SO2, 
+                          'Sulfur Dioxide',
+                          'Neighbourhood') %>% 
+    slice_head(n = 1) %>% 
+    mutate(Relationship = case_when(Variable == "stemdens" ~ '')) %>% 
+    select(c(Model, Scale, Variable, Importance, Relationship))
+  
   
   city_uv <- standard_vi(final_models$cities_UV, 
                          'UV Aerosols',
@@ -134,6 +152,9 @@ extract_vi <- function(final_models){
                                 Variable == "sd_dbh" ~ 'Standard Deviation DBH (cm)',
                                 Variable == "Shannon" ~ 'Shannon',
                                 Variable == "mean_dbh" ~ 'Mean DBH (cm)',
+                                Variable == "aptdupp" ~ 'Duplex Apartments (%)',
+                                Variable == "prop_highway" ~ 'Proportion Highway',
+                                Variable == "mean_bldhgt" ~ 'Mean Building Height (m)',
                                 .default = Variable),
            Importance = round(Importance, 2))
   write.csv(pollution_table, 'output/pollution_variable-importance.csv')

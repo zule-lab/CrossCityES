@@ -11,7 +11,7 @@ plot_pdp <- function(final_model, name, df_train, vi){
   
   vip <- vi %>% 
     mutate(Variable = as.factor(Variable),
-           model_name = paste0(Scale, '_', model),
+           model_name = paste0(Scale, '_', Model),
            model_name = str_replace_all(model_name, c('City' = 'cities',
                                                       'Neighbourhood' = 'neighbourhoods',
                                                       'Street' = 'streets',
@@ -19,7 +19,8 @@ plot_pdp <- function(final_model, name, df_train, vi){
                                                       'Carbon Monoxide' = 'CO',
                                                       'Nitrogen Dioxide' = 'NO2',
                                                       'Ozone' = 'O3',
-                                                      'UV Aerosols' = 'UV'))) %>%
+                                                      'UV Aerosols' = 'UV',
+                                                      'Sulfur Dioxide' = 'SO2'))) %>%
     filter(model_name == name) %>% 
     droplevels()
   
