@@ -140,7 +140,7 @@ extract_vi <- function(final_models){
  
   
   pollution_table <- rbind(city_co, nhood_co, city_no2, nhood_no2,
-                           city_o3, nhood_o3, city_uv, nhood_uv) %>% 
+                           city_o3, nhood_o3, city_so2, nhood_so2, city_uv, nhood_uv) %>% 
     mutate(Variable_Formatted = case_when(Variable == "mvdwelp" ~ "Moving Dwellings (%)",
                                 Variable == "sidehop" ~ "Single Detached Homes (%)",
                                 Variable == "indigp" ~ "Indigenous People (%)",
