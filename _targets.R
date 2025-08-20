@@ -23,7 +23,7 @@ restore()
 
 # Variables ---------------------------------------------------------------
 getOption('timeout')
-options(timeout=1200)
+options(timeout=2000)
 
 
 
@@ -41,3 +41,6 @@ lapply(grep('targets', ls(), value = TRUE), get)
 
 # TODO: 
 # - RF modelling
+# - wrap facet labels 
+# - add air pollution to report 
+# - check air pollution values in data report

@@ -40,6 +40,7 @@ suppressPackageStartupMessages({
   library(ggplot2)
   library(MetBrewer)
   library(visNetwork)
+  library(patchwork)
   
   
   library(vegan)
@@ -47,6 +48,12 @@ suppressPackageStartupMessages({
   library(mice)
   library(cluster)
   conflicts_prefer(dplyr::filter)
+  library(ranger)
+  library(tidymodels)
+  library(themis)
+  library(vip)
+  library(future)
+  library(DALEXtra)
   
   library(xfun)
   

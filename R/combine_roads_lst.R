@@ -68,8 +68,31 @@ combine_roads_lst <- function(streets_lst, road_bound_trees, census_road,
     filter(diff == min(diff)) %>% 
     ungroup()
   
+  final <- join %>% 
+    select(-c(time, count_temp, median_temp, max_temp, min_temp,
+              stdDev_temp, road_class, coverage, nTrees, roadarea, 
+              stemdens_acre, total_ba, centroids, build_area, road_area, 
+              area, CMANAME.x.x.x, DSAcount, lowinc, id.x.x, 
+              streetdir.x.x, streettype.x.x, date_ndvi, time_ndvi,
+              NDBI_count_, NDBI_stdDev_,
+              NDBI_median_, NDBI_max_, NDBI_min_, NDBI_stdDev_,
+              NDVI_count_, NDVI_median_, NDVI_max_, NDVI_min_, 
+              street, streettype.y.y, streetdir.y.y, CMANAME.y.y.y, 
+              id.y.y, diff)) %>%
+    mutate_if(is.character, factor) %>%
+    mutate(doy = yday(date)) %>% 
+    select(-date) %>% 
+    drop_na(city) %>% 
+    inner_join(., road_bound_trees %>% select(c(streetid, geometry))) %>% 
+    st_as_sf() %>% 
+    st_centroid() %>% 
+    mutate(lon = st_coordinates(.)[,1],
+           lat = st_coordinates(.)[,2]) %>% 
+    st_drop_geometry()
+    
   
-  return(join)
+  
+  return(final)
   
   
   

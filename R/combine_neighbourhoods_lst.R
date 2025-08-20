@@ -48,7 +48,29 @@ combine_neighbourhoods_lst <- function(neighbourhoods_lst, neighbourhood_bound_t
     filter(diff == min(diff)) %>% 
     ungroup()
   
+  final <- join %>%
+    inner_join(neighbourhood_bound_trees %>% select(c(city, hood, geometry))) %>%
+    st_as_sf() %>%
+    st_centroid() %>% 
+    mutate(lon = st_coordinates(.)[,1],
+           lat = st_coordinates(.)[,2]) %>% 
+    st_drop_geometry() %>%
+    mutate(city_hood = paste0(city, "_", hood)) %>%
+    select(-c(time, hood,
+              count_temp, median_temp, max_temp, min_temp,
+              stdDev_temp, coverage, nTrees, stemdens_acre,
+              total_ba, hood_area.y, hood_id.x.x, hood_area.x.x,
+              centroids, build_area, prop_strts, road_length,
+              neighbourhood_area, area, DSAcount, lowinc,
+              hood_id, date_ndvi, time_ndvi, NDBI_count_,
+              NDBI_median_, NDBI_max_, NDBI_min_, NDBI_stdDev_,
+              NDVI_count_, NDVI_median_, NDVI_max_, NDVI_min_, 
+              NDVI_stdDev_, hood_area.y.y, id, diff)) %>% 
+    mutate_if(is.character, factor) %>%
+    mutate(doy = yday(date)) %>% 
+    select(-date)
   
-  return(join)
+  
+  return(final)
   
 }
