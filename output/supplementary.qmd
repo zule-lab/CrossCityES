@@ -291,6 +291,10 @@ Table S2. Data sources used in the study.
 +---------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------+
 
 
+
+
+
+
 Table S3. Model Performance
 
 # Figures
@@ -301,8 +305,148 @@ Figure S1. Example of satellite image coverage of Toronto neighbourhoods. Depict
 
 
 
-Figure S2a. VIPs
+![](../graphics/cities_temp_vip.png)
 
-Figure S3. Model performance
+Figure S2a. Variable importance plot for temperature model at the city scale. 
 
-Figure S4. Air pollution PDPs
+
+![](../graphics/cities_CO_vip.png)
+
+Figure S2b. Variable importance plot for carbon monoxide model at the city scale. 
+
+![](../graphics/cities_NO2_vip.png)
+
+Figure S2c. Variable importance plot for nitrogen dioxide model at the city scale.
+
+
+![](../graphics/cities_O3_vip.png)
+
+Figure S2d. Variable importance plot for ozone model at the city scale.
+
+![](../graphics/cities_UV_vip.png)
+
+Figure S2e. Variable importance plot for UV aerosols model at the city scale.
+
+
+![](../graphics/neighbourhoods_temp_vip.png)
+
+Figure S2f. Variable importance plot for temperature model at the neighbourhood scale. 
+
+
+![](../graphics/neighbourhoods_CO_vip.png)
+
+Figure S2g. Variable importance plot for carbon monoxide model at the neighbourhood scale. 
+
+![](../graphics/neighbourhoods_NO2_vip.png)
+
+Figure S2h. Variable importance plot for nitrogen dioxide model at the neighbourhood scale.
+
+
+![](../graphics/neighbourhoods_O3_vip.png)
+
+Figure S2i. Variable importance plot for ozone model at the neighbourhood scale.
+
+![](../graphics/neighbourhoods_UV_vip.png)
+
+Figure S2j. Variable importance plot for UV aerosols model at the neighbourhood scale.
+
+![](../graphics/streets_temp_vip.png)
+
+Figure S2k. Variable importance plot for temperature model at the street scale.
+
+
+![](../graphics/cities_temp_model-fit.png)
+
+Figure S3a. Model performance plot for temperature model at the city scale. 
+
+
+![](../graphics/cities_CO_model-fit.png)
+
+Figure S3b. Model performance plot for carbon monoxide model at the city scale. 
+
+![](../graphics/cities_NO2_model-fit.png)
+
+Figure S3c. Model performance plot for nitrogen dioxide model at the city scale.
+
+
+![](../graphics/cities_O3_model-fit.png)
+
+Figure S3d. Model performance plot for ozone model at the city scale.
+
+![](../graphics/cities_SO2_model-fit.png)
+
+Figure S3e. Model performance plot for sulfur dioxide model at the city scale.
+
+
+![](../graphics/cities_UV_model-fit.png)
+
+Figure S3f. Model performance plot for UV aerosols model at the city scale.
+
+
+![](../graphics/neighbourhoods_temp_model-fit.png)
+
+Figure S3g. Model performance plot for temperature model at the neighbourhood scale. 
+
+
+![](../graphics/neighbourhoods_CO_model-fit.png)
+
+Figure S3h. Model performance plot for carbon monoxide model at the neighbourhood scale. 
+
+![](../graphics/neighbourhoods_NO2_model-fit.png)
+
+Figure S3i. Model performance plot for nitrogen dioxide model at the neighbourhood scale.
+
+
+![](../graphics/neighbourhoods_O3_model-fit.png)
+
+Figure S3j. Model performance plot for ozone model at the neighbourhood scale.
+
+![](../graphics/neighbourhoods_SO2_model-fit.png)
+
+Figure S3k. Model performance plot for sulfur dioxide model at the neighbourhood scale.
+
+
+![](../graphics/neighbourhoods_UV_model-fit.png)
+
+Figure S3l. Model performance plot for UV aerosols model at the neighbourhood scale.
+
+![](../graphics/streets_temp_model-fit.png)
+
+Figure S3m. Model performance plot for temperature model at the street scale.
+
+
+
+![](../graphics/cities_CO_pdp.png)
+
+Figure S4a. Partial dependency plot for carbon monoxide model at the city scale. 
+
+![](../graphics/cities_NO2_pdp.png)
+
+Figure S4b. Partial dependency plot for nitrogen dioxide model at the city scale.
+
+
+![](../graphics/cities_O3_pdp.png)
+
+Figure S4c. Partial dependency plot for ozone model at the city scale.
+
+![](../graphics/cities_UV_pdp.png)
+
+Figure S4d. Partial dependency plot for UV aerosols model at the city scale.
+
+
+![](../graphics/neighbourhoods_CO_pdp.png)
+
+Figure S4e. Partial dependency plot for carbon monoxide model at the neighbourhood scale. 
+
+![](../graphics/neighbourhoods_NO2_pdp.png)
+
+Figure S4f. Partial dependency plot for nitrogen dioxide model at the neighbourhood scale.
+
+
+![](../graphics/neighbourhoods_O3_pdp.png)
+
+Figure S4g. Partial dependency plot for ozone model at the neighbourhood scale.
+
+![](../graphics/neighbourhoods_UV_pdp.png)
+
+Figure S4h. Partial dependency plot for UV aerosols model at the neighbourhood scale.
