@@ -45,11 +45,38 @@ plot_pdp <- function(final_model, name, df_train, vi){
      theme_classic()
   
    ggsave(paste0('graphics/', name, '_pdp.png'), pdp)
- 
+   
+   
+   ale_time <- model_profile(
+     model_explainer,
+     variables = vars,
+     type = 'accumulated',
+     groups = "city"
+   )
+   
+   
+   
+   ale <- as_tibble(ale_time$agr_profiles) %>%
+     mutate(across(`_vname_`, ~factor(., levels=vars))) %>%
+     ggplot(aes(`_x_`, `_yhat_`, color = `_groups_`)) +
+     scale_color_met_d(name = 'Demuth') + 
+     geom_line(linewidth = 1.2, alpha = 0.9) +
+     labs(
+       y = "Average Prediction",
+       colour = "",
+       x = ""
+     ) + 
+     facet_wrap(`_vname_` ~ ., scales = "free") + 
+     theme_classic()
+   
+   ggsave(paste0('graphics/', name, '_ale.png'), ale)
+   
+   
+   saveRDS(ale, paste0('output/', name, '_ale.rds'))
    saveRDS(pdp, paste0('output/', name, '_pdp.rds'))
 
 
-   return(pdp)
+   return(list(pdp_time, ale_time))
   
   
 }
