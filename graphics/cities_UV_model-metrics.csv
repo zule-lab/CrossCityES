@@ -1,7 +1,7 @@
 "","type",".metric",".estimator",".estimate"
-"1","test","rmse","standard",0.672604295550654
-"2","train","rmse","standard",0.613782365146811
-"3","test","rsq","standard",0.0371750097874777
-"4","train","rsq","standard",0.154186193701574
-"5","test","mae","standard",0.542499330287795
-"6","train","mae","standard",0.48713978565107
+"1","test","rmse","standard",0.677400552782365
+"2","train","rmse","standard",0.603886492138151
+"3","test","rsq","standard",0.0818550739120906
+"4","train","rsq","standard",0.162924274760746
+"5","test","mae","standard",0.530928403368438
+"6","train","mae","standard",0.481909810972047
