@@ -11,7 +11,7 @@ plot_pdp <- function(final_model, name, df_train, vi){
   
   
   vip <- vi %>% 
-    mutate(Variable = as.factor(Variable),
+    dplyr::mutate(Variable = as.factor(Variable),
            model_name = paste0(Scale, '_', Model),
            model_name = str_replace_all(model_name, c('City' = 'cities',
                                                       'Neighbourhood' = 'neighbourhoods',
@@ -37,7 +37,7 @@ plot_pdp <- function(final_model, name, df_train, vi){
   
   
    pdp <- as_tibble(pdp_time$agr_profiles) %>%
-     mutate(across(`_vname_`, ~factor(., levels=vars))) %>%
+     dplyr::mutate(across(`_vname_`, ~factor(., levels=vars))) %>%
      ggplot(aes(`_x_`, `_yhat_`, color = `_groups_`)) +
      scale_color_met_d(name = 'Demuth') + 
      geom_line(linewidth = 1.2, alpha = 0.9) + 
@@ -57,7 +57,7 @@ plot_pdp <- function(final_model, name, df_train, vi){
    
    
    ale <- as_tibble(ale_time$agr_profiles) %>%
-     mutate(across(`_vname_`, ~factor(., levels=vars))) %>%
+     dplyr::mutate(across(`_vname_`, ~factor(., levels=vars))) %>%
      ggplot(aes(`_x_`, `_yhat_`, color = `_groups_`)) +
      scale_color_met_d(name = 'Demuth') + 
      geom_line(linewidth = 1.2, alpha = 0.9) +
