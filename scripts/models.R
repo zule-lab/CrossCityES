@@ -1,29 +1,34 @@
 targets_models <- c(
   
-  
-  tar_target(
-    model_data, 
-    list(cities_lst_full %>% dplyr::rename(value = mean_temp),
-         cities_pollution_full %>% filter(variable == 'mean_UV_city') %>% select(-variable),
-         cities_pollution_full %>% filter(variable == 'mean_CO_city') %>% select(-variable),
-         cities_pollution_full %>% filter(variable == 'mean_NO2_city') %>% select(-variable),
-         cities_pollution_full %>% filter(variable == 'mean_O3_city') %>% select(-variable),
-         cities_pollution_full %>% filter(variable == 'mean_SO2_city') %>% select(-variable),
-         neighbourhoods_lst_full %>% dplyr::rename(value = mean_temp),
-         neighbourhoods_pollution_full %>% filter(variable == 'mean_UV_neighbourhood') %>% select(-variable),
-         neighbourhoods_pollution_full %>% filter(variable == 'mean_CO_neighbourhood') %>% select(-variable),
-         neighbourhoods_pollution_full %>% filter(variable == 'mean_NO2_neighbourhood') %>% select(-variable),
-         neighbourhoods_pollution_full %>% filter(variable == 'mean_O3_neighbourhood') %>% select(-variable),
-         neighbourhoods_pollution_full %>% filter(variable == 'mean_SO2_neighbourhood') %>% select(-variable),
-         roads_lst_full %>% 
-           dplyr::rename(value = mean_temp) %>% 
-           group_by(city) %>% 
-           sample_n(1000) %>%
-           select(-c(streetdir, streettype)) ) %>% 
-      setNames(., c('cities_temp', 'cities_UV', 'cities_CO', 'cities_NO2', 'cities_O3', 'cities_SO2',
-               'neighbourhoods_temp', 'neighbourhoods_UV', 'neighbourhoods_CO', 'neighbourhoods_NO2', 'neighbourhoods_O3', 'neighbourhoods_SO2',
-               'streets_temp'))
+  #tar_target(
+  #  model_data, 
+  #  list(cities_lst_full %>% dplyr::rename(value = mean_temp),
+  #       cities_pollution_full %>% filter(variable == 'mean_UV_city') %>% select(-variable),
+  #       cities_pollution_full %>% filter(variable == 'mean_CO_city') %>% select(-variable),
+  #       cities_pollution_full %>% filter(variable == 'mean_NO2_city') %>% select(-variable),
+  #       cities_pollution_full %>% filter(variable == 'mean_O3_city') %>% select(-variable),
+  #       cities_pollution_full %>% filter(variable == 'mean_SO2_city') %>% select(-variable),
+  #       neighbourhoods_temp %>% rename(value = mean_temp),
+  #       neighbourhoods_pollution_full %>% filter(variable == 'mean_UV_neighbourhood') %>% select(-variable),
+  #       neighbourhoods_pollution_full %>% filter(variable == 'mean_CO_neighbourhood') %>% select(-variable),
+  #       neighbourhoods_pollution_full %>% filter(variable == 'mean_NO2_neighbourhood') %>% select(-variable),
+  #       neighbourhoods_pollution_full %>% filter(variable == 'mean_O3_neighbourhood') %>% select(-variable),
+  #       neighbourhoods_pollution_full %>% filter(variable == 'mean_SO2_neighbourhood') %>% select(-variable),
+  #       roads_lst_full %>% 
+  #         dplyr::rename(value = mean_temp) %>% 
+  #         group_by(city) %>% 
+  #         sample_n(1000) %>%
+  #         select(-c(streetdir, streettype)) ) %>% 
+  #    setNames(., c('cities_temp', 'cities_UV', 'cities_CO', 'cities_NO2', 'cities_O3', 'cities_SO2',
+  #             'neighbourhoods_temp', 'neighbourhoods_UV', 'neighbourhoods_CO', 'neighbourhoods_NO2', 'neighbourhoods_O3', 'neighbourhoods_SO2',
+  #             'streets_temp'))
     
+  #),
+
+  tar_file_read(
+    model_data,
+    'output/model_data.rds',
+    readRDS(!!.x)
   ),
   
   tar_target(
@@ -73,10 +78,15 @@ targets_models <- c(
     final_models,
     final_models_unnamed %>% setNames(names(model_data))
   ),
+
+  tar_target(
+    vi,
+    extract_vi(final_models)
+  ),
   
   tar_target(
     pdp,
-    plot_pdp(final_models, names(final_models), dataset_split$train),
+    plot_pdp(final_models, names(final_models), dataset_split, vi),
     pattern = map(final_models, dataset_split),
     iteration = 'list'
   )
