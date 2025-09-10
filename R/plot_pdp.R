@@ -35,14 +35,36 @@ plot_pdp <- function(final_model, name, df_train, vi){
      groups = "city"
    )
   
+  var_names <- c(
+    "mvdwelp" = "Moving Dwellings (%)",
+    "sidehop" = "Single Detached Homes (%)",
+    "indigp" = "Indigenous People (%)",
+    "doy" = 'Day of Year',
+    "lat" = 'Latitude',
+    "hoodarea" = 'Neighbourhood Area (m2)',
+    "stemdens" = 'Tree Stem Density (stems/m2)',
+    "sd_dbh" = 'Standard Deviation DBH (cm)',
+    "Shannon" = 'Shannon',
+    "SpeciesRichness" = 'Species Richness',
+    "FG_Shannon" = 'Functional Group Shannon',
+    "mean_dbh" = 'Mean DBH (cm)',
+    "NDVI_mean_" = 'NDVI',
+    "NDBI_mean_" = 'NDBI',
+    "recimmp" = 'Recent Immigrants (%)',
+    "visminp" = 'Visible Minorities (%)',
+    "stemdens" = 'Tree Stem Density (stems/m2)',
+    "FG_richness" = 'Functional Group Richness',
+    "FG_Shannon" = 'Functional Group Shannon')
+  
   
    pdp <- as_tibble(pdp_time$agr_profiles) %>%
      dplyr::mutate(across(`_vname_`, ~factor(., levels=vars))) %>%
      ggplot(aes(`_x_`, `_yhat_`, color = `_groups_`)) +
      scale_color_met_d(name = 'Demuth') + 
      geom_line(linewidth = 1.2, alpha = 0.9) + 
-     facet_wrap(`_vname_` ~ ., scales = "free") + 
-     theme_classic()
+     facet_wrap(`_vname_` ~ ., scales = "free", labeller = as_labeller(var_names)) + 
+     theme_classic() + 
+     theme(strip.text = element_text(size = 12))
   
    ggsave(paste0('graphics/', name, '_pdp.png'), pdp)
    
@@ -66,8 +88,9 @@ plot_pdp <- function(final_model, name, df_train, vi){
        colour = "",
        x = ""
      ) + 
-     facet_wrap(`_vname_` ~ ., scales = "free") + 
-     theme_classic()
+     facet_wrap(`_vname_` ~ ., scales = "free", labeller = as_labeller(var_names)) + 
+     theme_classic() + 
+     theme(strip.text = element_text(size = 12))
    
    ggsave(paste0('graphics/', name, '_ale.png'), ale)
    
