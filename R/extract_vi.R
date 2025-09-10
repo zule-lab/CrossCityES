@@ -5,32 +5,26 @@ extract_vi <- function(final_models){
   city_temp <- standard_vi(final_models$cities_temp, 
                            'Temperature',
                            'City') %>% 
-    slice_head(n = 4) %>% 
+    slice_head(n = 6) %>% 
     mutate(Relationship = case_when(Variable == "NDVI_mean_" ~ 'negative',
                                              Variable == "NDBI_mean_" ~ 'positive',
-                                             Variable == "recimmp" ~ 'postive',
+                                             Variable == "recimmp" ~ 'positive',
                                              Variable == "visminp" ~ 'positive')) %>% 
     select(c(Model, Scale, Variable, Importance, Relationship))
   
   nhood_temp <- standard_vi(final_models$neighbourhoods_temp, 
                            'Temperature',
                            'Neighbourhood') %>% 
-    slice_head(n = 5) %>% 
-    mutate(Relationship = case_when(Variable == "semhoup" ~ 'mixed',
-                                    Variable == "rowhoup" ~ 'mixed',
-                                    Variable == "edubacp" ~ 'negative',
-                                    Variable == "medinc" ~ 'mixed',
-                                    Variable == "popwithin" ~ 'mixed')) %>% 
+    slice_head(n = 1) %>% 
+    mutate(Relationship = case_when(Variable == "FG_Richness" ~ 'mixed')) %>% 
     select(c(Model, Scale, Variable, Importance, Relationship))
   
   
   street_temp <- standard_vi(final_models$streets_temp, 
                             'Temperature',
                             'Street') %>% 
-    slice_head(n = 3) %>% 
-    mutate(Relationship = case_when(Variable == "FG_shannon" ~ 'mixed',
-                                    Variable == "sidehop" ~ 'negative',
-                                    Variable == "Shannon" ~ 'negative')) %>% 
+    slice_head(n = 1) %>% 
+    mutate(Relationship = case_when(Variable == "doy" ~ 'mixed')) %>% 
     select(c(Model, Scale, Variable, Importance, Relationship))
   
   temp_table <- rbind(city_temp, nhood_temp, street_temp) %>% 
@@ -38,16 +32,11 @@ extract_vi <- function(final_models){
                                 Variable == "NDBI_mean_" ~ 'NDBI',
                                 Variable == "recimmp" ~ 'Recent Immigrants (%)',
                                 Variable == "visminp" ~ 'Visible Minorities (%)',
-                                Variable == "semhoup" ~ 'Semi-Detached Home (%)',
-                                Variable == "rowhoup" ~ 'Row-House (%)',
-                                Variable == "edubacp" ~ 'Highly Educated (%)',
-                                Variable == "medinc" ~ 'Median Income ($)',
-                                Variable == "popwithin" ~ 'Population',
-                                Variable == "FG_shannon" ~ 'Functional Group Shannon',
-                                Variable == "sidehop" ~ 'Single Detached Home (%)',
-                                Variable == "Shannon" ~ 'Shannon',
+                                Variable == "stemdens" ~ 'Tree Stem Density (stems/m2)',
+                                Variable == "FG_Richness" ~ 'Functional Group Richness',
+                                Variable == "doy" ~ 'Day of Year',
                                 .default = Variable),
-           Importance = round(Importance, 2))
+           Importance = round(Importance, 3))
   write.csv(temp_table, 'output/temperature_variable-importance.csv')
   
   
@@ -96,31 +85,32 @@ extract_vi <- function(final_models){
   nhood_o3 <- standard_vi(final_models$neighbourhoods_O3, 
                            'Ozone',
                            'Neighbourhood') %>% 
-    slice_head(n = 6) %>% 
-    mutate(Relationship = case_when(Variable == "ba_per_m2" ~ '',
-                                    Variable == "hoodarea" ~ '',
-                                    Variable == "stemdens" ~ '',
+    slice_head(n = 7) %>% 
+    mutate(Relationship = case_when(Variable == "mean_dbh" ~ '',
                                     Variable == "sd_dbh" ~ '',
                                     Variable == "Shannon" ~ '',
-                                    Variable == "mean_dbh" ~ '')) %>% 
+                                    Variable == "SpeciesRichness" ~ '',
+                                    Variable == "FG_Shannon" ~ '',
+                                    Variable == "stemdens" ~ '',
+                                    Variable == "hood_area" ~ '')) %>% 
     select(c(Model, Scale, Variable, Importance, Relationship))
   
   city_so2 <- standard_vi(final_models$cities_SO2, 
                          'Sulfur Dioxide',
                          'City') %>% 
-    slice_head(n = 5) %>% 
-    mutate(Relationship = case_when(Variable == "aptdupp" ~ '',
-                                    Variable == "lat" ~ '',
-                                    Variable == "prop_highway" ~ '',
-                                    Variable == "mean_bldhgt" ~ '',
-                                    Variable == "mvdwelp" ~ '')) %>% 
+    slice_head(n = 1) %>% 
+    mutate(Relationship = case_when(Variable == "doy" ~ '')) %>% 
     select(c(Model, Scale, Variable, Importance, Relationship))
   
   nhood_so2 <- standard_vi(final_models$neighbourhoods_SO2, 
                           'Sulfur Dioxide',
                           'Neighbourhood') %>% 
-    slice_head(n = 1) %>% 
-    mutate(Relationship = case_when(Variable == "stemdens" ~ '')) %>% 
+    slice_head(n = 5) %>% 
+    mutate(Relationship = case_when(Variable == "stemdens" ~ '',
+                                    Variable == "Shannon" ~ '',
+                                    Variable == "FG_Shannon" ~ '',
+                                    Variable == "SpeciesRichness" ~ '',
+                                    Variable == "sd_dbh" ~ '')) %>% 
     select(c(Model, Scale, Variable, Importance, Relationship))
   
   
@@ -151,6 +141,8 @@ extract_vi <- function(final_models){
                                 Variable == "stemdens" ~ 'Tree Stem Density (stems/m2)',
                                 Variable == "sd_dbh" ~ 'Standard Deviation DBH (cm)',
                                 Variable == "Shannon" ~ 'Shannon',
+                                Variable == "SpeciesRichness" ~ 'Species Richness',
+                                Variable == "FG_Shannon" ~ 'Functional Group Shannon',
                                 Variable == "mean_dbh" ~ 'Mean DBH (cm)',
                                 Variable == "aptdupp" ~ 'Duplex Apartments (%)',
                                 Variable == "prop_highway" ~ 'Proportion Highway',
