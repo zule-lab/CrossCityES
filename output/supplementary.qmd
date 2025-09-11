@@ -294,8 +294,9 @@ Table S2. Data sources used in the study.
 
 
 
-
 Table S3. Model Performance
+
+
 
 # Figures
 
@@ -416,37 +417,42 @@ Figure S3m. Model performance plot for temperature model at the street scale.
 
 
 
-![](../graphics/cities_CO_pdp.png)
+![](../graphics/cities_CO_ale.png)
 
-Figure S4a. Partial dependency plot for carbon monoxide model at the city scale. 
+Figure S4a. Accumulated local effects (ALE) plot for carbon monoxide model at the city scale. 
+
+
+![](../graphics/cities_O3_ale.png)
+
+Figure S4b. Accumulated local effects (ALE) plot for ozone model at the city scale.
+
+![](../graphics/cities_UV_ale.png)
+
+Figure S4c. Accumulated local effects (ALE) plot for UV aerosols model at the city scale.
+
+
+![](../graphics/neighbourhoods_CO_ale.png)
+
+Figure S4d. Accumulated local effects (ALE) plot for carbon monoxide model at the neighbourhood scale. 
+
+![](../graphics/neighbourhoods_NO2_ale.png)
+
+Figure S4e. Accumulated local effects (ALE) plot for nitrogen dioxide model at the neighbourhood scale.
+
+
+
+![](../graphics/neighbourhoods_UV_ale.png)
+
+Figure S4f. Accumulated local effects (ALE) for UV aerosols model at the neighbourhood scale.
+
+
 
 ![](../graphics/cities_NO2_pdp.png)
 
-Figure S4b. Partial dependency plot for nitrogen dioxide model at the city scale.
-
-
-![](../graphics/cities_O3_pdp.png)
-
-Figure S4c. Partial dependency plot for ozone model at the city scale.
-
-![](../graphics/cities_UV_pdp.png)
-
-Figure S4d. Partial dependency plot for UV aerosols model at the city scale.
-
-
-![](../graphics/neighbourhoods_CO_pdp.png)
-
-Figure S4e. Partial dependency plot for carbon monoxide model at the neighbourhood scale. 
-
-![](../graphics/neighbourhoods_NO2_pdp.png)
-
-Figure S4f. Partial dependency plot for nitrogen dioxide model at the neighbourhood scale.
+Figure S5a. Partial dependency plot for nitrogen dioxide model at the city scale. 
 
 
 ![](../graphics/neighbourhoods_O3_pdp.png)
 
-Figure S4g. Partial dependency plot for ozone model at the neighbourhood scale.
+Figure S5b. Partial dependency plot for ozone model at the neighbourhood scale. 
 
-![](../graphics/neighbourhoods_UV_pdp.png)
-
-Figure S4h. Partial dependency plot for UV aerosols model at the neighbourhood scale.
