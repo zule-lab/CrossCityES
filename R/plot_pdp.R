@@ -43,28 +43,32 @@ plot_pdp <- function(final_model, name, df_train, vi){
     "lat" = 'Latitude',
     "hoodarea" = 'Neighbourhood Area (m2)',
     "stemdens" = 'Tree Stem Density (stems/m2)',
-    "sd_dbh" = 'Standard Deviation DBH (cm)',
     "Shannon" = 'Shannon',
     "SpeciesRichness" = 'Species Richness',
-    "FG_Shannon" = 'Functional Group Shannon',
     "mean_dbh" = 'Mean DBH (cm)',
+    "sd_dbh" = "Standard Deviation DBH (cm)",
     "NDVI_mean_" = 'NDVI',
     "NDBI_mean_" = 'NDBI',
     "recimmp" = 'Recent Immigrants (%)',
     "visminp" = 'Visible Minorities (%)',
     "stemdens" = 'Tree Stem Density (stems/m2)',
     "FG_richness" = 'Functional Group Richness',
-    "FG_Shannon" = 'Functional Group Shannon')
+    "FG_shannon" = 'Functional Group Shannon')
   
   
-   pdp <- as_tibble(pdp_time$agr_profiles) %>%
-     dplyr::mutate(across(`_vname_`, ~factor(., levels=vars))) %>%
-     ggplot(aes(`_x_`, `_yhat_`, color = `_groups_`)) +
+   pdp_df <- as_tibble(pdp_time$agr_profiles) %>%
+     dplyr::mutate(across(`_vname_`, ~factor(., levels=vars)))
+     
+   idx <- match(pdp_df$`_vname_`, names(var_names))
+   pdp_df$vars <- var_names[idx]
+
+   pdp <- pdp_df %>% ggplot(aes(`_x_`, `_yhat_`, color = `_groups_`)) +
      scale_color_met_d(name = 'Demuth') + 
      geom_line(linewidth = 1.2, alpha = 0.9) + 
-     facet_wrap(`_vname_` ~ ., scales = "free", labeller = as_labeller(var_names)) + 
+     facet_wrap(vars ~ ., scales = "free", labeller = labeller(vars = label_wrap_gen(10))) + 
      theme_classic() + 
-     theme(strip.text = element_text(size = 12))
+     theme(strip.text = element_text(size = 12),
+           legend.title = element_blank())
   
    ggsave(paste0('graphics/', name, '_pdp.png'), pdp)
    
@@ -78,8 +82,13 @@ plot_pdp <- function(final_model, name, df_train, vi){
    
    
    
-   ale <- as_tibble(ale_time$agr_profiles) %>%
-     dplyr::mutate(across(`_vname_`, ~factor(., levels=vars))) %>%
+   ale_df <- as_tibble(ale_time$agr_profiles) %>%
+     dplyr::mutate(across(`_vname_`, ~factor(., levels=vars)))
+
+   idy <- match(ale_df$`_vname_`, names(var_names))
+   ale_df$vars <- var_names[idy]
+
+   ale <- ale_df %>%
      ggplot(aes(`_x_`, `_yhat_`, color = `_groups_`)) +
      scale_color_met_d(name = 'Demuth') + 
      geom_line(linewidth = 1.2, alpha = 0.9) +
@@ -88,7 +97,7 @@ plot_pdp <- function(final_model, name, df_train, vi){
        colour = "",
        x = ""
      ) + 
-     facet_wrap(`_vname_` ~ ., scales = "free", labeller = as_labeller(var_names)) + 
+     facet_wrap(vars ~ ., scales = "free", labeller = labeller(vars = label_wrap_gen(10))) + 
      theme_classic() + 
      theme(strip.text = element_text(size = 12))
    
