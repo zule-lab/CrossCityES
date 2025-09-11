@@ -12,7 +12,7 @@ tar_source('R')
 # Options -----------------------------------------------------------------
 # Targets
 tar_option_set(format = 'qs',
-               controller = crew_controller_local(workers = 13),
+               #controller = crew_controller_local(workers = 13),
                packages = c('targets', 'tarchetypes', 'crew', 'qs2', 'quarto', 'renv', 'conflicted', 'downloader', 'readr',
                             'sf', 'geojsonio', 'stars', 'osmdata', 'rnaturalearth', 'ggrepel', 'DALEXtra', 'xfun',
                             'tidyr', 'stringr', 'tibble', 'units', 'anytime', 'FactoMineR', 'factoextra', 'ggplot2',
