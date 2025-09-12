@@ -2,9 +2,9 @@
 
 // Data ----------
 // load study scale boundaries
-var cities = ee.FeatureCollection('users/icrichmond/MunicipalBoundaries');
-var neighbourhoods = ee.FeatureCollection('users/icrichmond/NeighbourhoodBoundaries');
-var streets = ee.FeatureCollection('users/icrichmond/RoadBoundaries');
+var cities = ee.FeatureCollection('projects/ee-isabellarichmond66/assets/cities');
+var neighbourhoods = ee.FeatureCollection('projects/ee-isabellarichmond66/assets/neighbourhoods');
+var streets = ee.FeatureCollection('projects/ee-isabellarichmond66/assets/roads');
 
 // load Canadian buildings
 var canBuildings = ee.FeatureCollection('projects/sat-io/open-datasets/MSBuildings/Canada')
@@ -44,18 +44,21 @@ var streets_dem = dem_mask.reduceRegions({collection: streets,
 Export.table.toDrive({
   collection: city_dem,
   description: "cities",
+  selectors: ['CMANAME',	'mean', 'stdDev'],
   fileFormat: "CSV"
 });
 
 Export.table.toDrive({
   collection: neighbourhoods_dem,
   description: "neighbourhoods",
+  selectors: ['city', 'hood', 'mean', 'stdDev'],
   fileFormat: "CSV"
 });
 
 Export.table.toDrive({
   collection: streets_dem,
   description: "streets",
+  selectors: ['CMANAME', 'streetid', 'mean', 'stdDev'],
   fileFormat: "CSV"
 });
 

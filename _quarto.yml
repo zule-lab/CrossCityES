@@ -6,3 +6,4 @@ format:
     toc: true
     toc-location: right
     toc-depth: 3
+    self-contained: true

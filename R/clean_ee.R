@@ -1,6 +1,4 @@
-clean_ee <- function(dl_link, dl_path, file_ext){
-  
-  drive_download(file = dl_link, path = dl_path, type = file_ext, overwrite = T)
+clean_ee <- function(dl_path){
   
   # read downloaded file
   file <- read.csv(dl_path)
@@ -16,7 +14,7 @@ clean_ee <- function(dl_link, dl_path, file_ext){
 
 clean_sat <- function(folder, file, dl_path){
   
-  if (folder == 'large/ndvi_ndbi'){
+  if (folder == 'ee/SENTINEL_NDVI_NDBI'){
     
     label <- ""
     
@@ -31,7 +29,7 @@ clean_sat <- function(folder, file, dl_path){
     
   }
   
-  else if (folder == 'large/temperature'){
+  else if (folder == 'ee/Landsat_Temperature'){
     
     label <- "temp"
     
@@ -43,11 +41,11 @@ clean_sat <- function(folder, file, dl_path){
     
   }
   
-  else if (folder == 'large/dem'){
+  else if (folder == 'ee/DEM'){
     
     label <- "bldhgt"
     
-    df <- file %>% select(-c('system.index', '.geo')) %>% 
+    df <- file %>% 
       rename_with(., ~ paste0(.x, "_", label), .cols = all_of(c("mean", "stdDev")))
     
     return(df)
@@ -55,7 +53,7 @@ clean_sat <- function(folder, file, dl_path){
     
   }
   
-  else if (folder == 'large/pollution'){
+  else if (folder == 'ee/SENTINEL_Pollution'){
     
     label <- basename(sans_ext(dl_path))
     

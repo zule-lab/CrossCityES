@@ -2,20 +2,17 @@ suppressPackageStartupMessages({
 
   library(targets)
   library(tarchetypes)
+  library(crew)
   library(qs2)
   library(quarto)
   library(renv)
   
   library(conflicted)
-  conflict_prefer_all("dplyr", c("plyr", "stats"), quiet = TRUE)
   
   library(downloader)
   library(readr)
   library(bit64)
-  conflict_prefer("match", "base", "bit64", quiet = T)
-  conflict_prefer(":", "base", "bit64", quiet = T)
-  conflict_prefer("%in%", "base", quiet = T)
-  
+ 
   library(sf)
   library(geojsonio)
   library(stars)
@@ -25,7 +22,6 @@ suppressPackageStartupMessages({
   
   library(plyr)
   library(dplyr)
-  conflict_prefer("first", "dplyr", "data.table", quiet = T)
   library(tidyr)
   library(stringr)
   library(tibble)
@@ -47,16 +43,13 @@ suppressPackageStartupMessages({
   
   library(mice)
   library(cluster)
-  conflicts_prefer(dplyr::filter)
   library(ranger)
   library(tidymodels)
   library(themis)
   library(vip)
-  library(future)
   library(DALEXtra)
   
   library(xfun)
   
-  library(googledrive)
 
 })

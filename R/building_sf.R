@@ -1,7 +1,5 @@
-building_sf <- function(dl_link, dl_path, file_ext, mun_bound_trees){
-  
-  download_file(dl_link, dl_path, file_ext)
-  
+building_sf <- function(dl_path, mun_bound_trees){
+
   unzip(dl_path, exdir = sans_ext(dl_path))
   
   path <- unzip(dl_path, exdir = sans_ext(dl_path))

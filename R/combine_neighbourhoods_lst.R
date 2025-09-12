@@ -59,13 +59,13 @@ combine_neighbourhoods_lst <- function(neighbourhoods_lst, neighbourhood_bound_t
     select(-c(time, hood,
               count_temp, median_temp, max_temp, min_temp,
               stdDev_temp, coverage, nTrees, stemdens_acre,
-              total_ba, hood_area.y, hood_id.x.x, hood_area.x.x,
+              total_ba, hood_area.y, hood_id.x.x,
               centroids, build_area, prop_strts, road_length,
               neighbourhood_area, area, DSAcount, lowinc,
-              hood_id, date_ndvi, time_ndvi, NDBI_count_,
+              date_ndvi, time_ndvi, NDBI_count_,
               NDBI_median_, NDBI_max_, NDBI_min_, NDBI_stdDev_,
               NDVI_count_, NDVI_median_, NDVI_max_, NDVI_min_, 
-              NDVI_stdDev_, hood_area.y.y, id, diff)) %>% 
+              NDVI_stdDev_, diff)) %>% 
     mutate_if(is.character, factor) %>%
     mutate(doy = yday(date)) %>% 
     select(-date)

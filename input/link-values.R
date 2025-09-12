@@ -5,7 +5,7 @@ values_hood <- tribble(
   'large/neighbourhoods/van_hood_raw.zip', 'https://opendata.vancouver.ca/explore/dataset/local-area-boundary/download/?format=shp&timezone=Asia/Shanghai&lang=enn',
   'large/neighbourhoods/cal_hood_raw.csv', 'https://data.calgary.ca/api/views/surr-xmvs/rows.csv?accessType=DOWNLOAD',
   'large/neighbourhoods/win_hood_raw.csv', 'https://data.winnipeg.ca/resource/8k6x-xxsy.csv',
-  'large/neighbourhoods/tor_hood_raw.zip', 'https://ckan0.cf.opendata.inter.prod-toronto.ca/dataset/neighbourhoods/resource/34b409a6-68ef-45f7-9cc8-c85153c1af62/download/Neighbourhoods%20-%204326.zip',
+  'large/neighbourhoods/tor_hood_raw.zip', 'https://ckan0.cf.opendata.inter.prod-toronto.ca/dataset/fc443770-ef0a-4025-9c2c-2cb558bfab00/resource/02ac940a-98b4-4b00-b04f-5899f24e1ef4/download/Neighbourhoods%20-%204326.zip',
   'large/neighbourhoods/ott_hood_raw.zip', 'https://opendata.arcgis.com/api/v3/datasets/32fe76b71c5e424fab19fec1f180ec18_0/downloads/data?format=shp&spatialRefId=4326',
   'large/neighbourhoods/mon_hood_raw.zip', 'https://donnees.montreal.ca/dataset/9797a946-9da8-41ec-8815-f6b276dec7e9/resource/e8bea324-044c-4544-bbd1-2e0d08a24216/download/limites-administratives-agglomeration-nad83.zip',
   'large/neighbourhoods/hal_hood_raw.zip', 'https://opendata.arcgis.com/api/v3/datasets/b4088a068b794436bdb4e5c31df76fe2_0/downloads/data?format=shp&spatialRefId=4326'
@@ -97,44 +97,11 @@ values_buildings <- tribble(
   )
 
 
+
 # Census ------------------------------------------------------------------
 values_census <- tribble(
   ~dl_path, ~dl_link,
   'large/national/cen_da_raw.zip', 'https://www12.statcan.gc.ca/census-recensement/2021/dp-pd/prof/details/download-telecharger/comp/GetFile.cfm?Lang=E&FILETYPE=CSV&GEONO=006',
-) %>% 
-  mutate(
-    file_name = basename(sans_ext(dl_path)),
-    file_name_sym = lapply(file_name, as.symbol),
-    file_ext = file_ext(dl_path)
-  )
-
-
-# Earth Engine ------------------------------------------------------------
-values_ee <- tribble(
-  ~dl_path, ~dl_link,
-  'large/ndvi_ndbi/cities_ndvi_ndbi.csv', 'Data/Cross-City ES Project/SENTINEL_NDVI_NDBI/cities_ndvi.csv',
-  'large/ndvi_ndbi/neighbourhoods_ndvi_ndbi.csv', 'Data/Cross-City ES Project/SENTINEL_NDVI_NDBI/neighbourhoods_ndvi.csv',
-  'large/ndvi_ndbi/streets_ndvi_ndbi.csv', 'Data/Cross-City ES Project/SENTINEL_NDVI_NDBI/streets_ndvi.csv',
-  
-  'large/temperature/cities_lst.csv', 'Data/Cross-City ES Project/Landsat_Temperature/cities_lst.csv',
-  'large/temperature/neighbourhoods_lst.csv', 'Data/Cross-City ES Project/Landsat_Temperature/neighbourhoods_lst.csv',
-  'large/temperature/streets_lst.csv', 'Data/Cross-City ES Project/Landsat_Temperature/streets_lst.csv',
-  
-  'large/dem/cities_bldhgt.csv', 'Data/Cross-City ES Project/DEM/cities_dem.csv',
-  'large/dem/neighbourhoods_bldhgt.csv', 'Data/Cross-City ES Project/DEM/neighbourhoods_dem.csv',
-  'large/dem/streets_bldhgt.csv', 'Data/Cross-City ES Project/DEM/streets_dem.csv', 
-  
-  'large/pollution/cities_CO.csv', 'Data/Cross-City ES Project/SENTINEL_Pollution/CO_city.csv',
-  'large/pollution/neighbourhoods_CO.csv', 'Data/Cross-City ES Project/SENTINEL_Pollution/CO_neighbourhood.csv',
-  'large/pollution/cities_NO2.csv', 'Data/Cross-City ES Project/SENTINEL_Pollution/NO2_city.csv',
-  'large/pollution/neighbourhoods_NO2.csv', 'Data/Cross-City ES Project/SENTINEL_Pollution/NO2_neighbourhood.csv',
-  'large/pollution/cities_O3.csv', 'Data/Cross-City ES Project/SENTINEL_Pollution/O3_city.csv',
-  'large/pollution/neighbourhoods_O3.csv', 'Data/Cross-City ES Project/SENTINEL_Pollution/O3_neighbourhood.csv',
-  'large/pollution/cities_SO2.csv', 'Data/Cross-City ES Project/SENTINEL_Pollution/SO2_city.csv',
-  'large/pollution/neighbourhoods_SO2.csv', 'Data/Cross-City ES Project/SENTINEL_Pollution/SO2_neighbourhood.csv',
-  'large/pollution/cities_UV.csv', 'Data/Cross-City ES Project/SENTINEL_Pollution/UV_city.csv',
-  'large/pollution/neighbourhoods_UV.csv', 'Data/Cross-City ES Project/SENTINEL_Pollution/UV_neighbourhood.csv'
-  
 ) %>% 
   mutate(
     file_name = basename(sans_ext(dl_path)),

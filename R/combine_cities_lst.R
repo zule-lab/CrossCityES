@@ -52,7 +52,7 @@ combine_cities_lst <- function(cities_lst, mun_bound_trees, census_city,
   final <- join %>%
     # remove irrelevant columns 
     select(-c(time, count_temp, median_temp, max_temp, min_temp,
-              stdDev_temp, coverage, stemdens_acre, total_ba,
+              stdDev_temp, coverage, nTrees, stemdens_acre, total_ba,
               centroids, build_area, road_length, area, da,
               DAcount, lowinc, date_ndvi, time_ndvi, NDBI_count_,
               NDBI_median_, NDBI_max_, NDBI_min_, NDBI_stdDev_,
