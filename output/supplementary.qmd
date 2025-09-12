@@ -1,0 +1,458 @@
+---
+title: "Title: Multi-scale analysis of temperature and air pollution predictors in large Canadian cities"
+author:
+  - name: Isabella C Richmond
+    orcid: 0000-0001-5079-8442
+    email: isabella.richmond@mail.concordia.ca
+    affiliations:
+      - name: Department of Biology, Concordia University
+        address: 7141 Sherbrooke St W
+        city: Montreal
+        state: QC
+        postal-code: H4B 1R6
+  - name: Nicole Yu
+    affiliations:
+      - name: Department of Biology, Concordia University
+        address: 7141 Sherbrooke St W
+        city: Montreal
+        state: QC
+        postal-code: H4B 1R6
+  - name: Alec L Robitaille
+    affiliations:
+      - name: Department of Biology, Memorial University of Newfoundland
+        city: St John`s
+        state: CAN
+        postal-code: A1C 5S7
+  - name: Kayleigh Hutt-Taylor
+    affiliations:
+      - name: Department of Biology, Concordia University
+        address: 7141 Sherbrooke St W
+        city: Montreal
+        state: CAN
+        postal-code: H4B 1R6
+  - name: Dr. Carly D Ziter
+    affiliations:
+      - name: Department of Biology, Concordia University
+        address: 7141 Sherbrooke St W
+        city: Montreal
+        state: CAN
+        postal-code: H4B 1R6 
+format: 
+  html:
+    toc: true
+    fig-width: 12
+    fig-height: 12
+    embed-resources: true
+---
+
+**\* isabella.richmond\@mail.concordia.ca**
+
+```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+#| label: setup
+
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+
+source('R/packages.R')
+
+tar_load(model_data)
+```
+
+------------------------------------------------------------------------
+
+# Tables
+
+Table S1a. Mean and standard deviations of all response variables. Scale indicates the scale of the model/data. For the model data, pixel values from satellite images across a city, neighbourhood, or street area were averaged. For this table, the values for each neighbourhood or street in a city were then summarized at the city scale, taking the average and standard deviation. There are no air pollutant measurements at the street scale, as the data is too coarse. Temperature measurements are in degrees Celsius and air pollutant measurements are in mol/m2.
+
+```{r}
+#| echo: false
+#| eval: true
+#| label: table-s1a
+
+# city scale 
+cities_df <- inner_join(model_data$cities_temp %>%
+                     group_by(city) %>%
+                     summarize(mean_temp = mean(value),
+                               sd_temp = sd(value),
+                               mean_ndvi = mean(NDVI_mean_), 
+                               mean_ndbi = mean(NDBI_mean_),
+                               across(ba_per_m2:stdDev_bldhgt,
+                                      ~first(.x))),
+                     model_data$cities_CO %>% group_by(city) %>%
+                      summarize(mean_co = mean(value),
+                                sd_co = sd(value)),
+                     by = "city") %>% 
+  inner_join(.,model_data$cities_NO2 %>% group_by(city) %>%
+                     summarize(mean_no2 = mean(value),
+                               sd_no2 = sd(value)),
+             by = "city") %>% 
+  inner_join(., model_data$cities_O3 %>% group_by(city) %>%
+                     summarize(mean_o3 = mean(value),
+                               sd_03 = sd(value)),
+             by = "city") %>% 
+  inner_join(., model_data$cities_SO2 %>% group_by(city) %>%
+                     summarize(mean_so2 = mean(value),
+                               sd_so2 = sd(value)),
+             by = "city") %>% 
+  inner_join(., model_data$cities_UV %>% group_by(city) %>%
+                     summarize(mean_uv = mean(value),
+                               sd_uv = sd(value)),
+             by = "city") %>%
+  rename(area = cityarea,
+         population = totpop) %>%
+  select(-prop_strts) %>%
+  mutate(scale = "City")
+
+# neighbourhood scale 
+
+nhoods_df <- inner_join(model_data$neighbourhoods_temp %>%
+                          group_by(city_hood) %>%
+                          summarize(mean_temp = mean(value),
+                               sd_temp = sd(value),
+                               mean_ndvi = mean(NDVI_mean_), 
+                               mean_ndbi = mean(NDBI_mean_),
+                               city = first(city), 
+                               across(ba_per_m2:lowincp,
+                                      ~first(.x))) %>%
+                          group_by(city) %>% 
+                          summarize(mean_temp = mean(mean_temp),
+                               sd_temp = sd(sd_temp),
+                               mean_ndvi = mean(mean_ndvi), 
+                               mean_ndbi = mean(mean_ndbi),
+                               across(ba_per_m2:lowincp,
+                                      ~mean(.x, na.rm = T))),
+                     model_data$neighbourhoods_CO %>% group_by(city) %>%
+                      summarize(mean_co = mean(value),
+                                sd_co = sd(value)),
+                     by = "city") %>% 
+  inner_join(.,model_data$neighbourhoods_NO2 %>% group_by(city) %>%
+                     summarize(mean_no2 = mean(value),
+                               sd_no2 = sd(value)),
+             by = "city") %>% 
+  inner_join(., model_data$neighbourhoods_O3 %>% group_by(city) %>%
+                     summarize(mean_o3 = mean(value),
+                               sd_o3 = sd(value)),
+             by = "city") %>% 
+  inner_join(., model_data$neighbourhoods_SO2 %>% group_by(city) %>%
+                     summarize(mean_so2 = mean(value),
+                               sd_so2 = sd(value)),
+             by = "city") %>% 
+  inner_join(., model_data$neighbourhoods_UV %>% group_by(city) %>%
+                     summarize(mean_uv = mean(value),
+                               sd_uv = sd(value)),
+             by = "city") %>%
+  rename(area = hoodarea,
+         population = popwithin) %>%
+  mutate(scale = "Neighbourhood")
+
+# streets
+streets_df <- model_data$streets_temp %>%
+  group_by(streetid) %>%
+  summarize(mean_temp = mean(value),
+            sd_temp = sd(value),
+            mean_ndvi = mean(NDVI_mean_),
+            mean_ndbi = mean(NDBI_mean_),
+            city = first(city), 
+            across(ba_per_m2:stdDev_bldhgt,
+                   ~first(.x))) %>%
+  group_by(city) %>% 
+  summarize(mean_temp = mean(mean_temp),
+            sd_temp = sd(sd_temp, na.rm = T),
+            mean_ndvi = mean(mean_ndvi), 
+            mean_ndbi = mean(mean_ndbi),
+            across(ba_per_m2:stdDev_bldhgt,
+                   ~mean(.x, na.rm = T))) %>% 
+  rename(population = popwithin) %>%
+  mutate(scale = "Street")
+
+df <- bind_rows(cities_df, nhoods_df, streets_df)
+
+response_df <- df %>% 
+  select(c(city, scale, mean_temp, sd_temp, mean_co, sd_co, 
+           mean_no2, sd_no2, mean_o3, sd_o3, mean_uv, sd_uv))
+
+response_df %>% 
+  mutate(across(is.numeric, ~ signif(.x, 2))) %>% 
+  knitr::kable(col.names = c('City', 'Scale', 'Mean Temperature', 
+                             'Std Dev Temperature', 'Mean CO', 
+                             'Std Dev CO', 'Mean NO2', 'Std Dev NO2',
+                             'Mean O3', 'Std Dev O3', 'Mean UV',
+                             'Std Dev UV'))
+```
+
+Table S1b. Mean and standard deviations of all explanatory variables. Scale indicates the scale of the model/data. For the model data,values across the city, neighbourhood, or street area were averaged. For this table, the values for each neighbourhood or street in a city were then summarized at the city scale, taking the average and standard deviation.
+
+```{r}
+#| echo: false
+#| eval: true
+#| label: table-s1b
+
+explanatory_df <- df %>% 
+  select(c(city, scale, area, ba_per_m2, stemdens, SpeciesRichness,
+           Shannon, FG_richness, FG_shannon, mean_dbh, sd_dbh,
+           population, mean_ndvi, mean_ndbi, centroid_den, 
+           area_den, prop_highway, road_dens, popdens, mean_bldhgt,
+           stdDev_bldhgt, sidehop, aptfivp, semhoup, rowhoup,
+           aptdupp, aptbuip, mvdwelp, medinc, recimmp, indigp, 
+           visminp, edubacp, lowincp
+           ))
+
+explanatory_df %>% 
+  drop_units() %>% 
+  mutate(across(is.numeric, ~ signif(.x, 2))) %>% 
+  knitr::kable(col.names = c('City', 'Scale', 'Area (km2)', 
+                             'Basal Area (m2/m2)', 'Stem Density (ind/km2)',
+                             'Species Richness', 'Shannon', 
+                             'Functional Group Richness', 
+                             'Functional Group Shannon', 'Mean DBH (cm)', 
+                             'Std Dev DBH (cm)', 'Popuation', 'Mean NDVI',
+                             'Mean NDBI', 'Building Density (buildings/km2)',
+                             'Building Density (km2/km2)', 
+                             'Proportion Highway', 'Road Density (km/km2)',
+                             'Population Density (ind/km2)', 
+                             'Mean Building Height (m)', 
+                             'Std Dev Building Height (m)', 
+                             'Single Detached Homes (%)', 
+                             'Large Apt Building (%)', 
+                             'Semi-Detached Home (%)', 'Row House (%)', 
+                             'Duplex Apartment (%)', 'Small Apt Building (%)',
+                             'Moving Dwelling (%)', 'Median Income ($)',
+                             'Recent Immigrants (%)', 'Indigenous People (%)',
+                             'Visible Minorities (%)', 'Highly Educated (%)',
+                             'Low-Income (%)'))
+
+```
+
+Table S2. Data sources used in the study.
+
++---------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------+
+| Dataset                   | Area/Link                                                                                                                                                                                                                                                          | Data Type             |
++===========================+====================================================================================================================================================================================================================================================================+=======================+
+| Neighbourhood             | [Halifax](https://data-hrm.hub.arcgis.com/datasets/b4088a068b794436bdb4e5c31df76fe2_0/explore)                                                                                                                                                                     | Shapefile/CSV         |
+|                           |                                                                                                                                                                                                                                                                    |                       |
+|                           | [Montreal](https://donnees.montreal.ca/dataset/9797a946-9da8-41ec-8815-f6b276dec7e9/resource/e8bea324-044c-4544-bbd1-2e0d08a24216)                                                                                                                                 |                       |
+|                           |                                                                                                                                                                                                                                                                    |                       |
+|                           | [Ottawa](https://open.ottawa.ca/datasets/32fe76b71c5e424fab19fec1f180ec18_0/explore?location=45.249968%2C-75.798941%2C0.32)                                                                                                                                        |                       |
+|                           |                                                                                                                                                                                                                                                                    |                       |
+|                           | [Toronto](https://ckan0.cf.opendata.inter.prod-toronto.ca/dataset/neighbourhoods)                                                                                                                                                                                  |                       |
+|                           |                                                                                                                                                                                                                                                                    |                       |
+|                           | [Winnipeg](https://data.winnipeg.ca/dataset/Neighbourhoods/8k6x-xxsy/about_data)                                                                                                                                                                                   |                       |
+|                           |                                                                                                                                                                                                                                                                    |                       |
+|                           | [Calgary](https://data.calgary.ca/Base-Maps/Community-District-Boundaries/surr-xmvs/about_data)                                                                                                                                                                    |                       |
+|                           |                                                                                                                                                                                                                                                                    |                       |
+|                           | [Vancouver](https://opendata.vancouver.ca/explore/dataset/local-area-boundary/information/?disjunctive.name)                                                                                                                                                       |                       |
++---------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------+
+| Parks                     | [Halifax](https://data-hrm.hub.arcgis.com/datasets/3df29a3d088a42d890f11d027ea1c0be_0/explore)                                                                                                                                                                     | Shapefile/CSV         |
+|                           |                                                                                                                                                                                                                                                                    |                       |
+|                           | [Montreal](https://donnees.montreal.ca/fr/dataset/grands-parcs-parcs-d-arrondissements-et-espaces-publics)                                                                                                                                                         |                       |
+|                           |                                                                                                                                                                                                                                                                    |                       |
+|                           | [Ottawa](https://ottawa.ca/en/recreation-and-parks/outdoor-recreation/parks-and-green-space#park-locations)                                                                                                                                                        |                       |
+|                           |                                                                                                                                                                                                                                                                    |                       |
+|                           | [Toronto](https://ckan0.cf.opendata.inter.prod-toronto.ca/dataset/2aac8903-23ff-4072-ab72-b76cac44ad89/resource/9f53c253-a47e-497f-8a07-528f7d7aad90)                                                                                                              |                       |
+|                           |                                                                                                                                                                                                                                                                    |                       |
+|                           | [Winnipeg](https://data.winnipeg.ca/api/views/tx3d-pfxq/rows.csv?date=20250204&accessType=DOWNLOAD)                                                                                                                                                                |                       |
+|                           |                                                                                                                                                                                                                                                                    |                       |
+|                           | [Calgary](https://data.calgary.ca/Recreation-and-Culture/Parks-Sites/i9fu-gjqj)                                                                                                                                                                                    |                       |
+|                           |                                                                                                                                                                                                                                                                    |                       |
+|                           | [Vancouver](https://opendata.vancouver.ca/explore/dataset/parks-polygon-representation/information/)                                                                                                                                                               |                       |
++---------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------+
+| Street Trees              | [Halifax](https://data-hrm.hub.arcgis.com/datasets/33a4e9b6c7e9439abcd2b20ac50c5a4d_0/explore)                                                                                                                                                                     |                       |
+|                           |                                                                                                                                                                                                                                                                    |                       |
+|                           | [Montreal](https://donnees.montreal.ca/fr/dataset/arbres)                                                                                                                                                                                                          |                       |
+|                           |                                                                                                                                                                                                                                                                    |                       |
+|                           | [Ottawa](https://open.ottawa.ca/datasets/ottawa::tree-inventory/about)                                                                                                                                                                                             |                       |
+|                           |                                                                                                                                                                                                                                                                    |                       |
+|                           | [Toronto](https://ckan0.cf.opendata.inter.prod-toronto.ca/dataset/6ac4569e-fd37-4cbc-ac63-db3624c5f6a2/resource/5930412c-408e-4ee3-b473-56a790c9dfb7)                                                                                                              |                       |
+|                           |                                                                                                                                                                                                                                                                    |                       |
+|                           | [Winnipeg](https://data.winnipeg.ca/Parks/Tree-Inventory-Map/n7eq-raej)                                                                                                                                                                                            |                       |
+|                           |                                                                                                                                                                                                                                                                    |                       |
+|                           | [Calgary](https://data.calgary.ca/Environment/Public-Trees/tfs4-3wwa/about_data)                                                                                                                                                                                   |                       |
+|                           |                                                                                                                                                                                                                                                                    |                       |
+|                           | [Vancouver](https://opendata.vancouver.ca/explore/dataset/public-trees/information/?disjunctive.neighbourhood_name&disjunctive.on_street&disjunctive.species_name&disjunctive.common_name)                                                                         |                       |
++---------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------+
+| Census Metropolitan Areas | [National](https://www12.statcan.gc.ca/census-recensement/alternative_alternatif.cfm?l=eng&dispext=zip&teng=lcma000b21a_e.zip&k=%20%20%20%2013083&loc=//www12.statcan.gc.ca/census-recensement/2021/geo/sip-pis/boundary-limites/files-fichiers/lcma000b21a_e.zip) | Shapefile             |
++---------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------+
+| Roads                     | [National](https://www12.statcan.gc.ca/census-recensement/2011/geo/RNF-FRR/index-s-eng.cfm?year=24)                                                                                                                                                                | Shapefile             |
++---------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------+
+| Dissemination Areas       | [National](https://www12.statcan.gc.ca/census-recensement/alternative_alternatif.cfm?l=eng&dispext=zip&teng=lda_000b21a_e.zip&k=%20%20%20192424&loc=//www12.statcan.gc.ca/census-recensement/2021/geo/sip-pis/boundary-limites/files-fichiers/lda_000b21a_e.zip)   | Shapefile             |
++---------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------+
+| 2021 Census               | [National](https://www12.statcan.gc.ca/census-recensement/2021/dp-pd/prof/details/download-telecharger.cfm?Lang=E)                                                                                                                                                 | CSV                   |
++---------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------+
+| Buildings                 | [National](https://github.com/microsoft/CanadianBuildingFootprints)                                                                                                                                                                                                | Shapefile             |
++---------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------+
+| NDVI/NDBI                 | [International - Sentinel 2](https://developers.google.com/earth-engine/datasets/catalog/sentinel-2) (5 day revisit frequency)                                                                                                                                     | TIFF                  |
++---------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------+
+| Land Surface Temperature  | [International - Landsat 8](https://developers.google.com/earth-engine/datasets/catalog/landsat-8/) (2 week revisit frequency)                                                                                                                                     | TIFF                  |
++---------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------+
+| Air Pollutants            | [International - Sentinel 5p TROPOMI](https://developers.google.com/earth-engine/datasets/catalog/sentinel-5p) (2 day revisit frequency)                                                                                                                           | TIFF                  |
++---------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------------+
+
+
+
+
+
+Table S3. Model Performance
+
+
+
+# Figures
+
+![](../graphics/sat_coverage.png)
+
+Figure S1. Example of satellite image coverage of Toronto neighbourhoods. Depicted is a single satellite image, with cloudy pixels removed. To be included in our analysis, satellite images had to cover an estimated 50% or more of the area of a city or neighbourhood, or 100% of a street area.
+
+
+
+![](../graphics/cities_temp_vip.png)
+
+Figure S2a. Variable importance plot for temperature model at the city scale. 
+
+
+![](../graphics/cities_CO_vip.png)
+
+Figure S2b. Variable importance plot for carbon monoxide model at the city scale. 
+
+![](../graphics/cities_NO2_vip.png)
+
+Figure S2c. Variable importance plot for nitrogen dioxide model at the city scale.
+
+
+![](../graphics/cities_O3_vip.png)
+
+Figure S2d. Variable importance plot for ozone model at the city scale.
+
+![](../graphics/cities_UV_vip.png)
+
+Figure S2e. Variable importance plot for UV aerosols model at the city scale.
+
+
+![](../graphics/neighbourhoods_temp_vip.png)
+
+Figure S2f. Variable importance plot for temperature model at the neighbourhood scale. 
+
+
+![](../graphics/neighbourhoods_CO_vip.png)
+
+Figure S2g. Variable importance plot for carbon monoxide model at the neighbourhood scale. 
+
+![](../graphics/neighbourhoods_NO2_vip.png)
+
+Figure S2h. Variable importance plot for nitrogen dioxide model at the neighbourhood scale.
+
+
+![](../graphics/neighbourhoods_O3_vip.png)
+
+Figure S2i. Variable importance plot for ozone model at the neighbourhood scale.
+
+![](../graphics/neighbourhoods_UV_vip.png)
+
+Figure S2j. Variable importance plot for UV aerosols model at the neighbourhood scale.
+
+![](../graphics/streets_temp_vip.png)
+
+Figure S2k. Variable importance plot for temperature model at the street scale.
+
+
+![](../graphics/cities_temp_model-fit.png)
+
+Figure S3a. Model performance plot for temperature model at the city scale. 
+
+
+![](../graphics/cities_CO_model-fit.png)
+
+Figure S3b. Model performance plot for carbon monoxide model at the city scale. 
+
+![](../graphics/cities_NO2_model-fit.png)
+
+Figure S3c. Model performance plot for nitrogen dioxide model at the city scale.
+
+
+![](../graphics/cities_O3_model-fit.png)
+
+Figure S3d. Model performance plot for ozone model at the city scale.
+
+![](../graphics/cities_SO2_model-fit.png)
+
+Figure S3e. Model performance plot for sulfur dioxide model at the city scale.
+
+
+![](../graphics/cities_UV_model-fit.png)
+
+Figure S3f. Model performance plot for UV aerosols model at the city scale.
+
+
+![](../graphics/neighbourhoods_temp_model-fit.png)
+
+Figure S3g. Model performance plot for temperature model at the neighbourhood scale. 
+
+
+![](../graphics/neighbourhoods_CO_model-fit.png)
+
+Figure S3h. Model performance plot for carbon monoxide model at the neighbourhood scale. 
+
+![](../graphics/neighbourhoods_NO2_model-fit.png)
+
+Figure S3i. Model performance plot for nitrogen dioxide model at the neighbourhood scale.
+
+
+![](../graphics/neighbourhoods_O3_model-fit.png)
+
+Figure S3j. Model performance plot for ozone model at the neighbourhood scale.
+
+![](../graphics/neighbourhoods_SO2_model-fit.png)
+
+Figure S3k. Model performance plot for sulfur dioxide model at the neighbourhood scale.
+
+
+![](../graphics/neighbourhoods_UV_model-fit.png)
+
+Figure S3l. Model performance plot for UV aerosols model at the neighbourhood scale.
+
+![](../graphics/streets_temp_model-fit.png)
+
+Figure S3m. Model performance plot for temperature model at the street scale.
+
+
+
+![](../graphics/cities_CO_ale.png)
+
+Figure S4a. Accumulated local effects (ALE) plot for carbon monoxide model at the city scale. 
+
+
+![](../graphics/cities_O3_ale.png)
+
+Figure S4b. Accumulated local effects (ALE) plot for ozone model at the city scale.
+
+![](../graphics/cities_UV_ale.png)
+
+Figure S4c. Accumulated local effects (ALE) plot for UV aerosols model at the city scale.
+
+
+![](../graphics/neighbourhoods_CO_ale.png)
+
+Figure S4d. Accumulated local effects (ALE) plot for carbon monoxide model at the neighbourhood scale. 
+
+![](../graphics/neighbourhoods_NO2_ale.png)
+
+Figure S4e. Accumulated local effects (ALE) plot for nitrogen dioxide model at the neighbourhood scale.
+
+
+
+![](../graphics/neighbourhoods_UV_ale.png)
+
+Figure S4f. Accumulated local effects (ALE) for UV aerosols model at the neighbourhood scale.
+
+
+
+![](../graphics/cities_NO2_pdp.png)
+
+Figure S5a. Partial dependency plot for nitrogen dioxide model at the city scale. 
+
+
+![](../graphics/neighbourhoods_O3_pdp.png)
+
+Figure S5b. Partial dependency plot for ozone model at the neighbourhood scale. 
+

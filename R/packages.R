@@ -36,6 +36,7 @@ suppressPackageStartupMessages({
   library(ggplot2)
   library(MetBrewer)
   library(visNetwork)
+  library(patchwork)
   
   
   library(vegan)

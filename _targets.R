@@ -45,6 +45,4 @@ lapply(grep('targets', ls(), value = TRUE), get)
 
 
 # TODO: 
-# - RF modelling
-# - wrap facet labels 
-# - make figures 
+

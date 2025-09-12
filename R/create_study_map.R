@@ -1,4 +1,5 @@
-create_study_map <- function(){
+create_study_map <- function(mun_bound_clean, da_bound_clean, mun_road_clean, can_hood, can_trees,
+                             mun_bound_trees, neighbourhood_bound_trees, road_bound_trees){
   
 
 # palette -----------------------------------------------------------------
@@ -51,10 +52,11 @@ create_study_map <- function(){
   cities <- st_set_crs(cities, st_crs(keepb))  
   
 
-# map ---------------------------------------------------------------------
   cities$city <- gsub("(.*),.*", "\\1", cities$location)
 
   
+# main map ----------------------------------------------------------------
+
   ## main map
   thememain <- theme(panel.border = element_rect(linewidth = 1, fill = NA),
                      panel.background = element_rect(fill = watercol),
@@ -80,16 +82,71 @@ create_study_map <- function(){
              ylim = c(bb['ymin'], bb['ymax'])) +
     #geom_rect(aes(xmin = -74.0788, xmax = -73.3894, ymin = 45.3414), ymax = 45.7224, 
     #          fill = NA, colour = "black", size = 0.5)  + 
-    thememain
+    thememain + 
+    ggtitle('A) Seven Study Cities')
+  
+
+# city map ----------------------------------------------------------------
+mtlbound <- mun_bound_clean %>% filter(CMANAME == "Montreal")
+mtldas <- st_intersection(da_bound_clean, mtlbound)  
+mtltrees <- can_trees %>% filter(city == "Montreal")
+mtlfinal <- mun_bound_trees %>% filter(CMANAME == "Montreal")
+
+
+city <- ggplot() +
+  geom_sf(data = mtldas, alpha = 0.5) + 
+  geom_sf(data = mtltrees, colour = 'darkgreen', size = 0.01) +
+  geom_sf(data = mtlfinal, colour = 'black', fill = NA, linewidth = 1) + 
+  coord_sf(xlim = c(7600454, 7636840), ylim = c(1225208, 1268951), expand = FALSE) +
+  ggtitle('B) City Scale')
+  
+
+# neighbourhood map  ------------------------------------------------------
+mtlnhoods <- can_hood %>% filter(city == "Montreal")
+mtlnhoodfinal <- neighbourhood_bound_trees %>% filter(city == "Montreal")
+mtlnhoodfinal_trees <- st_intersection(mtlnhoodfinal, can_trees) %>% 
+  st_drop_geometry() %>%
+  group_by(hood) %>%
+  tally() %>% 
+  filter(n > 50) %>% 
+  left_join(mtlnhoodfinal) %>% 
+  st_as_sf()
+
+
+nhoods <- ggplot() +
+  geom_sf(data = mtlnhoods, alpha = 0.5) + 
+  geom_sf(data = mtltrees, colour = 'darkgreen', size = 0.01) +
+  geom_sf(data = mtlnhoodfinal_trees, colour = 'black', fill = NA, linewidth = 1) + 
+  coord_sf(xlim = c(7600454, 7636840), ylim = c(1225208, 1268951), expand = FALSE) + 
+  ggtitle('C) Neighbourhood Scale')
+
+# street map --------------------------------------------------------------
+nhoodex <- st_intersection(road_bound_trees, mtlnhoodfinal %>% filter(hood == "Rivière-Des-Prairies-Pointe-Aux-Trembles"))
+
+streets <- ggplot() +
+  geom_sf(data = mun_road_clean %>% st_intersection(., mtlnhoods %>% filter(hood == "Rivière-Des-Prairies-Pointe-Aux-Trembles")), alpha = 0.5) + 
+  geom_sf(data = nhoodex, colour = 'black', fill = NA, linewidth = 1) +
+  geom_sf(data = mtltrees %>% filter(hood == "Rivière-Des-Prairies-Pointe-Aux-Trembles"), colour = 'darkgreen', size = 0.5) +
+  coord_sf(xlim = c(7623697 , 7633386 ), ylim = c(1256329 , 1268266 ), expand = FALSE) + 
+  ggtitle('D) Street Scale')
   
   
+  
+# combine and save --------------------------------------------------------
+
+  f <- main + city + nhoods + streets + 
+  plot_layout(nrow = 2, ncol = 2,
+              width = unit(c(7.5, -1), c("in","null")))
+
+
   ggsave(
     'graphics/study-system.png',
-    main,
-    width = 10,
-    height = 10,
+    f,
+    width = 15,
+    height = 15,
+    units = 'in',
     dpi = 450
   )
   
   
-}
+ }
