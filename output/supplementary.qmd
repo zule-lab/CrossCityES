@@ -1,5 +1,5 @@
 ---
-title: "Title: Multi-scale analysis of temperature and air pollution predictors in large Canadian cities"
+title: "Title: Predictors of land-surface temperature and air pollution across Canadian cities are largely scale and city dependent"
 author:
   - name: Isabella C Richmond
     orcid: 0000-0001-5079-8442
@@ -292,7 +292,40 @@ explanatory_df %>%
 | Air Pollutants            | [International - Sentinel 5p TROPOMI](https://developers.google.com/earth-engine/datasets/catalog/sentinel-5p) (2 day revisit frequency)                                                                                                                           | TIFF          |
 +---------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------+
 
-**Table S3. Model Performance**
+**Table S3. Model Performance Metrics. For each model, the root mean squared error (rmse), R2 (rsq), and mean absolute error (mae) were calculated for the testing and training datasets. A well fitted model should not have large differences in error metric values between the training and testing dataset.**
+
+```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+#| label: table-s3
+
+csvs <- list.files(path = "./graphics/",
+                   pattern = "\\.csv$",
+                   full.names = T) 
+
+t <- lapply(csvs, FUN = function(x){read.csv(x) %>% add_column(model = str_replace(basename(sans_ext(x)), "_model-metrics", ""))})
+
+do.call(rbind, t) %>% 
+  rename(Model = model,
+         Dataset = type,
+         Metric = .metric,
+         Value = .estimate) %>%
+  mutate(Value = signif(Value, 2)) %>% 
+  separate(Model, c("Scale", "Model"), "_") %>% 
+  select(c(Model, Scale, Dataset, Metric, Value)) %>% 
+  mutate(Scale = case_when(Scale == "cities" ~ "City",
+                           Scale == "neighbourhoods" ~ "Neighbourhood", 
+                           Scale == "streets" ~ "Street"),
+         Model = case_when(Model == "temp" ~ "Temperature",
+                           .default = Model)) %>% 
+  knitr::kable()
+
+
+```
+
+
 
 # Figures
 
