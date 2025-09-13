@@ -24,12 +24,6 @@ targets_models <- c(
                'streets_temp'))
     
   ),
-
-  tar_file_read(
-    model_data,
-    'output/model_data.rds',
-    readRDS(!!.x)
-  ),
   
   tar_target(
     dataset_split,
