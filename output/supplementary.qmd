@@ -38,11 +38,10 @@ author:
         state: CAN
         postal-code: H4B 1R6 
 format: 
-  html:
+  docx:
     toc: true
     fig-width: 12
     fig-height: 12
-    embed-resources: true
 ---
 
 **\* isabella.richmond\@mail.concordia.ca**
@@ -56,8 +55,8 @@ format:
 
 knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 
-source('R/packages.R')
-
+library(targets)
+tar_source('R')
 tar_load(model_data)
 ```
 
@@ -211,8 +210,8 @@ explanatory_df %>%
                              'Functional Group Richness', 
                              'Functional Group Shannon', 'Mean DBH (cm)', 
                              'Std Dev DBH (cm)', 'Popuation', 'Mean NDVI',
-                             'Mean NDBI', 'Building Density (buildings/km2)',
-                             'Building Density (km2/km2)', 
+                             'Mean NDBI', 'Building Cover (buildings/km2)',
+                             'Building Cover (km2/km2)', 
                              'Proportion Highway', 'Road Density (km/km2)',
                              'Population Density (ind/km2)', 
                              'Mean Building Height (m)', 
@@ -329,132 +328,373 @@ do.call(rbind, t) %>%
 
 # Figures
 
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-width: 15
+#| fig-height: 15
+#| label: city-tree
+
+cities_lst_full <- model_data$cities_temp
+
+
+city_tree_vars <- cities_lst_full %>% 
+  select(c(city, ba_per_m2, stemdens, SpeciesRichness, Shannon, FG_richness, FG_shannon, mean_dbh, sd_dbh)) %>% 
+  mutate(ba_per_m2 = drop_units(ba_per_m2), 
+         stemdens = drop_units(stemdens),
+         mean_dbh = drop_units(mean_dbh),
+         sd_dbh = drop_units(sd_dbh)) %>%
+  pivot_longer(-city, names_to = 'variable') %>%
+  distinct()
+
+y <- c("Basal Area (km2 tree / km2)", "Number of Functional Groups", "Functional Group Shannon", "Mean DBH (cm)", "Std Dev DBH (cm)", "Shannon", "Species Richness", "Stem Density (trees / km2)")
+names(y) <- c("ba_per_m2", "FG_richness", "FG_shannon", "mean_dbh", "sd_dbh", 
+                      "Shannon", "SpeciesRichness", "stemdens")
+
+
+city_plot(city_tree_vars, y)
+```
+
+Figure A3.1a. Plot depicting the values for ecological form variables for each city at the city scale. 
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-width: 15
+#| fig-height: 15
+#| label: city-building
+
+
+city_building_vars <- cities_lst_full %>% 
+  select(c(city, centroid_den, area_den, prop_highway, prop_strts, road_dens, mean_bldhgt, NDBI_mean_, NDVI_mean_)) %>% 
+  pivot_longer(-city, names_to = 'variable') %>% 
+  distinct()
+
+
+supp.labs <- c("Building Density (km2 building/km2)", "Building Density (# buildings/km2)", "Mean Building Height (m)", "Mean NDBI", "Mean NDVI", "Highways (% of roads)", "Streets (% of roads)", "Road Density (km road/km2)")
+names(supp.labs) <- c("area_den", "centroid_den", "mean_bldhgt", "NDBI_mean_", "NDVI_mean_", 
+                      "prop_highway", "prop_strts", "road_dens")
+
+city_plot(city_building_vars, supp.labs)
+
+```
+
+Figure A3.1b. Plot depicting the values for urban form variables for each city at the city scale.
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-width: 15
+#| fig-height: 15
+#| label: city-census
+
+
+city_census_vars <- cities_lst_full %>% 
+  select(c(city, popdens, sidehop, aptfivp, semhoup, rowhoup, aptdupp, aptbuip, mvdwelp, medinc, lowincp, recimmp, indigp, visminp, edubacp)) %>% 
+  pivot_longer(-city, names_to = 'variable') %>% 
+  distinct()
+
+supp.labs <- c("Apartment Building < 5 str. (% residents)", "Duplex (% residents)", "Apartment Building > 5 str. (% residents)", "Bachelor's Education or + (% residents)", "Indigenous (% residents)", "Low Income (% residents)", "Median Income ($)", "Movable Dwelling (% residents)", "Population Density (ppl/km2)", "Recent Immigrants 2 (% residents)", "Row House (% residents)", "Semi-Detached House (% residents)", "Single Detached House (% residents)", "Visible Minority (% residents)")
+names(supp.labs) <- c("aptbuip", "aptdupp", "aptfivep", "edubacp", "indigp", "lowincp", "medinc", "mvdwelp", 
+                      "popdens", "recimmp", "rowhoup", "semhoup", "sidehop", "visminp")
+
+
+city_plot(city_census_vars, supp.labs)
+```
+
+Figure A3.1c. Plot depicting the values for sociodemographic variables for each city at the city scale.
+
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-width: 15
+#| fig-height: 15
+#| label: neighbourhood-tree
+
+neighbourhoods_lst_full <- model_data$neighbourhoods_temp %>% 
+  select(-city) %>% 
+  separate(city_hood, c('city', 'hood'), sep = "_")
+
+neighbourhood_tree_vars <- neighbourhoods_lst_full %>% 
+  select(c(city, hood, ba_per_m2, stemdens, SpeciesRichness, Shannon, FG_richness, FG_shannon,
+           mean_dbh, sd_dbh)) %>% 
+  mutate(ba_per_m2 = drop_units(ba_per_m2),
+         stemdens = drop_units(stemdens),
+         mean_dbh = drop_units(mean_dbh),
+         sd_dbh = drop_units(sd_dbh)) %>%
+  pivot_longer(-c(city, hood), names_to = 'variable') 
+
+supp.labs <- c("Basal Area (km2 tree / km2)", "Number of Functional Groups", "Functional Group Shannon", "Mean DBH (cm)", "Std Dev DBH (cm)", "Shannon", "Species Richness", "Stem Density (trees / km2)")
+names(supp.labs) <- c("ba_per_m2", "FG_richness", "FG_shannon", "mean_dbh", "sd_dbh", 
+                      "Shannon", "SpeciesRichness", "stemdens")
+
+neighbourhood_plot(neighbourhood_tree_vars, supp.labs)
+```
+
+Figure A3.1d. Plot depicting the values for ecological form variables for each city at the neighbourhood scale. 
+
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-width: 15
+#| fig-height: 15
+#| label: neighbourhood-building
+
+
+neighbourhood_building_vars <- neighbourhoods_lst_full %>% 
+  select(c(city, hood, centroid_den, area_den, prop_highway, road_dens, mean_bldhgt, NDBI_mean_, NDVI_mean_)) %>% 
+  pivot_longer(-c(city, hood), names_to = 'variable')
+
+supp.labs <- c("Building Density (km2 building/km2)", "Building Density (# buildings/km2)", "Mean Building Height (m)", "Mean NDBI", "Mean NDVI", "Highways (% of roads)", "Road Density (km road/km2)")
+names(supp.labs) <- c("area_den", "centroid_den", "mean_bldhgt", "NDBI_mean_", "NDVI_mean_",
+                      "prop_highway", "road_dens")
+
+
+neighbourhood_plot(neighbourhood_building_vars, supp.labs)
+```
+
+Figure A3.1e. Plot depicting the values for urban form variables for each city at the neighbourhood scale.
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-width: 15
+#| fig-height: 15
+#| label: neighbourhood-census
+
+
+neighbourhood_census_vars <- neighbourhoods_lst_full %>% 
+  select(c(city, hood, popdens, sidehop, aptfivp, semhoup, rowhoup, aptdupp, aptbuip, mvdwelp, medinc, lowincp, recimmp, indigp, visminp, edubacp)) %>% 
+  pivot_longer(-c(city, hood), names_to = 'variable')
+
+supp.labs <- c("Apartment Building < 5 str. (% residents)", "Duplex (% residents)", "Apartment Building > 5 str. (% residents)", "Bachelor's Education or + (% residents)", "Indigenous (% residents)", "Low Income (% residents)", "Median Income ($)", "Movable Dwelling (% residents)", "Population Density (ppl/km2)", "Recent Immigrants 2 (% residents)", "Row House (% residents)", "Semi-Detached House (% residents)", "Single Detached House (% residents)", "Visible Minority (% residents)")
+names(supp.labs) <- c("aptbuip", "aptdupp", "aptfivep", "edubacp", "indigp", "lowincp", "medinc", "mvdwelp", 
+                      "popdens", "recimmp", "rowhoup", "semhoup", "sidehop", "visminp")
+
+neighbourhood_plot(neighbourhood_census_vars, supp.labs)
+```
+
+Figure A3.1f. Plot depicting the values for sociodemographic variables for each city at the neighbourhood scale. 
+
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-width: 15
+#| fig-height: 15
+#| label: street-tree
+
+roads_lst_full <- model_data$streets_temp
+
+street_tree_vars <- roads_lst_full %>% select(c(city, streetid, ba_per_m2, stemdens, SpeciesRichness, Shannon, FG_richness, FG_shannon, mean_dbh, sd_dbh)) %>% 
+mutate(ba_per_m2 = drop_units(ba_per_m2),
+stemdens = drop_units(stemdens),
+mean_dbh = drop_units(mean_dbh),
+sd_dbh = drop_units(sd_dbh)) %>%
+pivot_longer(-c(city, streetid), names_to = 'variable') %>% drop_na(city)
+
+supp.labs <- c("Basal Area (km2 tree / km2)", "Number of Functional Groups", "Functional Group Shannon", "Mean DBH (cm)", "Std Dev DBH (cm)", "Shannon", "Species Richness", "Stem Density (trees / km2)")
+names(supp.labs) <- c("ba_per_m2", "FG_richness", "FG_shannon", "mean_dbh", "sd_dbh", 
+                      "Shannon", "SpeciesRichness", "stemdens")
+
+
+neighbourhood_plot(street_tree_vars, supp.labs)
+```
+
+Figure A3.1h. Plot depicting the values for ecological form variables for each city at the street scale.
+
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-width: 15
+#| fig-height: 15
+#| label: street-building
+
+
+street_building_vars <- roads_lst_full %>% 
+  select(c(city, streetid, centroid_den, area_den, mean_bldhgt, NDBI_mean_, NDVI_mean_)) %>% 
+  pivot_longer(-c(city, streetid), names_to = 'variable') %>% drop_na(city)
+
+supp.labs <- c("Building Density (km2 building/km2)", "Building Density (# buildings/km2)", "Mean Building Height (m)", "Mean NDBI", "Mean NDVI")
+names(supp.labs) <- c("area_den", "centroid_den", "mean_bldhgt", "NDBI_mean_", "NDVI_mean_")
+
+
+neighbourhood_plot(street_building_vars, supp.labs)
+```
+
+
+Figure A3.1h. Plot depicting the values for urban form variables for each city at the street scale.
+
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-width: 15
+#| fig-height: 15
+#| label: street-census
+
+
+street_census_vars <- roads_lst_full %>% 
+  select(c(city, streetid, popdens, sidehop, aptfivp, semhoup, rowhoup, aptdupp, aptbuip, mvdwelp, medinc, lowincp, recimmp, indigp, visminp, edubacp)) %>% 
+  pivot_longer(-c(city, streetid), names_to = 'variable') %>% drop_na(city)
+
+supp.labs <- c("Apartment Building < 5 str. (% residents)", "Duplex (% residents)", "Apartment Building > 5 str. (% residents)", "Bachelor's Education or + (% residents)", "Indigenous (% residents)", "Low Income (% residents)", "Median Income ($)", "Movable Dwelling (% residents)", "Population Density (ppl/km2)", "Recent Immigrants 2 (% residents)", "Row House (% residents)", "Semi-Detached House (% residents)", "Single Detached House (% residents)", "Visible Minority (% residents)")
+names(supp.labs) <- c("aptbuip", "aptdupp", "aptfivep", "edubacp", "indigp", "lowincp", "medinc", "mvdwelp", 
+                      "popdens", "recimmp", "rowhoup", "semhoup", "sidehop", "visminp")
+
+neighbourhood_plot(street_census_vars, supp.labs)
+```
+
+
+Figure A3.1i. Plot depicting the values for sociodemographic variables for each city at the street scale.
+
+
+
 ![](../graphics/sat_coverage.png)
 
-Figure S1. Example of satellite image coverage of Toronto neighbourhoods. Depicted is a single satellite image, with cloudy pixels removed. To be included in our analysis, satellite images had to cover an estimated 50% or more of the area of a city or neighbourhood, or 100% of a street area.
+Figure A3.2. Example of satellite image coverage of Toronto neighbourhoods. Depicted is a single satellite image, with cloudy pixels removed. To be included in our analysis, satellite images had to cover an estimated 50% or more of the area of a city or neighbourhood, or 100% of a street area.
 
 ![](../graphics/cities_temp_vip.png)
 
-**Figure S2a. Variable importance plot for temperature model at the city scale.**
+**Figure A3.3a. Variable importance plot for temperature model at the city scale.**
 
 ![](../graphics/cities_CO_vip.png)
 
-**Figure S2b. Variable importance plot for carbon monoxide model at the city scale.**
+**Figure A3.3b. Variable importance plot for carbon monoxide model at the city scale.**
 
 ![](../graphics/cities_NO2_vip.png)
 
-**Figure S2c. Variable importance plot for nitrogen dioxide model at the city scale.**
+**Figure A3.3c. Variable importance plot for nitrogen dioxide model at the city scale.**
 
 ![](../graphics/cities_O3_vip.png)
 
-**Figure S2d. Variable importance plot for ozone model at the city scale.**
+**Figure A3.3d. Variable importance plot for ozone model at the city scale.**
 
 ![](../graphics/cities_UV_vip.png)
 
-**Figure S2e. Variable importance plot for UV aerosols model at the city scale.**
+**Figure A3.3e. Variable importance plot for UV aerosols model at the city scale.**
 
 ![](../graphics/neighbourhoods_temp_vip.png)
 
-**Figure S2f. Variable importance plot for temperature model at the neighbourhood scale.**
+**Figure A3.3f. Variable importance plot for temperature model at the neighbourhood scale.**
 
 ![](../graphics/neighbourhoods_CO_vip.png)
 
-**Figure S2g. Variable importance plot for carbon monoxide model at the neighbourhood scale.**
+**Figure A3.3g. Variable importance plot for carbon monoxide model at the neighbourhood scale.**
 
 ![](../graphics/neighbourhoods_NO2_vip.png)
 
-**Figure S2h. Variable importance plot for nitrogen dioxide model at the neighbourhood scale.**
+**Figure A3.3h. Variable importance plot for nitrogen dioxide model at the neighbourhood scale.**
 
 ![](../graphics/neighbourhoods_O3_vip.png)
 
-**Figure S2i. Variable importance plot for ozone model at the neighbourhood scale.**
+**Figure A3.3i. Variable importance plot for ozone model at the neighbourhood scale.**
 
 ![](../graphics/neighbourhoods_UV_vip.png)
 
-**Figure S2j. Variable importance plot for UV aerosols model at the neighbourhood scale.**
+**Figure A3.3j. Variable importance plot for UV aerosols model at the neighbourhood scale.**
 
 ![](../graphics/streets_temp_vip.png)
 
-**Figure S2k. Variable importance plot for temperature model at the street scale.**
+**Figure A3.3k. Variable importance plot for temperature model at the street scale.**
 
 ![](../graphics/cities_temp_model-fit.png)
 
-**Figure S3a. Model performance plot for temperature model at the city scale.**
+**Figure A3.4a. Model performance plot for temperature model at the city scale.**
 
 ![](../graphics/cities_CO_model-fit.png)
 
-**Figure S3b. Model performance plot for carbon monoxide model at the city scale.**
+**Figure A3.4b. Model performance plot for carbon monoxide model at the city scale.**
 
 ![](../graphics/cities_NO2_model-fit.png)
 
-**Figure S3c. Model performance plot for nitrogen dioxide model at the city scale.**
+**Figure A3.4c. Model performance plot for nitrogen dioxide model at the city scale.**
 
 ![](../graphics/cities_O3_model-fit.png)
 
-**Figure S3d. Model performance plot for ozone model at the city scale.**
+**Figure A3.4d. Model performance plot for ozone model at the city scale.**
 
 ![](../graphics/cities_SO2_model-fit.png)
 
-**Figure S3e. Model performance plot for sulfur dioxide model at the city scale.**
+**Figure A3.4e. Model performance plot for sulfur dioxide model at the city scale.**
 
 ![](../graphics/cities_UV_model-fit.png)
 
-**Figure S3f. Model performance plot for UV aerosols model at the city scale.**
+**Figure A3.4f. Model performance plot for UV aerosols model at the city scale.**
 
 ![](../graphics/neighbourhoods_temp_model-fit.png)
 
-**Figure S3g. Model performance plot for temperature model at the neighbourhood scale.**
+**Figure A3.4g. Model performance plot for temperature model at the neighbourhood scale.**
 
 ![](../graphics/neighbourhoods_CO_model-fit.png)
 
-**Figure S3h. Model performance plot for carbon monoxide model at the neighbourhood scale.**
+**Figure A3.4h. Model performance plot for carbon monoxide model at the neighbourhood scale.**
 
 ![](../graphics/neighbourhoods_NO2_model-fit.png)
 
-**Figure S3i. Model performance plot for nitrogen dioxide model at the neighbourhood scale.**
+**Figure A3.4i. Model performance plot for nitrogen dioxide model at the neighbourhood scale.**
 
 ![](../graphics/neighbourhoods_O3_model-fit.png)
 
-**Figure S3j. Model performance plot for ozone model at the neighbourhood scale.**
+**Figure A3.4j. Model performance plot for ozone model at the neighbourhood scale.**
 
 ![](../graphics/neighbourhoods_SO2_model-fit.png)
 
-**Figure S3k. Model performance plot for sulfur dioxide model at the neighbourhood scale.**
+**Figure A3.4k. Model performance plot for sulfur dioxide model at the neighbourhood scale.**
 
 ![](../graphics/neighbourhoods_UV_model-fit.png)
 
-**Figure S3l. Model performance plot for UV aerosols model at the neighbourhood scale.**
+**Figure A3.4l. Model performance plot for UV aerosols model at the neighbourhood scale.**
 ![](../graphics/streets_temp_model-fit.png)
 
-**Figure S3m. Model performance plot for temperature model at the street scale.**
+**Figure A3.4m. Model performance plot for temperature model at the street scale.**
 
 ![](../graphics/cities_CO_ale.png)
 
-**Figure S4a. Accumulated local effects (ALE) plot for carbon monoxide model at the city scale.**
+**Figure A3.5a. Accumulated local effects (ALE) plot for carbon monoxide model at the city scale.**
 
 ![](../graphics/cities_O3_ale.png)
 
-**Figure S4b. Accumulated local effects (ALE) plot for ozone model at the city scale.**
+**Figure A3.5b. Accumulated local effects (ALE) plot for ozone model at the city scale.**
 
 ![](../graphics/cities_UV_ale.png)
 
-**Figure S4c. Accumulated local effects (ALE) plot for UV aerosols model at the city scale.**
+**Figure A3.5c. Accumulated local effects (ALE) plot for UV aerosols model at the city scale.**
 ![](../graphics/neighbourhoods_CO_ale.png)
 
-**Figure S4d. Accumulated local effects (ALE) plot for carbon monoxide model at the neighbourhood scale.**
+**Figure A3.5d. Accumulated local effects (ALE) plot for carbon monoxide model at the neighbourhood scale.**
 
 ![](../graphics/neighbourhoods_NO2_ale.png)
 
-**Figure S4e. Accumulated local effects (ALE) plot for nitrogen dioxide model at the neighbourhood scale.**
+**Figure A3.5e. Accumulated local effects (ALE) plot for nitrogen dioxide model at the neighbourhood scale.**
 
 ![](../graphics/neighbourhoods_UV_ale.png)
 
-**Figure S4f. Accumulated local effects (ALE) for UV aerosols model at the neighbourhood scale.**
+**Figure A3.5f. Accumulated local effects (ALE) for UV aerosols model at the neighbourhood scale.**
 
 ![](../graphics/cities_NO2_pdp.png)
 
-**Figure S5a. Partial dependency plot for nitrogen dioxide model at the city scale.**
+**Figure A3.6a. Partial dependency plot for nitrogen dioxide model at the city scale.**
 
 ![](../graphics/neighbourhoods_O3_pdp.png)
 
-**Figure S5b. Partial dependency plot for ozone model at the neighbourhood scale.**
+**Figure A3.6b. Partial dependency plot for ozone model at the neighbourhood scale.**
