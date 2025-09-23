@@ -1,6 +1,8 @@
 # Predictors of land-surface temperature and air pollution across Canadian cities are largely scale and city dependent
 
-## Authors: Isabella C. Richmond, Nicole Yu, Alec Robitaille, Kayleigh Hutt-Taylor, Carly D. Ziter
+[![DOI](https://zenodo.org/badge/366469574.svg)](https://doi.org/10.5281/zenodo.17186245)
+
+## Isabella C. Richmond, Nicole Yu, Alec Robitaille, Kayleigh Hutt-Taylor, Carly D. Ziter
 
 **Abstract**
 
