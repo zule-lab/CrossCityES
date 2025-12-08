@@ -1,4 +1,4 @@
-plot_pdp <- function(final_model, name, df_train, vi){
+plot_pdp <- function(final_model, name, df_train, vi, suffix){
 
   df_train <- df_train[1]$train  
   
@@ -70,7 +70,7 @@ plot_pdp <- function(final_model, name, df_train, vi){
      theme(strip.text = element_text(size = 12),
            legend.title = element_blank())
   
-   ggsave(paste0('graphics/', name, '_pdp.png'), pdp)
+   ggsave(paste0('graphics/', name, suffix, '_pdp.png'), pdp)
    
    
    ale_time <- model_profile(
@@ -101,11 +101,11 @@ plot_pdp <- function(final_model, name, df_train, vi){
      theme_classic() + 
      theme(strip.text = element_text(size = 12))
    
-   ggsave(paste0('graphics/', name, '_ale.png'), ale)
+   ggsave(paste0('graphics/', name, suffix, '_ale.png'), ale)
    
    
-   saveRDS(ale, paste0('output/', name, '_ale.rds'))
-   saveRDS(pdp, paste0('output/', name, '_pdp.rds'))
+   saveRDS(ale, paste0('output/', name, suffix, '_ale.rds'))
+   saveRDS(pdp, paste0('output/', name, suffix, '_pdp.rds'))
 
 
    return(list(pdp_time, ale_time))

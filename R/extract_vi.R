@@ -1,4 +1,4 @@
-extract_vi <- function(final_models){
+extract_vi <- function(final_models, suffix){
   
   # Temperature
   
@@ -37,7 +37,7 @@ extract_vi <- function(final_models){
                                 Variable == "doy" ~ 'Day of Year',
                                 .default = Variable),
            Importance = round(Importance, 3))
-  write.csv(temp_table, 'output/temperature_variable-importance.csv')
+  write.csv(temp_table, paste0('output/temperature_variable-importance', suffix, '.csv'))
   
   
   # Air Pollution
@@ -149,7 +149,7 @@ extract_vi <- function(final_models){
                                 Variable == "mean_bldhgt" ~ 'Mean Building Height (m)',
                                 .default = Variable),
            Importance = round(Importance, 2))
-  write.csv(pollution_table, 'output/pollution_variable-importance.csv')
+  write.csv(pollution_table, paste0('output/pollution_variable-importance', suffix, '.csv'))
   
   final <- rbind(temp_table, pollution_table)
   

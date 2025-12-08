@@ -1,4 +1,4 @@
-select_model <- function(tune_list, name, tune_wf, model_data){
+select_model <- function(tune_list, name, tune_wf, model_data, suffix){
   
   # make data split
   df_split <- initial_split(model_data[[1]], strata = city)
@@ -10,7 +10,7 @@ select_model <- function(tune_list, name, tune_wf, model_data){
   
   # autoplot
   auto <- autoplot(df)
-  ggsave(paste0('graphics/', name, '_autoplot.png'), auto)
+  ggsave(paste0('graphics/', name, suffix, '_autoplot.png'), auto)
   
   
   # select best model
@@ -55,7 +55,7 @@ select_model <- function(tune_list, name, tune_wf, model_data){
     group_by(type) %>% 
     metrics(value, .pred)
   
-  write.csv(model_metrics, paste0('graphics/', name, '_model-metrics.csv'))
+  write.csv(model_metrics, paste0('graphics/', name, suffix, '_model-metrics.csv'))
   
   # model fit between testing and training 
   
@@ -65,7 +65,7 @@ select_model <- function(tune_list, name, tune_wf, model_data){
     geom_abline() +
     facet_wrap(~type)
   
-  ggsave(paste0('graphics/', name, '_model-fit.png'), model_fit)
+  ggsave(paste0('graphics/', name, suffix, '_model-fit.png'), model_fit)
   
   
   # most important variables
@@ -74,7 +74,7 @@ select_model <- function(tune_list, name, tune_wf, model_data){
     vip(geom = "point") +
     theme_classic()
   
-  ggsave(paste0('graphics/', name, '_vip.png'), vip)
+  ggsave(paste0('graphics/', name, suffix, '_vip.png'), vip)
   
   
   return(last_rf_model)
