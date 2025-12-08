@@ -4,7 +4,7 @@ rf_wf <- function(df_train){
   # this is the model, everything in the dataset is explanatory except legal status and ID
   mod_rec <- recipe(value ~ ., data = df_train) %>%
     # normalize all continuous vars
-    step_normalize(all_numeric_predictors(), -doy) %>% 
+    step_normalize(all_numeric_predictors()) %>% 
     # converts factors (nominal) into numeric binary model terms
     #step_dummy(all_nominal(), -all_outcomes()) %>%
     # set correlation threshold to 0.8
