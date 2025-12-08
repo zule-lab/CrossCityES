@@ -59,7 +59,7 @@ targets_models_avg <- c(
   ),
   
   tar_target(
-    pdp,
+    pdp_avg,
     plot_pdp(final_models, names(final_models), dataset_split, vi, "_avg"),
     pattern = map(final_models, dataset_split),
     iteration = 'list'
