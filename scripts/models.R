@@ -63,7 +63,7 @@ targets_models <- c(
   
   tar_target(
     final_models_unnamed,
-    select_model(model_tune_list_formatted, names(model_tune_list_formatted), model_workflow, model_data),
+    select_model(model_tune_list_formatted, names(model_tune_list_formatted), model_workflow, model_data, ""),
     pattern = map(model_tune_list_formatted, model_workflow, dataset_split, model_data),
     iteration = 'list'
   ),
@@ -75,12 +75,12 @@ targets_models <- c(
 
   tar_target(
     vi,
-    extract_vi(final_models)
+    extract_vi(final_models, "")
   ),
   
   tar_target(
     pdp,
-    plot_pdp(final_models, names(final_models), dataset_split, vi),
+    plot_pdp(final_models, names(final_models), dataset_split, vi, ""),
     pattern = map(final_models, dataset_split),
     iteration = 'list'
   )
