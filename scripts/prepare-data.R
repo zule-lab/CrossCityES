@@ -150,7 +150,7 @@ targets_prepare_data <- c(
   # Clean
   tar_target(
     census_da_clean,
-    clean_census_da("large/national/cen_da_raw.zip", 5, "large/national/cen_da_raw", da_bound_clean)
+    clean_census_da("large/national/cen_da_raw.zip", 5, "large/national/cen_da_raw", da_bound_clean, cen_da_raw)
   ),
 
 
