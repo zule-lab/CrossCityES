@@ -8,7 +8,7 @@ targets_models <- c(
          cities_pollution_full %>% filter(variable == 'mean_NO2_city') %>% select(-variable),
          cities_pollution_full %>% filter(variable == 'mean_O3_city') %>% select(-variable),
          cities_pollution_full %>% filter(variable == 'mean_SO2_city') %>% select(-variable),
-         neighbourhoods_temp %>% rename(value = mean_temp),
+         neighbourhoods_lst_full %>% rename(value = mean_temp),
          neighbourhoods_pollution_full %>% filter(variable == 'mean_UV_neighbourhood') %>% select(-variable),
          neighbourhoods_pollution_full %>% filter(variable == 'mean_CO_neighbourhood') %>% select(-variable),
          neighbourhoods_pollution_full %>% filter(variable == 'mean_NO2_neighbourhood') %>% select(-variable),
