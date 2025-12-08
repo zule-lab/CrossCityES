@@ -2,7 +2,7 @@ targets_models_avg <- c(
   
   tar_target(
     model_data_avg, 
-    avg_model_data(model_data)
+    avg_model_data(model_data, roads_lst_full)
   ),
   
   tar_target(
