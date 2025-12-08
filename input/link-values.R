@@ -101,7 +101,7 @@ values_buildings <- tribble(
 # Census ------------------------------------------------------------------
 values_census <- tribble(
   ~dl_path, ~dl_link,
-  'large/national/cen_da_raw.zip', 'https://www12.statcan.gc.ca/census-recensement/2021/dp-pd/prof/details/download-telecharger/comp/GetFile.cfm?Lang=E&FILETYPE=CSV&GEONO=006',
+  'large/national/cen_da_raw.zip', 'https://www12.statcan.gc.ca/census-recensement/2021/dp-pd/prof/details/download-telecharger/comp/GetFile.cfm?Lang=E&FILETYPE=CSV&GEONO=006'
 ) %>% 
   mutate(
     file_name = basename(sans_ext(dl_path)),
