@@ -1863,15 +1863,14 @@
       "Config/testthat/edition": "3",
       "Roxygen": "list(markdown = TRUE)",
       "RoxygenNote": "7.3.2",
+      "Author": "William Michael Landau [aut, cre] (ORCID: <https://orcid.org/0000-0003-1878-3253>), Daniel Woodie [ctb], Eli Lilly and Company [cph, fnd]",
+      "Maintainer": "William Michael Landau <will.landau.oss@gmail.com>",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteRepo": "crew",
       "RemoteUsername": "wlandau",
       "RemoteRef": "HEAD",
-      "RemoteSha": "6c8cb7079336f3234aed2c1b0fe62cd5ba9e28a0",
-      "NeedsCompilation": "no",
-      "Author": "William Michael Landau [aut, cre] (ORCID: <https://orcid.org/0000-0003-1878-3253>), Daniel Woodie [ctb], Eli Lilly and Company [cph, fnd]",
-      "Maintainer": "William Michael Landau <will.landau.oss@gmail.com>"
+      "RemoteSha": "6c8cb7079336f3234aed2c1b0fe62cd5ba9e28a0"
     },
     "crosstalk": {
       "Package": "crosstalk",
