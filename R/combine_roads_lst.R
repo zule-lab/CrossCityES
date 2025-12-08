@@ -70,7 +70,7 @@ combine_roads_lst <- function(streets_lst, road_bound_trees, census_road,
   
   final <- join %>% 
     select(-c(time, count_temp, median_temp, max_temp, min_temp,
-              stdDev_temp, road_class, coverage, nTrees, roadarea, 
+              stdDev_temp, coverage, nTrees, roadarea, 
               stemdens_acre, total_ba, centroids, build_area, road_area, 
               area, CMANAME.x.x.x, DSAcount, lowinc, 
               date_ndvi, time_ndvi, streettype.x, streettype.y,
