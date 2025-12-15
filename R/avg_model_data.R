@@ -78,7 +78,9 @@ avg_model_data <- function(model_data, roads_lst_full){
               mean_bldhgt = first(mean_bldhgt), 
               stdDev_bldhgt = first(stdDev_bldhgt), 
               lon = first(lon),
-              lat = first(lat)))
+              lat = first(lat))) %>% 
+    group_by(city) %>% 
+    sample_n(1000) %>%
   
   list <-c(neighbourhoods, streets) %>% 
     setNames(., c('neighbourhoods_temp', 'neighbourhoods_UV', 'neighbourhoods_CO', 'neighbourhoods_NO2', 'neighbourhoods_O3', 'neighbourhoods_SO2',
