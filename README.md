@@ -1,6 +1,6 @@
 # Predictors of land-surface temperature and air pollution across Canadian cities are largely scale and city dependent
 
-[![DOI](https://zenodo.org/badge/366469574.svg)](https://doi.org/10.5281/zenodo.17186245)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19472878.svg)](https://doi.org/10.5281/zenodo.19472878)
 
 Paper (Open-Access): https://iopscience.iop.org/article/10.1088/2515-7620/ae4f61/meta
 
