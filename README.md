@@ -2,7 +2,7 @@
 
 [![DOI](https://zenodo.org/badge/366469574.svg)](https://doi.org/10.5281/zenodo.17186245)
 
-Paper (Open-Access): [https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/eap.70082](https://iopscience.iop.org/article/10.1088/2515-7620/ae4f61/meta)
+Paper (Open-Access): https://iopscience.iop.org/article/10.1088/2515-7620/ae4f61/meta
 
 ## Authors
 Isabella C. Richmond, Nicole Yu, Alec Robitaille, Kayleigh Hutt-Taylor, Carly D. Ziter
