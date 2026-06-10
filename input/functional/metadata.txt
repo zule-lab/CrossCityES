@@ -1,0 +1,15 @@
+Seed_mass_new_data.csv
+Seed mass data produced by Michael Belluau.
+Final Name: scientific name of species
+SM (mg or g for 1000seeds): seed mass value 
+Data from Kew: confirmation if data was found in Kew 
+Data from other sources: if not from Kew, where was data found 
+
+Tree_Trait_Task_Force_BDD_1.3.txt
+Tree traits produced by Belluau et al and downloaded from figshare. Download/metadata found here:  https://figshare.com/articles/dataset/The_Tree_Functional_Trait_Application_Project_v1/14039504
+
+TTTF_traits_nouvelle_litterature.csv
+Extension of tree traits found by Belluau et al.'s team. Format is the same as Tree_Trait_Task_Force_BDD_1.3.txt.
+
+ZULE_TraitDatabase.csv
+Extension of tree traits found by our team. Format is the same as Tree_Trait_Task_Force_BDD_1.3.txt.
