@@ -1,0 +1,29 @@
+hal_tree_dbhcode.csv 
+The public tree data published by the City of Halifax uses codes for DBH measurements. This file indicates the DBH values associated with the codes. 
+code: code reported as DBH for public trees 
+dbh: midpoint of the DBH category associated with the code 
+dbh_cat: range of DBH values that area associated with each code 
+
+hal_tree_spcode.csv
+The public tree data published by the City of Halifax uses codes for species names. This file indicates the species names associated with the codes.
+code: code reported as species name for public trees 
+botname: full botanical name associated with the species codes 
+
+link-values.R 
+R script that outlines the download links for most of the data included in this project.
+
+mon_tree_hoodcode.csv
+The Ville de Montréal has a code associated with each neighbourhood. This file indicates the neighbourhood name associated with each code. 
+code: code reported as neighbourhood 
+hood: neighbourhood name 
+
+ott_tree_spcode.csv
+The public tree data published by the City of Ottawa uses common names for species names. This file indicates the scientific  names associated with the common names.
+SPECIES_COMMON: common name reported as species name for public trees 
+SPECIES_LATIN: full botanical name associated with the common names
+
+tor_tree_spcode.csv
+The public tree data published by the City of Toronto uses codes for species names. This file indicates the species names associated with the codes.
+SPECIES_CODE: code reported as species name for public trees 
+COMMON_NAME: common name reported as species name for public trees 
+BOTANICAL_NAME: full botanical name associated with the species codes 
